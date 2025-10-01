@@ -7,8 +7,8 @@
  * @author walkerberndt, lukefreeman
  * @version Oct 1, 2025
  */
-public class BST {
-    private BSTNode root; // Root of the BST
+public class BST<T> {
+    private BSTNode<T> root; // Root of the BST
     private int nodecount; // Number of nodes in the BST
 
     // constructor
