@@ -11,9 +11,9 @@ public class City {
      * @param Name
      *            is the given name for the city
      * @param x
-     *            is the x-cordinate value for the location of the city
+     *            is the x-coordinate value for the location of the city
      * @param y
-     *            is the y-cordinate value for the location of the city
+     *            is the y-coordinate value for the location of the city
      */
     private String name;
     private int x;
@@ -24,7 +24,12 @@ public class City {
     /**
      * Create a new city object
      * 
-     * @param
+     * @param name
+     *            is the given name for the city
+     * @param x
+     *            is the x-coordinate value for the location of the city
+     * @param y
+     *            is the y-coordinate value for the location of the city
      */
     public City(String name, int x, int y) {
         this.name = name;
@@ -36,6 +41,8 @@ public class City {
     // ~Public Methods ........................................................
     /**
      * Getter method for the name of the city
+     * 
+     * @return the name of the city
      */
     public String getName() {
         return name;
@@ -44,6 +51,8 @@ public class City {
 
     /**
      * Getter method for the x-cordinate value
+     * 
+     * @return the x-coordinate
      */
     public int getX() {
         return x;
@@ -52,6 +61,8 @@ public class City {
 
     /**
      * Getter method for the y-cordinate value
+     * 
+     * @return the y-coordinate
      */
     public int getY() {
         return y;
@@ -60,6 +71,9 @@ public class City {
 
     /**
      * Setter method for the name of the city
+     * 
+     * @param newName
+     *            is the new name of the city
      */
     public void setName(String newName) {
         name = newName;
@@ -68,6 +82,9 @@ public class City {
 
     /**
      * Setter method for the x-cordinate value
+     * 
+     * @param newX
+     *            is the new x-coordinate
      */
     public void setX(int newX) {
         x = newX;
@@ -76,6 +93,9 @@ public class City {
 
     /**
      * Setter method for the y-cordinate value
+     * 
+     * @param newY
+     *            is the new y-coordinate
      */
     public void setY(int newY) {
         y = newY;

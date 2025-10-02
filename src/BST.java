@@ -1,66 +1,89 @@
 // -------------------------------------------------------------------------
 /**
- * Write a one-sentence summary of your class here.
- * Follow it with additional details about its purpose, what abstraction
- * it represents, and how to use it.
+ * This class is a basic implementation of a binary search tree. The end purpose
+ * of this class is to be used in conjunction with a k-d tree.
  * 
  * @author walkerberndt, lukefreeman
  * @version Oct 1, 2025
  */
-public class BST<T> {
-    private BSTNode<T> root; // Root of the BST
-    private int nodecount; // Number of nodes in the BST
+public class BST<T extends Comparable<? super T>> {
 
-    // constructor
-    // ----------------------------------------------------------
+    // ~ Fields ................................................................
+    /**
+     * @param root
+     *            is the root of the BST
+     */
+    private BSTNode<T> root;
+
+    // ~ Constructors ..........................................................
     /**
      * Create a new BST object.
      */
     BST() {
         root = null;
-        nodecount = 0;
     }
 
 
-    // Reinitialize tree
-    // ----------------------------------------------------------
+    // ~Public Methods ........................................................
     /**
-     * empties the BST
+     * Inserts a new node into a BST with a helper method
+     * 
+     * @param x
+     *            is the new value added to the BST
      */
-    public void clear() {
-        root = null;
-        nodecount = 0;
+    public void insert(T x) {
+        root = insertHelper(x, root);
     }
 
 
-    // Insert a record into the tree.
-    // Records can be anything, but they must be Comparable
-    // e: The record to insert.
-    public void insert(Comparable e) {
-        root = inserthelp(root, e);
-        nodecount++;
-    }
-
-
-    // Remove a record from the tree
-    // key: The key value of record to remove
-    // Returns the record removed, null if there is none.
-    public Comparable remove(Comparable key) {
-        Comparable temp = findhelp(root, key); // First find it
-        if (temp != null) {
-            root = removehelp(root, key); // Now remove it
-            nodecount--;
+    /**
+     * Inserts a new node into a BST recursively
+     * 
+     * @param x
+     *            is the new value added to the BST
+     * @param node
+     *            is the node we are comparing the value to
+     * @return node that the value was added to
+     */
+    private BSTNode<T> insertHelper(T x, BSTNode<T> node) {
+        // If node is empty, make a new node
+        if (node == null) {
+            return new BSTNode<T>(x);
         }
-        return temp;
+
+        // If x is less than the current node value, set node to the left
+        else if (x.compareTo(node.getElement()) <= 0) {
+            node.setLeft(insertHelper(x, node.getLeft()));
+        }
+
+        // If x is greater than the current node value, set node to the right
+        else {
+            node.setRight(insertHelper(x, node.getRight()));
+        }
+
+        return node;
     }
 
 
-    // Return the record with key value k, null if none exists
-    // key: The key value to find
-    public Comparable find(Comparable key) {
-        return findhelp(root, key);
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        inorder(root, sb);
+        return sb.toString().trim(); // remove trailing space
     }
 
+    private void inorder(BSTNode<T> node, StringBuilder sb) {
+        if (node == null) {
+            return;
+        }
 
-    // Return the number of records in the dictionary
-    public int size() { return nodecount; }
+        // Left subtree
+        inorder(node.getLeft(), sb);
+
+        // Visit node
+        sb.append(node.getElement()).append(" ");
+
+        // Right subtree
+        inorder(node.getRight(), sb);
+    }
+}
