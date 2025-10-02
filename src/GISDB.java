@@ -18,13 +18,15 @@ public class GISDB implements GIS {
      * Dimension of the points stored in the tree
      */
     public static final int DIMENSION = 2;
+    
+    private KDTree<City> db;
 
     // ----------------------------------------------------------
     /**
      * Create a new GISDB object
      */
     GISDB() {
-        // Put your code here
+        db = new KDTree<City>();
     }
 
 
@@ -52,6 +54,8 @@ public class GISDB implements GIS {
         {
             return false;
         }
+        City newCity = new City(name, x, y);
+        db.insert(newCity);
         return true;
     }
 
@@ -141,7 +145,7 @@ public class GISDB implements GIS {
      * @return String listing the cities as specified.
      */
     public String debug() {
-        return "";
+        return db.preorder();
     }
 
 
