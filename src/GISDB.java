@@ -145,7 +145,7 @@ public class GISDB implements GIS {
      * @return String listing the cities as specified.
      */
     public String debug() {
-        return db.preorder();
+        return db.inorder();
     }
 
 

@@ -66,7 +66,7 @@ public class KDTree<T> {
 
 
     /**
-     * Pre-order traversal of the KDTree that prints the information in the
+     * In-Order traversal of the KDTree that prints the information in the
      * database according to the project specification.
      * 
      * Uses a private function nested within itself to allow for recursion to
@@ -75,22 +75,24 @@ public class KDTree<T> {
      * @return sb.toString - returns the string builder that is made through
      *         Pre-order recursion of the database.
      */
-    public String preorder() {
+    public String inorder() {
         StringBuilder sb = new StringBuilder();
-        preorder(root, 0, sb);
+        inorder(root, 0, sb);
         return sb.toString();
     }
 
 
-    private void preorder(Node node, int level, StringBuilder sb) {
+    private void inorder(Node node, int level, StringBuilder sb) {
         if (node == null)
             return;
 
-        sb.append(level).append(" ".repeat(level * 2)).append(node.city
-            .getName()).append("\n");
+        // Recurse on left child first
+        inorder(node.left, level + 1, sb);
 
-        // Recurse on left and right children
-        preorder(node.left, level + 1, sb);
-        preorder(node.right, level + 1, sb);
+        // Then visit the current node
+        sb.append(level).append(" ".repeat(level * 2)).append(node.city.getName()).append("\n");
+
+        // Recurse on right child next
+        inorder(node.right, level + 1, sb);
     }
 }

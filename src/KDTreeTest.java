@@ -39,14 +39,14 @@ public class KDTreeTest extends TestCase {
         db.insert(city3);
         db.insert(city4);
         db.insert(city5);
-        assertFuzzyEquals(db.preorder(), multiline("0city1", "1  city2",
-            "2    city4", "1  city3", "2    city5"));
+        assertFuzzyEquals(db.inorder(), multiline("2    city4", "1  city2",
+            "0city1", "2    city5", "1  city3"));
 
         db.insert(city6);
         db.insert(city7);
 
-        assertFuzzyEquals(db.preorder(), multiline("0city1", "1  city2",
-            "2    city4", "1  city3", "2    city5", "3      city6",
+        assertFuzzyEquals(db.inorder(), multiline("2    city4", "1  city2",
+            "0city1", "3      city6", "2    city5", "1  city3",
             "2    city7"));
 
     }

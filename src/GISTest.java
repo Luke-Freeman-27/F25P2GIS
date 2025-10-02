@@ -39,14 +39,14 @@ public class GISTest extends TestCase {
         
 
         
-        assertFuzzyEquals(it.debug(), multiline("0city1", "1  city2",
-            "2    city4", "1  city3", "2    city5"));
+        assertFuzzyEquals(it.debug(), multiline("2    city4", "1  city2",
+            "0city1", "2    city5", "1  city3"));
 
         assertTrue(it.insert("city6", 20, 20));
         assertTrue(it.insert("city7", 20, 25));
 
-        assertFuzzyEquals(it.debug(), multiline("0city1", "1  city2",
-            "2    city4", "1  city3", "2    city5", "3      city6",
+        assertFuzzyEquals(it.debug(), multiline("2    city4", "1  city2",
+            "0city1", "3      city6", "2    city5", "1  city3",
             "2    city7"));
     }
 
