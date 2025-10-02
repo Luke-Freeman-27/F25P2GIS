@@ -90,7 +90,9 @@ public class KDTree<T> {
         inorder(node.left, level + 1, sb);
 
         // Then visit the current node
-        sb.append(level).append(" ".repeat(level * 2)).append(node.city.getName()).append("\n");
+        sb.append(level).append(" ".repeat(level * 2)).append(node.city
+            .getName()).append(" ").append(node.city.getX()).append(" ").append(
+                node.city.getY()).append("\n");
 
         // Recurse on right child next
         inorder(node.right, level + 1, sb);

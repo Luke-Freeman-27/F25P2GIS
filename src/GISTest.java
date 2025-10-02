@@ -36,19 +36,19 @@ public class GISTest extends TestCase {
         assertTrue(it.insert("city3", 15, 23));
         assertTrue(it.insert("city4", 10, 16));
         assertTrue(it.insert("city5", 27, 14));
-        
 
-        
-        assertFuzzyEquals(it.debug(), multiline("2    city4", "1  city2",
-            "0city1", "2    city5", "1  city3"));
+        assertFuzzyEquals(it.debug(), multiline("2    city4 10 16",
+            "1  city2 6 18", "0city1 12 16", "2    city5 27 14",
+            "1  city3 15 23"));
 
         assertTrue(it.insert("city6", 20, 20));
         assertTrue(it.insert("city7", 20, 25));
 
-        assertFuzzyEquals(it.debug(), multiline("2    city4", "1  city2",
-            "0city1", "3      city6", "2    city5", "1  city3",
-            "2    city7"));
+        assertFuzzyEquals(it.debug(), multiline("2    city4 10 16",
+            "1  city2 6 18", "0city1 12 16", "3      city6 20 20",
+            "2    city5 27 14", "1  city3 15 23", "2    city7 20 25"));
     }
+
 
     /**
      * Print testing for empty trees
