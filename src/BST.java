@@ -72,6 +72,7 @@ public class BST<T extends Comparable<? super T>> {
         return sb.toString().trim(); // remove trailing space
     }
 
+
     private void inorder(BSTNode<T> node, StringBuilder sb) {
         if (node == null) {
             return;

@@ -1345,3 +1345,104 @@ It fills the BST in the usual way: left child < parent, right child > parent.
 ❌ But for your assignment, you must tweak it so equal values always go left.
 
 Do you want me to also show how deletion must be written to follow your assignment rule (replace with max from left subtree when removing a node with two children)?
+
+
+Sure! A KD-Tree is a binary tree useful for organizing points in k-dimensional space (in your case, 2D points: x and y coordinates). I can help you set up a basic KDTree class in Java for storing cities by their x and y coordinates.
+
+Here’s a simple implementation outline:
+
+* A `City` class with x, y coordinates and a name.
+* A `KDTree` class with insert and search methods.
+
+Let me start with the basic classes for you:
+
+```java
+// City class to represent a city with x, y coordinates and a name
+public class City {
+    double x, y;
+    String name;
+
+    public City(double x, double y, String name) {
+        this.x = x;
+        this.y = y;
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + x + ", " + y + ")";
+    }
+}
+```
+
+Now, the KDTree class with nodes storing City objects:
+
+```java
+public class KDTree {
+    private static class Node {
+        City city;
+        Node left, right;
+        int depth;
+
+        Node(City city, int depth) {
+            this.city = city;
+            this.depth = depth;
+        }
+    }
+
+    private Node root;
+
+    // Insert a city into the KDTree
+    public void insert(City city) {
+        root = insert(root, city, 0);
+    }
+
+    private Node insert(Node node, City city, int depth) {
+        if (node == null) {
+            return new Node(city, depth);
+        }
+
+        int cd = depth % 2; // current dimension: 0 = x, 1 = y
+
+        if ((cd == 0 && city.x < node.city.x) || (cd == 1 && city.y < node.city.y)) {
+            node.left = insert(node.left, city, depth + 1);
+        } else {
+            node.right = insert(node.right, city, depth + 1);
+        }
+
+        return node;
+    }
+
+    // Simple inorder traversal to print all cities
+    public void inorder() {
+        inorder(root);
+    }
+
+    private void inorder(Node node) {
+        if (node == null) return;
+        inorder(node.left);
+        System.out.println(node.city);
+        inorder(node.right);
+    }
+}
+```
+
+You can use the KDTree like this:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        KDTree tree = new KDTree();
+        tree.insert(new City(3, 6, "CityA"));
+        tree.insert(new City(17, 15, "CityB"));
+        tree.insert(new City(13, 15, "CityC"));
+        tree.insert(new City(6, 12, "CityD"));
+        tree.insert(new City(9, 1, "CityE"));
+        tree.insert(new City(2, 7, "CityF"));
+
+        tree.inorder();
+    }
+}
+```
+
+Would you like me to add methods like nearest neighbor search or range search next?
