@@ -21,7 +21,7 @@ public class GISDB implements GIS {
 
     // ----------------------------------------------------------
     /**
-     * Create a new MovieRaterDB object.
+     * Create a new GISDB object
      */
     GISDB() {
         // Put your code here

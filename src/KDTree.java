@@ -10,7 +10,8 @@
 public class KDTree<T> {
     private static class Node {
         City city;
-        Node left, right;
+        Node left;
+        Node right;
         int depth;
 
         // Constructor for the private Node Class
@@ -20,14 +21,27 @@ public class KDTree<T> {
         }
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Create a new KDTree object. (Empty)
+     */
+    public KDTree() {
+        this.root = null;
+    }
+
     private Node root;
 
     /**
      * Insert a city into the KDTree
      * 
      * @param city
+     *            - The data to be added into the node of the KDTree being
+     *            added.
      */
     public void insert(City city) {
+        if (city == null) {
+            return;
+        }
         root = insert(root, city, 0);
     }
 
@@ -52,18 +66,31 @@ public class KDTree<T> {
 
 
     /**
-     * Simple inorder traversal to print all cities
+     * Pre-order traversal of the KDTree that prints the information in the
+     * database according to the project specification.
+     * 
+     * Uses a private function nested within itself to allow for recursion to
+     * print the full tree easily.
+     * 
+     * @return sb.toString - returns the string builder that is made through
+     *         Pre-order recursion of the database.
      */
-    public void inorder() {
-        inorder(root);
+    public String preorder() {
+        StringBuilder sb = new StringBuilder();
+        preorder(root, 0, sb);
+        return sb.toString();
     }
 
 
-    private void inorder(Node node) {
+    private void preorder(Node node, int level, StringBuilder sb) {
         if (node == null)
             return;
-        inorder(node.left);
-        System.out.println(node.city);
-        inorder(node.right);
+
+        sb.append(level).append(" ".repeat(level * 2)).append(node.city
+            .getName()).append("\n");
+
+        // Recurse on left and right children
+        preorder(node.left, level + 1, sb);
+        preorder(node.right, level + 1, sb);
     }
 }
