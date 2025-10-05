@@ -99,6 +99,54 @@ public class KDTree<T> {
     }
 
 
+    /**
+     * Deletes the city with the given (x, y) coordinates from the KDTree.
+     *
+     * @param x
+     *            The x-coordinate of the city.
+     * @param y
+     *            The y-coordinate of the city.
+     * @return A string:
+     *         - If city is found: "N [cityName]" where N is nodes visited
+     *         - If not found: "No city found at (x, y)"
+     */
+    public String delete(int x, int y) {
+        City city = findCity(x, y);
+
+        if (city == null) {
+            return "";
+        }
+
+        delete(city);
+        return city.getX() + " " + city.getY();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Deletes the city with the given name from the KDTree
+     * @param name - name of string to delete
+     * @return the node if it has been deleted successfully
+     */
+    public String delete(String name) {
+        City city = findCityByName(name);
+        
+        if (city == null) {
+            return "";
+        }
+        
+        delete(city);
+        return city.getName();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Deletes the specific city object from the DBTree.
+     * 
+     * @param city
+     * @return the city object that was deleted.
+     */
     public City delete(City city) {
         if (city == null)
             return null;
@@ -147,11 +195,9 @@ public class KDTree<T> {
             node.left = result[0];
             return new Node[] { node, result[1] };
         }
-        else {
-            Node[] result = deleteHelper(node.right, target, depth + 1);
-            node.right = result[0];
-            return new Node[] { node, result[1] };
-        }
+        Node[] result = deleteHelper(node.right, target, depth + 1);
+        node.right = result[0];
+        return new Node[] { node, result[1] };
     }
 
 
@@ -179,6 +225,82 @@ public class KDTree<T> {
         return dim == 0
             ? Integer.compare(a.getX(), b.getX())
             : Integer.compare(a.getY(), b.getY());
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Finds a city node given a set of x and y coordinates.
+     * 
+     * @param x
+     * @param y
+     * @return The city node being searched for if found
+     */
+    public City findCity(int x, int y) {
+        return findCityHelper(root, x, y);
+    }
+
+
+    /**
+     * Searches for a city with the given coordinates in the KDTree.
+     *
+     * @param x
+     *            The x-coordinate of the city.
+     * @param y
+     *            The y-coordinate of the city.
+     * @return An array with two elements:
+     *         [0] -> City object if found, or null
+     *         [1] -> Integer representing the number of nodes visited
+     */
+    private City findCityHelper(Node node, int x, int y) {
+        if (node == null) {
+            return null;
+        }
+
+        City city = node.city;
+        if (city.getX() == x && city.getY() == y) {
+            return city;
+        }
+
+        // Search left subtree
+        City leftResult = findCityHelper(node.left, x, y);
+        if (leftResult != null) {
+            return leftResult;
+        }
+
+        // Search right subtree
+        return findCityHelper(node.right, x, y);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Finds a city by its name
+     * 
+     * @param name
+     * @return the city node being searched for, if found.
+     */
+    public City findCityByName(String name) {
+        return findCityByNameHelper(root, name);
+    }
+
+
+    private City findCityByNameHelper(Node node, String name) {
+        if (node == null) {
+            return null;
+        }
+
+        City city = node.city;
+        if (city.getName().equals(name)) {
+            return city;
+        }
+
+        City leftResult = findCityByNameHelper(node.left, name);
+        if (leftResult != null) {
+            return leftResult;
+        }
+
+        return findCityByNameHelper(node.right, name);
     }
 
 }
