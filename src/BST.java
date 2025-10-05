@@ -66,18 +66,55 @@ public class BST<T extends Comparable<? super T>> {
 
 
     /**
-     * Delete a node in the BST tree
+     * Delete the maximum value of an element in a subtree
+     * 
+     * @param node
+     *            is the node that is being checked
+     * @return The node that is deleted
      */
-    public BSTNode<T> deleteHelp(BSTNode<T> node, Comparable key) {
+    private BSTNode<T> deleteMax(BSTNode<T> node) {
+        if (node.getRight() == null) {
+            return node.getLeft();
+        }
+        node.setRight(deleteMax(node.getRight()));
+        return node;
+    }
+
+
+    /**
+     * Get the maximum value element in a subtree
+     * 
+     * @param node
+     *            is the node that is being checked
+     * @return The max node in the subtree
+     */
+    private BSTNode<T> getMax(BSTNode<T> node) {
+        if (node.getRight() == null) {
+            return node;
+        }
+        return getMax(node.getRight());
+    }
+
+
+    /**
+     * Deletes a node from the BST tree
+     * 
+     * @param node
+     *            is the node that is being checked
+     * @param key
+     *            the value that is being compared to
+     * @return
+     */
+    public BSTNode<T> deleteHelp(BSTNode<T> node, Comparable<T> key) {
         if (node == null) {
             return null;
         }
 
-        if (node.getElement().compareTo(key) > 0) {
+        if (node.getElement().compareTo((T)key) > 0) {
             node.setLeft(deleteHelp(node.getLeft(), key));
         }
 
-        else if (node.getElement().compareTo(key) < 0) {
+        else if (node.getElement().compareTo((T)key) < 0) {
             node.setRight(deleteHelp(node.getRight(), key));
         }
 
@@ -88,7 +125,13 @@ public class BST<T extends Comparable<? super T>> {
             else if (node.getRight() == null) {
                 return node.getLeft();
             }
+            else {
+                BSTNode<T> temp = getMax(node.getLeft());
+                node.setElement(temp.getElement());
+                node.setRight(deleteMax(node.getLeft()));
+            }
         }
+        return node;
 
     }
 
