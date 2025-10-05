@@ -1,5 +1,3 @@
-// -------------------------------------------------------------------------
-
 import student.TestCase;
 
 /**
@@ -9,15 +7,14 @@ import student.TestCase;
  * @version Oct 1, 2025
  */
 public class BSTTest extends TestCase {
-    private BST it;
+    private BST<Integer> it;  // ✅ specify type parameter
 
     /**
      * Sets up the tests that follow.
      */
     public void setUp() {
-        it = new BST();
+        it = new BST<>();  // ✅ diamond operator (inferred as BST<Integer>)
     }
-
 
     /**
      * Test the insert method

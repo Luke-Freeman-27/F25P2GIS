@@ -105,6 +105,7 @@ public class BST<T extends Comparable<? super T>> {
      *            the value that is being compared to
      * @return
      */
+    @SuppressWarnings("unchecked")
     public BSTNode<T> deleteHelp(BSTNode<T> node, Comparable<T> key) {
         if (node == null) {
             return null;
