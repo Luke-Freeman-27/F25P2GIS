@@ -105,7 +105,6 @@ public class BST<T extends Comparable<? super T>> {
      *            the value that is being compared to
      * @return
      */
-    @SuppressWarnings("unchecked")
     public BSTNode<T> deleteHelp(BSTNode<T> node, Comparable<T> key) {
         if (node == null) {
             return null;
@@ -154,7 +153,7 @@ public class BST<T extends Comparable<? super T>> {
         inorder(node.getLeft(), sb);
 
         // Visit node
-        sb.append(node.getElement()).append(" ");
+        sb.append(((City)node.getElement()).getName()).append(" ");
 
         // Right subtree
         inorder(node.getRight(), sb);

@@ -5,7 +5,7 @@
  * @version Oct 1, 2025
  */
 
-public class City {
+public class City implements Comparable<City> {
     // ~ Fields ................................................................
     /**
      * @param Name
@@ -99,5 +99,18 @@ public class City {
      */
     public void setY(int newY) {
         y = newY;
+    }
+
+
+    /**
+     * Compares two node based on name
+     * 
+     * @param city
+     *            is another city
+     * @return Integer value if the
+     */
+    @Override
+    public int compareTo(City city) {
+        return this.name.compareTo(city.getName());
     }
 }
