@@ -2956,3 +2956,86 @@ If you want, I can also help you make a version that returns the node itself or 
 
 ChatGPT can make mistakes. Check important info.
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        inorder(root, sb);
+        return sb.toString().trim(); // remove trailing space
+    }
+
+
+    private void inorder(BSTNode<T> node, StringBuilder sb) {
+        if (node == null) {
+            return;
+        }
+
+        // Left subtree
+        inorder(node.getLeft(), sb);
+
+        // Visit node
+        sb.append(node.getElement()).append(" ");
+
+        // Right subtree
+        inorder(node.getRight(), sb);
+    } given the following, the output is this "city507c2d83 city7ba2dbfb city3f703678 cityebf00a city314ac5a1" when I want it to be the name of the city, what is wrong with this?
+ChatGPT said:
+
+Ah! I see exactly what’s happening. That output:
+
+city507c2d83 city7ba2dbfb city3f703678 cityebf00a city314ac5a1
+
+
+…is what Java prints when you append an object without overriding its toString() method properly (or if the object is a BSTNode/other wrapper and you’re appending the wrapper).
+
+Let’s break it down:
+
+1️⃣ The problem
+
+In your code:
+
+sb.append(node.getElement()).append(" ");
+
+
+node.getElement() returns a City object.
+
+If City’s toString() method is not implemented, Java defaults to Object.toString(), which prints something like:
+
+<className>@<hashcode in hex>
+
+
+That’s exactly what you’re seeing (city507c2d83, etc.).
+
+Even if you wrote a toString() in City, if getElement() returns something else (like a BSTNode wrapper or a proxy), it won’t use your City.toString().
+
+2️⃣ The solution
+
+Make sure your City class has a proper toString() method that returns the name, for example:
+
+@Override
+public String toString() {
+    return name;  // just return the city name
+}
+
+
+Then, when you do:
+
+sb.append(node.getElement()).append(" ");
+
+
+…it will append the city name instead of the hashcode string.
+
+3️⃣ Optional: safer version
+
+If you want to make sure you always append the city name, you could do:
+
+sb.append(((City)node.getElement()).getName()).append(" ");
+
+
+…but if your City.toString() is implemented properly, this is unnecessary.
+
+✅ Key takeaway:
+
+The output you saw is the default Object.toString(), not your city’s name.
+
+Fixing or implementing City.toString() to return the name will solve it.
+
+I can rewrite your toString() and inorder method so it outputs just city names in order, ready to use. Do you want me to do that?
