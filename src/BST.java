@@ -65,6 +65,34 @@ public class BST<T extends Comparable<? super T>> {
     }
 
 
+    /**
+     * Delete a node in the BST tree
+     */
+    public BSTNode<T> deleteHelp(BSTNode<T> node, Comparable key) {
+        if (node == null) {
+            return null;
+        }
+
+        if (node.getElement().compareTo(key) > 0) {
+            node.setLeft(deleteHelp(node.getLeft(), key));
+        }
+
+        else if (node.getElement().compareTo(key) < 0) {
+            node.setRight(deleteHelp(node.getRight(), key));
+        }
+
+        else {
+            if (node.getLeft() == null) {
+                return node.getRight();
+            }
+            else if (node.getRight() == null) {
+                return node.getLeft();
+            }
+        }
+
+    }
+
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

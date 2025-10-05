@@ -9,13 +9,13 @@ import student.TestCase;
  * @version Oct 1, 2025
  */
 public class BSTTest extends TestCase {
-    //private BST it;
+    private BST it;
 
     /**
      * Sets up the tests that follow.
      */
     public void setUp() {
-      //  it = new BST();
+        it = new BST();
     }
 
 
@@ -23,11 +23,11 @@ public class BSTTest extends TestCase {
      * Test the insert method
      */
     public void testInsert() {
-        //it.insert(10);
-        //it.insert(20);
-        //it.insert(30);
-        //it.insert(5);
-        //it.insert(2);
-        //assertFuzzyEquals(it.toString(), "(2, 5, 10, 20, 30)");
+        it.insert(10);
+        it.insert(20);
+        it.insert(30);
+        it.insert(5);
+        it.insert(2);
+        assertFuzzyEquals(it.toString(), "(2, 5, 10, 20, 30)");
     }
 }
