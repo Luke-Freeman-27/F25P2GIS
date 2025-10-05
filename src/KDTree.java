@@ -97,4 +97,88 @@ public class KDTree<T> {
         // Recurse on right child next
         inorder(node.right, level + 1, sb);
     }
+
+
+    public City delete(City city) {
+        if (city == null)
+            return null;
+        Node[] result = deleteHelper(root, city, 0);
+        root = result[0]; // update root
+        return result[1] != null ? result[1].city : null; // return deleted
+                                                          // city's data
+    }
+
+
+    private Node[] deleteHelper(Node node, City target, int depth) {
+        if (node == null)
+            return new Node[] { null, null };
+
+        int cd = depth % 2;
+
+        if (node.city.equals(target)) {
+            // Case 1: Node to delete found
+
+            // Case 1.1: Node has right child
+            if (node.right != null) {
+                Node min = findPreorderMin(node.right, cd, depth + 1);
+                node.city = min.city;
+                Node[] result = deleteHelper(node.right, min.city, depth + 1);
+                node.right = result[0];
+                return new Node[] { node, new Node(target, depth) };
+            }
+            // Case 1.2: No right child, but has left
+            else if (node.left != null) {
+                Node min = findPreorderMin(node.left, cd, depth + 1);
+                node.city = min.city;
+                Node[] result = deleteHelper(node.left, min.city, depth + 1);
+                node.left = result[0];
+                return new Node[] { node, new Node(target, depth) };
+            }
+            // Case 1.3: Leaf node
+            else {
+                return new Node[] { null, new Node(target, depth) };
+            }
+        }
+
+        // Recur left or right depending on dimension
+        if ((cd == 0 && target.getX() < node.city.getX()) || (cd == 1 && target
+            .getY() < node.city.getY())) {
+            Node[] result = deleteHelper(node.left, target, depth + 1);
+            node.left = result[0];
+            return new Node[] { node, result[1] };
+        }
+        else {
+            Node[] result = deleteHelper(node.right, target, depth + 1);
+            node.right = result[0];
+            return new Node[] { node, result[1] };
+        }
+    }
+
+
+    private Node findPreorderMin(Node node, int dim, int depth) {
+        if (node == null)
+            return null;
+
+        Node min = node;
+        Node leftMin = findPreorderMin(node.left, dim, depth + 1);
+        Node rightMin = findPreorderMin(node.right, dim, depth + 1);
+
+        if (leftMin != null && compareByDim(leftMin.city, min.city, dim) < 0) {
+            min = leftMin;
+        }
+        if (rightMin != null && compareByDim(rightMin.city, min.city,
+            dim) < 0) {
+            min = rightMin;
+        }
+
+        return min;
+    }
+
+
+    private int compareByDim(City a, City b, int dim) {
+        return dim == 0
+            ? Integer.compare(a.getX(), b.getX())
+            : Integer.compare(a.getY(), b.getY());
+    }
+
 }
