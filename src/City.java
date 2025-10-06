@@ -1,3 +1,5 @@
+import java.util.Comparator;
+
 /**
  * City class for the implementation of a BST tree.
  * 

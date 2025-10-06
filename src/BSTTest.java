@@ -1,4 +1,3 @@
-import java.security.PublicKey;
 import student.TestCase;
 
 /**
@@ -63,10 +62,20 @@ public class BSTTest extends TestCase {
      * Test the delete method
      */
     public void testDelete() {
-        it.insert(city1);
-        it.insert(city2);
-        it.insert(city3);
-        it.insert(city4);
-        it.insert(city5);
+        it.insert(city3);       // Los Angles
+        it.insert(city5);       // Houston
+        it.insert(city2);       // New Yokr
+        it.insert(city1);       // Washington
+        it.insert(city13);      // Jacksonville
+        it.insert(city13);
+        it.insert(city12);      // Austin
+        assertFuzzyEquals(it.toString(), "Austin Houston Jacksonville Jacksonville Los Angeles New York Washington");
+        it.delete(city1);       // Delete Washington
+        assertFuzzyEquals(it.toString(), "Austin Houston Jacksonville Jacksonville Los Angeles New York");
+        it.delete(city5);
+        assertFuzzyEquals(it.toString(), "Austin Jacksonville Jacksonville Los Angeles New York");
+        it.delete(city3);
+        assertFuzzyEquals(it.toString(), "Austin Jacksonville Jacksonville New York");
+        it.delete(city13);
     }
 }

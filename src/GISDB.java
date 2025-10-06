@@ -20,6 +20,7 @@ public class GISDB implements GIS {
     public static final int DIMENSION = 2;
     
     private KDTree<City> db;
+    private BST<City> bst;
 
     // ----------------------------------------------------------
     /**
@@ -27,6 +28,7 @@ public class GISDB implements GIS {
      */
     GISDB() {
         db = new KDTree<City>();
+        bst = new BST<City>();
     }
 
 
@@ -56,6 +58,7 @@ public class GISDB implements GIS {
         }
         City newCity = new City(name, x, y);
         db.insert(newCity);
+        bst.insert(newCity);
         return true;
     }
 
@@ -90,6 +93,7 @@ public class GISDB implements GIS {
      */
     public String delete(String name) {
         return db.delete(name);
+        
     }
 
 

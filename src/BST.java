@@ -34,7 +34,7 @@ public class BST<T extends Comparable<? super T>> {
     public void insert(T x) {
         root = insertHelper(x, root);
     }
-
+    
 
     /**
      * Inserts a new node into a BST recursively
@@ -64,6 +64,13 @@ public class BST<T extends Comparable<? super T>> {
         return node;
     }
 
+    /**
+     * 
+     * @param x
+     */
+    public void delete(T x) {
+        root = removeHelp(root, x);
+    }
 
     /**
      * Delete the maximum value of an element in a subtree
@@ -105,17 +112,17 @@ public class BST<T extends Comparable<? super T>> {
      *            the value that is being compared to
      * @return
      */
-    public BSTNode<T> deleteHelp(BSTNode<T> node, Comparable<T> key) {
+    private BSTNode<T> removeHelp(BSTNode<T> node, T x) {
         if (node == null) {
             return null;
         }
 
-        if (node.getElement().compareTo((T)key) > 0) {
-            node.setLeft(deleteHelp(node.getLeft(), key));
+        if (node.getElement().compareTo(x) > 0) {
+            node.setLeft(removeHelp(node.getLeft(), x));
         }
 
-        else if (node.getElement().compareTo((T)key) < 0) {
-            node.setRight(deleteHelp(node.getRight(), key));
+        else if (node.getElement().compareTo(x) < 0) {
+            node.setRight(removeHelp(node.getRight(), x));
         }
 
         else {
@@ -128,7 +135,7 @@ public class BST<T extends Comparable<? super T>> {
             else {
                 BSTNode<T> temp = getMax(node.getLeft());
                 node.setElement(temp.getElement());
-                node.setRight(deleteMax(node.getLeft()));
+                node.setLeft(deleteMax(node.getLeft()));
             }
         }
         return node;
