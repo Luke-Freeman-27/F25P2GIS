@@ -38,7 +38,9 @@ public class GISDB implements GIS {
      * @return True if the database has been cleared
      */
     public boolean clear() {
-        return false;
+        db.clear();
+        bst.clear();
+        return true;
     }
 
     // ----------------------------------------------------------
@@ -76,6 +78,7 @@ public class GISDB implements GIS {
      *           deletion process, followed by the name of the city.
      */
     public String delete(int x, int y) {
+        bst.deleteCoords(x, y);
         return db.delete(x, y);
     }
 
@@ -92,6 +95,7 @@ public class GISDB implements GIS {
      *          (listed in preorder as they are deleted).
      */
     public String delete(String name) {
+        bst.deleteName(name);
         return db.delete(name);
         
     }

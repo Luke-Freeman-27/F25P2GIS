@@ -64,18 +64,17 @@ public class BSTTest extends TestCase {
     public void testDelete() {
         it.insert(city3);       // Los Angles
         it.insert(city5);       // Houston
-        it.insert(city2);       // New Yokr
+        it.insert(city2);       // New York
         it.insert(city1);       // Washington
         it.insert(city13);      // Jacksonville
-        it.insert(city13);
+        it.insert(city13);      // Jacksonville twice
         it.insert(city12);      // Austin
         assertFuzzyEquals(it.toString(), "Austin Houston Jacksonville Jacksonville Los Angeles New York Washington");
-        it.delete(city1);       // Delete Washington
+        it.deleteName("Washington");
         assertFuzzyEquals(it.toString(), "Austin Houston Jacksonville Jacksonville Los Angeles New York");
-        it.delete(city5);
-        assertFuzzyEquals(it.toString(), "Austin Jacksonville Jacksonville Los Angeles New York");
-        it.delete(city3);
-        assertFuzzyEquals(it.toString(), "Austin Jacksonville Jacksonville New York");
-        it.delete(city13);
+        it.deleteName("Austin");
+        assertFuzzyEquals(it.toString(), "Houston Jacksonville Jacksonville Los Angeles New York");
+        it.deleteName("Jacksonville");
+        assertFuzzyEquals(it.toString(), "Houston Jacksonville Los Angeles New York");
     }
 }

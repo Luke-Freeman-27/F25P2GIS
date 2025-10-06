@@ -1,4 +1,3 @@
-import java.util.Comparator;
 
 /**
  * City class for the implementation of a BST tree.
@@ -114,5 +113,37 @@ public class City implements Comparable<City> {
     @Override
     public int compareTo(City city) {
         return this.name.compareTo(city.getName());
+    }
+
+
+    /**
+     * Will be in the format of "name (x, y)"
+     * 
+     * @return the toString of a city type
+     */
+    @Override
+    public String toString() {
+        return String.format("%s ($d, %d)", name, x, y);
+    }
+
+
+    /**
+     * Overrides the equal method
+     * 
+     * @param obj
+     *            is the object that is being compared to the current object
+     * @return true/false if the city is equal or not
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) { // If comparing itself
+            return true;
+        }
+        if (!(obj instanceof City)) { // If the object is a City object
+            return false;
+        }
+        City otherCity = (City)obj; // If the values of the city are the same
+        return this.name.equals(otherCity.getName()) && this.x == otherCity
+            .getX() && this.y == otherCity.getY();
     }
 }

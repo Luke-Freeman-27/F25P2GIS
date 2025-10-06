@@ -3039,3 +3039,430 @@ The output you saw is the default Object.toString(), not your city’s name.
 Fixing or implementing City.toString() to return the name will solve it.
 
 I can rewrite your toString() and inorder method so it outputs just city names in order, ready to use. Do you want me to do that?
+
+Given this, how should the BST be set up to delete a city based on a name or an x,y coordinate: To search for city records that match a given name you will use a Binary Search Tree (BST).
+You may use the code from OpenDSA (Module 7.11) to help you write your BST, though it will
+require a fair amount of revision to satisfy the needs of this project. You may use BST code that
+you have previously written, such as for another course — but make sure that it generates the same
+tree as the code in Module 7.11 would (or you won’t pass the reference tests). Note that your BST
+must insert equal values to the left. On deletion, if the deleted node has two non-null children,
+then it is replaced by the node with maximum value from the left subtree.
+To support searches by 2D locations, you will use a kd tree. A binary search tree gives expected
+O(log n) performance for insert, delete, and search operations (if you ignore the possibility that
+it is unbalanced). While this allows you to quickly insert and delete records, and quickly locate
+them by key value or within a key range, the BST does not help when doing a two-dimensional
+coordinate search. You could combine the (x, y) coordinates into a single key and store cities using
+this key in a second BST. That would allow search by coordinate, but would not allow for efficient
+range queries – searching for cities within a given distance of a point. The problem is that the
+BST only works well for one-dimensional keys, while our coordinates are two-dimensional keys.
+The kd tree (see Module 15.5 of OpenDSA) is one of many hierarchical data structures
+commonly used to store spatial data such as 2D locations. It allows for efficient insertion, deletion
+based on 2D coordinates (these operations cost O(log n) time, similar to a BST). They also allow
+for efficient region search queries, as explained in Module 15.5. You may use the code sketches
+given in OpenDSA to help you write your kd tree implementation. Your main design concern for this project will be how to implement the BST and kd tree to
+work together. You probably will want to create a City class to store the data for a city record (and
+to support methods like toString and equals). There is no reason for the BST to understand
+City records (you can use Java generics to handle processing the records). However, your kd tree
+implementation is free to use City records directly if you like (this would make coordinate processing
+easier).
+Your BST and kd tree design must meet the following requirements.
+1. No BST or kd tree node may store a pointer to its parent.
+2. Kd tree nodes may not store position, size, or depth information (aside from what is in
+their City record). If you need anything like that, it should be passed into the method as a
+parameter.
+ChatGPT said:
+
+Excellent — this is exactly the kind of specification that separates a generic data structure implementation from a domain-specific application (in your case, the City database).
+
+Let’s unpack what your project is requiring — and then I’ll show you how to set up the BST and kd-tree so they work together correctly and still meet the spec.
+
+🧩 What the spec says (in plain English)
+Concept	Meaning
+BST	Used for searching, inserting, and deleting by city name (a 1D key).
+kd-tree	Used for searching, inserting, and deleting by (x, y) coordinates (a 2D key).
+City class	Holds data like name, coordinates, and any other attributes.
+Separation of concerns	The BST should not depend on City fields — it must stay generic. The kd-tree, on the other hand, may directly use City fields.
+Parent pointers disallowed	Your nodes cannot have a parent field. All recursion must pass the parent context via parameters.
+Insertion rule	Duplicates go to the left (like OpenDSA Module 7.11).
+Deletion rule	When deleting a node with two children, replace it with the maximum node from the left subtree (OpenDSA convention).
+🏙️ 1. City class (shared data type)
+
+The City class acts as the record stored in both your BST and kd-tree:
+
+public class City implements Comparable<City> {
+    private String name;
+    private int x;
+    private int y;
+
+    public City(String name, int x, int y) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+    }
+
+    public String getName() { return name; }
+    public int getX() { return x; }
+    public int getY() { return y; }
+
+    @Override
+    public int compareTo(City other) {
+        // Compare by name for BST ordering
+        return this.name.compareTo(other.name);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%d, %d)", name, x, y);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof City)) return false;
+        City other = (City) obj;
+        return this.name.equals(other.name) && this.x == other.x && this.y == other.y;
+    }
+}
+
+ on this line cast it such that obj is a city type to use the getter and setter methods: return this.name.equals(other.name) && this.x == other.x && this.y == other.y;
+ChatGPT said:
+
+Perfect — you're referring to the equals() method, likely inside your City class.
+
+If your equals() method currently looks like this:
+
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+        return false;
+    }
+    City other = (City) obj;
+    return this.name.equals(other.name) && this.x == other.x && this.y == other.y;
+}
+
+
+✅ Explanation of the cast:
+
+The parameter obj is of type Object (because you’re overriding Object.equals).
+
+To access other.name, other.x, and other.y, you need to cast obj to a City — that’s what (City) obj does.
+
+After casting, you can safely use the getters/setters or direct fields.
+
+If your fields are private and you want to use getters instead, do this:
+
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+        return false;
+    }
+    City other = (City) obj;
+    return this.getName().equals(other.getName())
+        && this.getX() == other.getX()
+        && this.getY() == other.getY();
+}
+
+
+💡 Summary:
+👉 The key line is:
+
+City other = (City) obj;  // Cast so you can call City methods and fields
+
+Given this, how should the BST be set up to delete a city based on a name or an x,y coordinate: To search for city records that match a given name you will use a Binary Search Tree (BST).
+You may use the code from OpenDSA (Module 7.11) to help you write your BST, though it will
+require a fair amount of revision to satisfy the needs of this project. You may use BST code that
+you have previously written, such as for another course — but make sure that it generates the same
+tree as the code in Module 7.11 would (or you won’t pass the reference tests). Note that your BST
+must insert equal values to the left. On deletion, if the deleted node has two non-null children,
+then it is replaced by the node with maximum value from the left subtree.
+To support searches by 2D locations, you will use a kd tree. A binary search tree gives expected
+O(log n) performance for insert, delete, and search operations (if you ignore the possibility that
+it is unbalanced). While this allows you to quickly insert and delete records, and quickly locate
+them by key value or within a key range, the BST does not help when doing a two-dimensional
+coordinate search. You could combine the (x, y) coordinates into a single key and store cities using
+this key in a second BST. That would allow search by coordinate, but would not allow for efficient
+range queries – searching for cities within a given distance of a point. The problem is that the
+BST only works well for one-dimensional keys, while our coordinates are two-dimensional keys.
+The kd tree (see Module 15.5 of OpenDSA) is one of many hierarchical data structures
+commonly used to store spatial data such as 2D locations. It allows for efficient insertion, deletion
+based on 2D coordinates (these operations cost O(log n) time, similar to a BST). They also allow
+for efficient region search queries, as explained in Module 15.5. You may use the code sketches
+given in OpenDSA to help you write your kd tree implementation. Your main design concern for this project will be how to implement the BST and kd tree to
+work together. You probably will want to create a City class to store the data for a city record (and
+to support methods like toString and equals). There is no reason for the BST to understand
+City records (you can use Java generics to handle processing the records). However, your kd tree
+implementation is free to use City records directly if you like (this would make coordinate processing
+easier).
+Your BST and kd tree design must meet the following requirements.
+1. No BST or kd tree node may store a pointer to its parent.
+2. Kd tree nodes may not store position, size, or depth information (aside from what is in
+their City record). If you need anything like that, it should be passed into the method as a
+parameter.
+ChatGPT said:
+
+Excellent — this is exactly the kind of specification that separates a generic data structure implementation from a domain-specific application (in your case, the City database).
+
+Let’s unpack what your project is requiring — and then I’ll show you how to set up the BST and kd-tree so they work together correctly and still meet the spec.
+
+🧩 What the spec says (in plain English)
+Concept	Meaning
+BST	Used for searching, inserting, and deleting by city name (a 1D key).
+kd-tree	Used for searching, inserting, and deleting by (x, y) coordinates (a 2D key).
+City class	Holds data like name, coordinates, and any other attributes.
+Separation of concerns	The BST should not depend on City fields — it must stay generic. The kd-tree, on the other hand, may directly use City fields.
+Parent pointers disallowed	Your nodes cannot have a parent field. All recursion must pass the parent context via parameters.
+Insertion rule	Duplicates go to the left (like OpenDSA Module 7.11).
+Deletion rule	When deleting a node with two children, replace it with the maximum node from the left subtree (OpenDSA convention).
+🏙️ 1. City class (shared data type)
+
+The City class acts as the record stored in both your BST and kd-tree:
+
+public class City implements Comparable<City> {
+    private String name;
+    private int x;
+    private int y;
+
+    public City(String name, int x, int y) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+    }
+
+    public String getName() { return name; }
+    public int getX() { return x; }
+    public int getY() { return y; }
+
+    @Override
+    public int compareTo(City other) {
+        // Compare by name for BST ordering
+        return this.name.compareTo(other.name);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%d, %d)", name, x, y);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof City)) return false;
+        City other = (City) obj;
+        return this.name.equals(other.name) && this.x == other.x && this.y == other.y;
+    }
+}
+
+
+✅ This lets you use City as the generic type for your BST and kd-tree.
+
+🌳 2. Generic BST (for deleting by name)
+
+This BST must:
+
+Stay generic (use T extends Comparable<T>).
+
+Work exactly like OpenDSA’s Module 7.11 BST.
+
+Delete based on natural ordering (compareTo), which in this case will be by name for City.
+
+Here’s a conforming version:
+
+public class BST<T extends Comparable<T>> {
+    private BSTNode<T> root;
+
+    private static class BSTNode<E> {
+        private E element;
+        private BSTNode<E> left, right;
+
+        public BSTNode(E element) {
+            this.element = element;
+        }
+    }
+
+    // Inserts element, duplicates go LEFT
+    public void insert(T element) {
+        root = insertHelp(root, element);
+    }
+
+    private BSTNode<T> insertHelp(BSTNode<T> node, T element) {
+        if (node == null)
+            return new BSTNode<>(element);
+
+        int cmp = element.compareTo(node.element);
+
+        if (cmp <= 0) // equal goes left
+            node.left = insertHelp(node.left, element);
+        else
+            node.right = insertHelp(node.right, element);
+
+        return node;
+    }
+
+    // Deletes node by value (name in City)
+    public void delete(T target) {
+        root = removeHelp(root, target);
+    }
+
+    private BSTNode<T> removeHelp(BSTNode<T> node, T target) {
+        if (node == null)
+            return null;
+
+        int cmp = target.compareTo(node.element);
+
+        if (cmp < 0)
+            node.left = removeHelp(node.left, target);
+        else if (cmp > 0)
+            node.right = removeHelp(node.right, target);
+        else {
+            // Found node to delete
+            if (node.left == null)
+                return node.right;
+            else if (node.right == null)
+                return node.left;
+            else {
+                BSTNode<T> temp = getMax(node.left);
+                node.element = temp.element;
+                node.left = deleteMax(node.left);
+            }
+        }
+        return node;
+    }
+
+    private BSTNode<T> deleteMax(BSTNode<T> node) {
+        if (node.right == null)
+            return node.left;
+        node.right = deleteMax(node.right);
+        return node;
+    }
+
+    private BSTNode<T> getMax(BSTNode<T> node) {
+        if (node.right == null)
+            return node;
+        return getMax(node.right);
+    }
+}
+
+
+✅ This BST fully meets the assignment specs:
+
+Duplicates go left.
+
+No parent pointers.
+
+Replace deleted node with max from left.
+
+Remains generic — it doesn’t “know” what a City is.
+
+Fix this, I want the parameters to stay the same:     /**
+     * Deletes a node from the BST tree
+     * 
+     * @param node
+     *            is the node that is being checked
+     * @param key
+     *            the value that is being compared to
+     * @return
+     */
+    private BSTNode<T> removeHelp(BSTNode<T> node, String name) {
+        if (node == null) {
+            return null;
+        }
+
+        City otherCity = new City(name, 0, 0); 
+        
+        if (otherCity.compareTo(otherCity) > 0) {
+            node.setLeft(removeHelp(node.getLeft(), name));
+        }
+
+        else if (otherCity.compareTo(otherCity) < 0) {
+            node.setRight(removeHelp(node.getRight(), name));
+        }
+
+        else {
+            if (node.getLeft() == null) {
+                return node.getRight();
+            }
+            else if (node.getRight() == null) {
+                return node.getLeft();
+            }
+            else {
+                BSTNode<T> temp = getMax(node.getLeft());
+                node.setElement(temp.getElement());
+                node.setLeft(deleteMax(node.getLeft()));
+            }
+        }
+        return node;
+
+    }
+ChatGPT said:
+
+Perfect — you’re very close here. 👍
+You just need to make two key fixes:
+
+You’re currently comparing otherCity to itself (otherCity.compareTo(otherCity)), which always returns 0.
+Instead, you need to compare otherCity to the city stored in the node.
+That means casting node.getElement() to City.
+
+Since the method is still generic (T), we need to cast the element safely before using City’s methods.
+
+Here’s the corrected version 👇
+
+✅ Fixed removeHelp method
+/**
+ * Deletes a node from the BST tree
+ * 
+ * @param node
+ *            the node that is being checked
+ * @param name
+ *            the name of the city to be deleted
+ * @return the updated subtree after deletion
+ */
+private BSTNode<T> removeHelp(BSTNode<T> node, String name) {
+    if (node == null) {
+        return null;
+    }
+
+    // Cast current node element to City to access its name
+    City currentCity = (City) node.getElement();
+    City otherCity = new City(name, 0, 0); // temporary key for comparison
+
+    // Compare based on city name
+    if (currentCity.getName().compareToIgnoreCase(otherCity.getName()) > 0) {
+        node.setLeft(removeHelp(node.getLeft(), name));
+    }
+    else if (currentCity.getName().compareToIgnoreCase(otherCity.getName()) < 0) {
+        node.setRight(removeHelp(node.getRight(), name));
+    }
+    else {
+        // Found the city to delete
+        if (node.getLeft() == null) {
+            return node.getRight();
+        }
+        else if (node.getRight() == null) {
+            return node.getLeft();
+        }
+        else {
+            // Replace with max from left subtree
+            BSTNode<T> temp = getMax(node.getLeft());
+            node.setElement(temp.getElement());
+            node.setLeft(deleteMax(node.getLeft()));
+        }
+    }
+
+    return node;
+}
+
+💡 Key Points
+
+City currentCity = (City) node.getElement();
+→ allows the generic BST to work even when T is not explicitly City, as long as you’re using it with City objects at runtime.
+
+compareToIgnoreCase()
+→ avoids case sensitivity issues (optional but usually desirable).
+
+You didn’t have to change the method parameters — it still takes (BSTNode<T> node, String name).
+
+Would you like me to show the matching deleteName(String name) method too (so it calls this helper properly)?

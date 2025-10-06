@@ -302,5 +302,12 @@ public class KDTree<T> {
 
         return findCityByNameHelper(node.right, name);
     }
+    
+    /**
+     * Clear method, restarts the tree
+     */
+    public void clear() {
+        root = null;
+    }
 
 }

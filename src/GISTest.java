@@ -78,6 +78,34 @@ public class GISTest extends TestCase {
         assertFuzzyEquals("", it.search(-1, -1, -1));
     }
 
+
+    /**
+     * Test the clear method
+     */
+    public void testClear() {
+        assertTrue(it.insert("Los Angeles", 11, 12));
+        assertTrue(it.insert("Baton Rouge", 20, 30));
+        assertTrue(it.insert("Denver", 34, 45));
+        assertTrue(it.insert("New York", 24, 35));
+        assertTrue(it.insert("Summerville", 54, 63));
+        assertTrue(it.clear());
+    }
+
+
+    /**
+     * Test the delete method
+     */
+    public void testDeleteName() {
+        assertTrue(it.insert("Los Angeles", 11, 12));
+        assertTrue(it.insert("Baton Rouge", 20, 30));
+        assertTrue(it.insert("Denver", 34, 45));
+        assertTrue(it.insert("New York", 24, 35));
+        assertTrue(it.insert("Summerville", 54, 63));
+        assertFuzzyEquals("Summerville", it.delete("Summerville"));
+        assertFuzzyEquals("Denver", it.delete("Denver"));
+        assertFuzzyEquals("Los Angeles", it.delete("Los Angeles"));
+    }
+
 // /**
 // * Insert some records and check output requirements for various commands
 // * @throws IOException

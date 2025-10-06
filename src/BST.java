@@ -28,49 +28,160 @@ public class BST<T extends Comparable<? super T>> {
     /**
      * Inserts a new node into a BST with a helper method
      * 
-     * @param x
+     * @param obj
      *            is the new value added to the BST
      */
-    public void insert(T x) {
-        root = insertHelper(x, root);
+    public void insert(T obj) {
+        root = insertHelper(root, obj);
     }
-    
+
 
     /**
      * Inserts a new node into a BST recursively
      * 
-     * @param x
-     *            is the new value added to the BST
      * @param node
      *            is the node we are comparing the value to
+     * @param obj
+     *            is the new value added to the BST
      * @return node that the value was added to
      */
-    private BSTNode<T> insertHelper(T x, BSTNode<T> node) {
+    private BSTNode<T> insertHelper(BSTNode<T> node, T obj) {
         // If node is empty, make a new node
         if (node == null) {
-            return new BSTNode<T>(x);
+            return new BSTNode<T>(obj);
         }
 
         // If x is less than the current node value, set node to the left
-        else if (x.compareTo(node.getElement()) <= 0) {
-            node.setLeft(insertHelper(x, node.getLeft()));
+        else if (obj.compareTo(node.getElement()) <= 0) {
+            node.setLeft(insertHelper(node.getLeft(), obj));
         }
 
         // If x is greater than the current node value, set node to the right
         else {
-            node.setRight(insertHelper(x, node.getRight()));
+            node.setRight(insertHelper(node.getRight(), obj));
         }
 
         return node;
     }
 
+
     /**
+     * Deletes a node from BST based on the name
+     * 
+     * @param name
+     *            is the given name of the node that is to be deleted
+     */
+    public BSTNode<T> deleteName(String name) {
+        return deleteNameHelp(root, name);
+    }
+
+
+    /**
+     * Deletes a node form the BST based on the coordinates
      * 
      * @param x
+     *            is the x coordinate of the node
+     * @param y
+     *            is the y coordinate of the node
      */
-    public void delete(T x) {
-        root = removeHelp(root, x);
+    public BSTNode<T> deleteCoords(int x, int y) {
+        return deleteCoordsHelp(root, x, y);
     }
+
+
+    /**
+     * Deletes a node from the BST tree
+     * 
+     * @param node
+     *            is the node that is being checked
+     * @param name
+     *            the string that is being compared to
+     * @return
+     */
+    private BSTNode<T> deleteNameHelp(BSTNode<T> node, String name) {
+        if (node == null) {
+            return null;
+        }
+
+        // Cast current node element to City to access its name
+        City currentCity = (City)node.getElement();
+        City otherCity = new City(name, 0, 0); // temporary key for comparison
+
+        if (currentCity.getName().compareToIgnoreCase(otherCity
+            .getName()) > 0) {
+            node.setLeft(deleteNameHelp(node.getLeft(), name));
+        }
+
+        else if (currentCity.getName().compareToIgnoreCase(otherCity
+            .getName()) < 0) {
+            node.setRight(deleteNameHelp(node.getRight(), name));
+        }
+
+        else {
+            if (node.getLeft() == null) {
+                return node.getRight();
+            }
+            else if (node.getRight() == null) {
+                return node.getLeft();
+            }
+            else {
+                BSTNode<T> temp = getMax(node.getLeft());
+                node.setElement(temp.getElement());
+                node.setLeft(deleteMax(node.getLeft()));
+            }
+        }
+        return node;
+
+    }
+
+
+    /**
+     * Deletes a node from the BST tree
+     * 
+     * @param node
+     *            is the node that is being checked
+     * @param x
+     *            the x coordinate of the given node
+     * @param y
+     *            the y coordinate of the given node
+     * @return
+     */
+    private BSTNode<T> deleteCoordsHelp(BSTNode<T> node, int x, int y) {
+        if (node == null) {
+            return null;
+        }
+
+        // Cast current node element to City to access its name
+        City currentCity = (City)node.getElement();
+        City otherCity = new City("", x, y); // temporary key for comparison
+
+        if (currentCity.getName().compareToIgnoreCase(otherCity
+            .getName()) > 0) {
+            node.setLeft(deleteCoordsHelp(node.getLeft(), x, y));
+        }
+
+        else if (currentCity.getName().compareToIgnoreCase(otherCity
+            .getName()) < 0) {
+            node.setRight(deleteCoordsHelp(node.getRight(), x, y));
+        }
+
+        else {
+            if (node.getLeft() == null) {
+                return node.getRight();
+            }
+            else if (node.getRight() == null) {
+                return node.getLeft();
+            }
+            else {
+                BSTNode<T> temp = getMax(node.getLeft());
+                node.setElement(temp.getElement());
+                node.setLeft(deleteMax(node.getLeft()));
+            }
+        }
+        return node;
+
+    }
+
 
     /**
      * Delete the maximum value of an element in a subtree
@@ -104,42 +215,10 @@ public class BST<T extends Comparable<? super T>> {
 
 
     /**
-     * Deletes a node from the BST tree
-     * 
-     * @param node
-     *            is the node that is being checked
-     * @param key
-     *            the value that is being compared to
-     * @return
+     * Clear method, restarts the tree
      */
-    private BSTNode<T> removeHelp(BSTNode<T> node, T x) {
-        if (node == null) {
-            return null;
-        }
-
-        if (node.getElement().compareTo(x) > 0) {
-            node.setLeft(removeHelp(node.getLeft(), x));
-        }
-
-        else if (node.getElement().compareTo(x) < 0) {
-            node.setRight(removeHelp(node.getRight(), x));
-        }
-
-        else {
-            if (node.getLeft() == null) {
-                return node.getRight();
-            }
-            else if (node.getRight() == null) {
-                return node.getLeft();
-            }
-            else {
-                BSTNode<T> temp = getMax(node.getLeft());
-                node.setElement(temp.getElement());
-                node.setLeft(deleteMax(node.getLeft()));
-            }
-        }
-        return node;
-
+    public void clear() {
+        root = null;
     }
 
 
