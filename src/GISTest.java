@@ -104,6 +104,24 @@ public class GISTest extends TestCase {
         assertFuzzyEquals("Summerville", it.delete("Summerville"));
         assertFuzzyEquals("Denver", it.delete("Denver"));
         assertFuzzyEquals("Los Angeles", it.delete("Los Angeles"));
+        assertFuzzyEquals("Baton Rouge", it.delete("Baton Rouge"));
+        assertFuzzyEquals("New York", it.delete("New York"));
+    }
+    
+    /**
+     * Test the delete method
+     */
+    public void testDeleteCoords() {
+        assertTrue(it.insert("Los Angeles", 11, 12));
+        assertTrue(it.insert("Baton Rouge", 20, 30));
+        assertTrue(it.insert("Denver", 34, 45));
+        assertTrue(it.insert("New York", 24, 35));
+        assertTrue(it.insert("Summerville", 54, 63));
+        assertFuzzyEquals("54 63 Summerville", it.delete(54, 63));
+        assertFuzzyEquals("34 45 Denver", it.delete(34, 45));
+        assertFuzzyEquals("11 12 Los Angeles", it.delete(11, 12));
+        assertFuzzyEquals("20 30 Baton Rouge", it.delete(20, 30));
+        assertFuzzyEquals("24 35 New York", it.delete(24, 35));
     }
 
 // /**

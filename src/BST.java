@@ -147,39 +147,28 @@ public class BST<T extends Comparable<? super T>> {
      * @return
      */
     private BSTNode<T> deleteCoordsHelp(BSTNode<T> node, int x, int y) {
-        if (node == null) {
-            return null;
-        }
+        if (node == null) return null;
 
-        // Cast current node element to City to access its name
-        City currentCity = (City)node.getElement();
-        City otherCity = new City("", x, y); // temporary key for comparison
+        City currentCity = (City) node.getElement();
 
-        if (currentCity.getName().compareToIgnoreCase(otherCity
-            .getName()) > 0) {
+        // Compare by coordinates
+        if (x < currentCity.getX() || (x == currentCity.getX() && y < currentCity.getY())) {
             node.setLeft(deleteCoordsHelp(node.getLeft(), x, y));
-        }
-
-        else if (currentCity.getName().compareToIgnoreCase(otherCity
-            .getName()) < 0) {
+        } 
+        else if (x > currentCity.getX() || (x == currentCity.getX() && y > currentCity.getY())) {
             node.setRight(deleteCoordsHelp(node.getRight(), x, y));
-        }
-
+        } 
         else {
-            if (node.getLeft() == null) {
-                return node.getRight();
-            }
-            else if (node.getRight() == null) {
-                return node.getLeft();
-            }
-            else {
-                BSTNode<T> temp = getMax(node.getLeft());
-                node.setElement(temp.getElement());
-                node.setLeft(deleteMax(node.getLeft()));
-            }
-        }
-        return node;
+            // Found the node to delete
+            if (node.getLeft() == null) return node.getRight();
+            if (node.getRight() == null) return node.getLeft();
 
+            BSTNode<T> temp = getMax(node.getLeft());
+            node.setElement(temp.getElement());
+            node.setLeft(deleteMax(node.getLeft()));
+        }
+
+        return node;
     }
 
 

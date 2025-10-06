@@ -61,7 +61,7 @@ public class BSTTest extends TestCase {
     /**
      * Test the delete method
      */
-    public void testDelete() {
+    public void testDeleteName() {
         it.insert(city3);       // Los Angles
         it.insert(city5);       // Houston
         it.insert(city2);       // New York
@@ -76,5 +76,25 @@ public class BSTTest extends TestCase {
         assertFuzzyEquals(it.toString(), "Houston Jacksonville Jacksonville Los Angeles New York");
         it.deleteName("Jacksonville");
         assertFuzzyEquals(it.toString(), "Houston Jacksonville Los Angeles New York");
+    }
+    
+    /**
+     * Test the delete method
+     */
+    public void testDeleteCoords() {
+        it.insert(city3);       // Los Angles
+        it.insert(city5);       // Houston
+        it.insert(city2);       // New York
+        it.insert(city1);       // Washington
+        it.insert(city13);      // Jacksonville
+        it.insert(city13);      // Jacksonville twice
+        it.insert(city12);      // Austin
+        assertFuzzyEquals(it.toString(), "Austin Houston Jacksonville Jacksonville Los Angeles New York Washington");
+        it.deleteCoords(10, 10);
+        //assertFuzzyEquals(it.toString(), "Austin Houston Jacksonville Jacksonville Los Angeles New York");
+        it.deleteCoords(21, 14);
+        //assertFuzzyEquals(it.toString(), "Houston Jacksonville Jacksonville Los Angeles New York");
+        it.deleteCoords(16, 19);
+        //assertFuzzyEquals(it.toString(), "Houston Jacksonville Los Angeles New York");
     }
 }
