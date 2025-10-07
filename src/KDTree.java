@@ -136,7 +136,7 @@ public class KDTree<T> {
         }
         
         delete(city);
-        return city.getName();
+        return city.getX() + " " + city.getY();
     }
 
 

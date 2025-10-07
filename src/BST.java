@@ -75,20 +75,6 @@ public class BST<T extends Comparable<? super T>> {
         return deleteNameHelp(root, name);
     }
 
-
-    /**
-     * Deletes a node form the BST based on the coordinates
-     * 
-     * @param x
-     *            is the x coordinate of the node
-     * @param y
-     *            is the y coordinate of the node
-     */
-    public BSTNode<T> deleteCoords(int x, int y) {
-        return deleteCoordsHelp(root, x, y);
-    }
-
-
     /**
      * Deletes a node from the BST tree
      * 
@@ -133,44 +119,6 @@ public class BST<T extends Comparable<? super T>> {
         return node;
 
     }
-
-
-    /**
-     * Deletes a node from the BST tree
-     * 
-     * @param node
-     *            is the node that is being checked
-     * @param x
-     *            the x coordinate of the given node
-     * @param y
-     *            the y coordinate of the given node
-     * @return
-     */
-    private BSTNode<T> deleteCoordsHelp(BSTNode<T> node, int x, int y) {
-        if (node == null) return null;
-
-        City currentCity = (City) node.getElement();
-
-        // Compare by coordinates
-        if (x < currentCity.getX() || (x == currentCity.getX() && y < currentCity.getY())) {
-            node.setLeft(deleteCoordsHelp(node.getLeft(), x, y));
-        } 
-        else if (x > currentCity.getX() || (x == currentCity.getX() && y > currentCity.getY())) {
-            node.setRight(deleteCoordsHelp(node.getRight(), x, y));
-        } 
-        else {
-            // Found the node to delete
-            if (node.getLeft() == null) return node.getRight();
-            if (node.getRight() == null) return node.getLeft();
-
-            BSTNode<T> temp = getMax(node.getLeft());
-            node.setElement(temp.getElement());
-            node.setLeft(deleteMax(node.getLeft()));
-        }
-
-        return node;
-    }
-
 
     /**
      * Delete the maximum value of an element in a subtree

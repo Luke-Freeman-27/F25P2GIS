@@ -78,7 +78,6 @@ public class GISDB implements GIS {
      *           deletion process, followed by the name of the city.
      */
     public String delete(int x, int y) {
-        bst.deleteCoords(x, y);
         return db.delete(x, y);
     }
 
