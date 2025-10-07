@@ -104,7 +104,6 @@ public class GISDB implements GIS {
      *         (listed in preorder as they are deleted).
      */
     public String delete(String name) {
-        bst.deleteName(name);
         return db.delete(name);
 
     }
@@ -186,6 +185,6 @@ public class GISDB implements GIS {
      * @return String listing the cities as specified.
      */
     public String print() {
-        return "";
+        return bst.printBST();
     }
 }

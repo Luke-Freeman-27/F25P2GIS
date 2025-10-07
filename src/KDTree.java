@@ -117,7 +117,7 @@ public class KDTree<T> {
         }
 
         delete(result.city);
-        return result.count + " " + result.city.getName();
+        return result.count + "\n" + result.city.getName();
     }
 
 

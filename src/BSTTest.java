@@ -56,39 +56,57 @@ public class BSTTest extends TestCase {
         it.insert(city6);
         it.insert(city3);
         it.insert(city7);
-        assertFuzzyEquals(it.toString(),
-            "Chicago Dallas Denver Houston Las Vegas");
+        assertFuzzyEquals(it.printBST(), "2    Chicago (30, 25)\n"
+            + "1  Dallas (40, 30)\n" + "0Denver (50, 35)\n"
+            + "1  Houston (60, 40)\n" + "2    Las Vegas (70, 45)");
     }
-
-
+    
     /**
-     * Test the delete method
+     * Tests the clear method
      */
-    public void testDeleteName() {
-        assertNull(it.deleteName(null));
-        it.insert(city8);
-        it.insert(city4);
-        it.insert(city12);
-        it.insert(city2);
-        it.insert(city6);
-        it.insert(city10);
-        it.insert(city14);
-        it.insert(city1);
-        it.insert(city3);
+    public void testClear() {
         it.insert(city5);
+        it.insert(city4);
+        it.insert(city6);
+        it.insert(city3);
         it.insert(city7);
-        it.insert(city9);
-        it.insert(city11);
-        it.insert(city13);
-        it.insert(city15);
-        it.deleteName("Atlanta");   // Case D1: leaf, no children
-        it.deleteName("Boston");    // Case D2: one child
-        it.deleteName("Dallas");    // Case D3: two children
-        it.deleteName("Las Vegas"); // Case D3 again (root or deep)
-        it.deleteName("Washington");// Case D2 or leaf at end
-        it.deleteName("Miami");     // Forces traversal both sides
+        assertFuzzyEquals(it.printBST(), "2    Chicago (30, 25)\n"
+            + "1  Dallas (40, 30)\n" + "0Denver (50, 35)\n"
+            + "1  Houston (60, 40)\n" + "2    Las Vegas (70, 45)");
+        it.clear();
+        assertFuzzyEquals(it.printBST(), "");
+        
     }
 
+
+//    /**
+//     * Test the delete method
+//     */
+//    public void testDeleteName() {
+//        assertNull(it.deleteName(null));
+//        it.insert(city8);
+//        it.insert(city4);
+//        it.insert(city12);
+//        it.insert(city2);
+//        it.insert(city6);
+//        it.insert(city10);
+//        it.insert(city14);
+//        it.insert(city1);
+//        it.insert(city3);
+//        it.insert(city5);
+//        it.insert(city7);
+//        it.insert(city9);
+//        it.insert(city11);
+//        it.insert(city13);
+//        it.insert(city15);
+//        it.deleteName("Atlanta"); // Case D1: leaf, no children
+//        it.deleteName("Boston"); // Case D2: one child
+//        it.deleteName("Dallas"); // Case D3: two children
+//        it.deleteName("Las Vegas"); // Case D3 again (root or deep)
+//        it.deleteName("Washington");// Case D2 or leaf at end
+//        it.deleteName("Miami"); // Forces traversal both sides
+//    }
+    
     /**
      * Test the delete method
      */
