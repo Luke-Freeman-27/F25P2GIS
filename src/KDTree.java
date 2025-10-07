@@ -111,32 +111,33 @@ public class KDTree<T> {
      *         - If not found: "No city found at (x, y)"
      */
     public String delete(int x, int y) {
-        City city = findCity(x, y);
-
-        if (city == null) {
+        FindResult result = findCity(x, y);
+        if (result.city == null) {
             return "";
         }
 
-        delete(city);
-        return city.getX() + " " + city.getY() + " " + city.getName();
+        delete(result.city);
+        return result.count + " " + result.city.getName();
     }
 
 
     // ----------------------------------------------------------
     /**
      * Deletes the city with the given name from the KDTree
-     * @param name - name of string to delete
+     * 
+     * @param name
+     *            - name of string to delete
      * @return the node if it has been deleted successfully
      */
     public String delete(String name) {
         City city = findCityByName(name);
-        
+
         if (city == null) {
             return "";
         }
-        
+
         delete(city);
-        return city.getX() + " " + city.getY();
+        return city.getName() + " " + city.getX() + " " + city.getY();
     }
 
 
@@ -163,7 +164,7 @@ public class KDTree<T> {
 
         int cd = depth % 2;
 
-        if (node.city.equals(target)) {
+        if (node.city != null && node.city.equals(target)) {
             // Case 1: Node to delete found
 
             // Case 1.1: Node has right child
@@ -227,49 +228,41 @@ public class KDTree<T> {
             : Integer.compare(a.getY(), b.getY());
     }
 
+    // Helper result class to hold city and count
+    private static class FindResult {
+        City city;
+        int count;
 
-    // ----------------------------------------------------------
-    /**
-     * Finds a city node given a set of x and y coordinates.
-     * 
-     * @param x
-     * @param y
-     * @return The city node being searched for if found
-     */
-    public City findCity(int x, int y) {
-        return findCityHelper(root, x, y);
+        FindResult(City city, int count) {
+            this.city = city;
+            this.count = count;
+        }
     }
 
+    public FindResult findCity(int x, int y) {
+        return findCityHelper(root, x, y, 0);
+    }
 
-    /**
-     * Searches for a city with the given coordinates in the KDTree.
-     *
-     * @param x
-     *            The x-coordinate of the city.
-     * @param y
-     *            The y-coordinate of the city.
-     * @return An array with two elements:
-     *         [0] -> City object if found, or null
-     *         [1] -> Integer representing the number of nodes visited
-     */
-    private City findCityHelper(Node node, int x, int y) {
+    // Helper method that returns FindResult with city and count
+    private FindResult findCityHelper(Node node, int x, int y, int count) {
         if (node == null) {
-            return null;
+            return new FindResult(null, count);
         }
+        count++; // increment nodes visited
 
         City city = node.city;
         if (city.getX() == x && city.getY() == y) {
-            return city;
+            return new FindResult(city, count);
         }
 
         // Search left subtree
-        City leftResult = findCityHelper(node.left, x, y);
-        if (leftResult != null) {
+        FindResult leftResult = findCityHelper(node.left, x, y, count);
+        if (leftResult.city != null) {
             return leftResult;
         }
 
         // Search right subtree
-        return findCityHelper(node.right, x, y);
+        return findCityHelper(node.right, x, y, leftResult.count);
     }
 
 
@@ -302,7 +295,8 @@ public class KDTree<T> {
 
         return findCityByNameHelper(node.right, name);
     }
-    
+
+
     /**
      * Clear method, restarts the tree
      */

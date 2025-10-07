@@ -50,6 +50,32 @@ public class GISTest extends TestCase {
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Tests using a KDTree database for the delete function with x, y input
+     * parameters
+     */
+    public void testDeleteDatabaseXY() {
+        assertTrue(it.insert("city1", 12, 16));
+        assertTrue(it.insert("city2", 6, 18));
+        assertTrue(it.insert("city3", 15, 23));
+        assertTrue(it.insert("city4", 10, 16));
+        assertTrue(it.insert("city5", 27, 14));
+
+        assertFuzzyEquals(it.delete(12, 16), "1 city1");
+    }
+
+    public void testDeleteDatabaseName() {
+        assertTrue(it.insert("city1", 12, 16));
+        assertTrue(it.insert("city2", 6, 18));
+        assertTrue(it.insert("city3", 15, 23));
+        assertTrue(it.insert("city4", 10, 16));
+        assertTrue(it.insert("city5", 27, 14));
+        
+        assertFuzzyEquals(it.delete("city4"), "city4 10 16");
+        assertFuzzyEquals(it.delete("city2"), "city2 6 18");
+    }
+
     /**
      * Print testing for empty trees
      * 
@@ -101,11 +127,11 @@ public class GISTest extends TestCase {
         assertTrue(it.insert("Denver", 34, 45));
         assertTrue(it.insert("New York", 24, 35));
         assertTrue(it.insert("Summerville", 54, 63));
-        assertFuzzyEquals(it.delete("Summerville"), "54 63");
-        assertFuzzyEquals(it.delete("Denver"), "34 45");
-        assertFuzzyEquals(it.delete("Los Angeles"), "11 12");
-        assertFuzzyEquals(it.delete("Baton Rouge"), "20 30");
-        assertFuzzyEquals(it.delete("New York"), "24 35");
+        assertFuzzyEquals(it.delete("Summerville"), "summerville 54 63");
+        assertFuzzyEquals(it.delete("Denver"), "denver 34 45");
+        assertFuzzyEquals(it.delete("Los Angeles"), "los angeles 11 12");
+        assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge 20 30");
+        assertFuzzyEquals(it.delete("New York"), "new york 24 35");
     }
 
 // /**
