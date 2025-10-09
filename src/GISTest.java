@@ -36,11 +36,9 @@ public class GISTest extends TestCase {
         assertTrue(it.insert("Denver", 34, 45));
         assertTrue(it.insert("New York", 24, 35));
         assertTrue(it.insert("Summerville", 54, 63));
-        assertFuzzyEquals(it.print(), "1  Baton Rouge (20, 30)\n" +
-                                      "2    Denver (34, 45)\n" +
-                                      "0Los Angeles (11, 12)\n" +
-                                      "1  New York (24, 35)\n" + 
-                                      "2    Summerville (54, 63)\n");
+        assertFuzzyEquals(it.print(), "1  Baton Rouge (20, 30)\n"
+            + "2    Denver (34, 45)\n" + "0Los Angeles (11, 12)\n"
+            + "1  New York (24, 35)\n" + "2    Summerville (54, 63)\n");
     }
 
 
@@ -143,21 +141,21 @@ public class GISTest extends TestCase {
     }
 
 
-//    /**
-//     * Test the delete method
-//     */
-//    public void testDeleteName() {
-//        assertTrue(it.insert("Los Angeles", 11, 12));
-//        assertTrue(it.insert("Baton Rouge", 20, 30));
-//        assertTrue(it.insert("Denver", 34, 45));
-//        assertTrue(it.insert("New York", 24, 35));
-//        assertTrue(it.insert("Summerville", 54, 63));
-//        assertFuzzyEquals(it.delete("Summerville"), "summerville 54 63");
-//        assertFuzzyEquals(it.delete("Denver"), "denver 34 45");
-//        assertFuzzyEquals(it.delete("Los Angeles"), "los angeles 11 12");
-//        assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge 20 30");
-//        assertFuzzyEquals(it.delete("New York"), "new york 24 35");
-//    }
+    /**
+     * Test the delete method
+     */
+    public void testDeleteName() {
+        assertTrue(it.insert("Los Angeles", 11, 12));
+        assertTrue(it.insert("Baton Rouge", 20, 30));
+        assertTrue(it.insert("Denver", 34, 45));
+        assertTrue(it.insert("New York", 24, 35));
+        assertTrue(it.insert("Summerville", 54, 63));
+        assertFuzzyEquals(it.delete("Summerville"), "summerville 54 63");
+        assertFuzzyEquals(it.delete("Denver"), "denver 34 45");
+        assertFuzzyEquals(it.delete("Los Angeles"), "los angeles 11 12");
+        assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge 20 30");
+        assertFuzzyEquals(it.delete("New York"), "new york 24 35");
+    }
 
 // /**
 // * Insert some records and check output requirements for various commands

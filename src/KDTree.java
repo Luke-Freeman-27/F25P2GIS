@@ -301,23 +301,17 @@ public class KDTree<T> {
 
         visited++;
 
-        if (node.city.getName().equals(name)) {
-            // Delete node found by name
-            // Use the same deletion logic as delete by (x, y)
+        if (node.city.getName().equalsIgnoreCase(name)) {
+            System.out.println("Deleting node: " + node.city.getName() + " ("
+                + node.city.getX() + "," + node.city.getY() + ")");
             int x = node.city.getX();
             int y = node.city.getY();
 
-            DeletionResult delRes = delete(node, x, y, depth, visited - 1); // subtract
-                                                                            // 1
-                                                                            // because
-                                                                            // 'delete'
-                                                                            // increments
-                                                                            // again
+            DeletionResult delRes = delete(node, x, y, depth, visited - 1);
             return new DeletionByNameResult(delRes.node, delRes.visited,
                 delRes.deletedCity);
         }
 
-        // Recursively search left subtree
         DeletionByNameResult leftRes = deleteByName(node.left, name, depth + 1,
             visited);
         if (leftRes.deletedCity != null) {
@@ -326,7 +320,6 @@ public class KDTree<T> {
                 leftRes.deletedCity);
         }
 
-        // Recursively search right subtree
         DeletionByNameResult rightRes = deleteByName(node.right, name, depth
             + 1, leftRes.visited);
         node.right = rightRes.node;
