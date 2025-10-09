@@ -174,40 +174,55 @@ public class BSTTest extends TestCase {
         assertEquals(it.printBST(), "0Phoenix (120, 70)\n"
             + "1  San Francisco (130, 75)\n");
 
+        // Delete the root node
+        assertTrue(it.deleteXY(120, 70));
+        assertEquals(it.printBST(), "0San Francisco (130, 75)\n");
+
         // Delete node with one leaf
         assertTrue(it.deleteXY(130, 75));
-        assertEquals(it.printBST(), "0Phoenix (120, 70)\n");
+        assertEquals(it.printBST(), "");
 
         // Deleting a node with no location
         assertFalse(it.deleteXY(999, 999));
         assertFalse(it.deleteXY(110, 65));
     }
 
-// /**
-// * Test the delete method
-// */
-// public void testDeleteName() {
-// assertNull(it.deleteName(null));
-// it.insert(city8);
-// it.insert(city4);
-// it.insert(city12);
-// it.insert(city2);
-// it.insert(city6);
-// it.insert(city10);
-// it.insert(city14);
-// it.insert(city1);
-// it.insert(city3);
-// it.insert(city5);
-// it.insert(city7);
-// it.insert(city9);
-// it.insert(city11);
-// it.insert(city13);
-// it.insert(city15);
-// it.deleteName("Atlanta"); // Case D1: leaf, no children
-// it.deleteName("Boston"); // Case D2: one child
-// it.deleteName("Dallas"); // Case D3: two children
-// it.deleteName("Las Vegas"); // Case D3 again (root or deep)
-// it.deleteName("Washington");// Case D2 or leaf at end
-// it.deleteName("Miami"); // Forces traversal both sides
-// }
+
+    /**
+     * This method checks for several city nodes with the same name
+     */
+    public void testDeleteName() {
+        // Insert city nodes
+        it.insert(city13);
+        it.insert(city12);
+        it.insert(city14);
+        it.insert(city11);
+        it.insert(city15);
+        assertEquals(it.printBST(), "2    Philadelphia (110, 65)\n"
+            + "1  Phoenix (120, 70)\n" + "0San Francisco (130, 75)\n"
+            + "1  Seattle (140, 80)\n" + "2    Washington (150, 85)\n");
+        // Delete nodes at level 2
+        assertFuzzyEquals(it.deleteName("Washington"), "Washington (150, 85)");
+        assertFuzzyEquals(it.deleteName("Philadelphia"),
+            "Philadelphia (110, 65)");
+        assertEquals(it.printBST(), "1  Phoenix (120, 70)\n"
+            + "0San Francisco (130, 75)\n" + "1  Seattle (140, 80)\n");
+        // Add multiple cities with the same name but in different locations
+        City cityRepeat1 = new City("Repeat City", 100, 100);
+        City cityRepeat2 = new City("Repeat City", 100, 200);
+        City cityRepeat3 = new City("Repeat City", 200, 100);
+        it.insert(cityRepeat1);
+        it.insert(cityRepeat2);
+        it.insert(cityRepeat3);
+        assertEquals(it.printBST(), "1  Phoenix (120, 70)\n"
+            + "4        Repeat City (200, 100)\n"
+            + "3      Repeat City (100, 200)\n"
+            + "2    Repeat City (100, 100)\n" + "0San Francisco (130, 75)\n"
+            + "1  Seattle (140, 80)\n");
+        assertFuzzyEquals(it.deleteName("Repeat City"),
+            "Repeat City (100, 100) (100, 200) (200, 100)");
+        // Name that does not exist
+        assertFuzzyEquals(it.deleteName("No Name"), "");
+    }
+
 }

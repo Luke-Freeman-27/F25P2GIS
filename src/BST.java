@@ -174,7 +174,7 @@ public class BST<T extends Comparable<? super T>> {
      */
     public boolean deleteXY(int x, int y) {
         if (this.findXY(x, y)) {
-            this.deleteXYHelper(root, x, y);
+            root = deleteXYHelper(root, x, y);
             return true;
         }
         return false;
@@ -221,64 +221,60 @@ public class BST<T extends Comparable<? super T>> {
     }
 
 
-//    /**
-//     * Deletes a node or several nodes depending on how many nodes have the same
-//     * name
-//     * 
-//     * @param name
-//     *            is the name of the city
-//     * @return a String of the number of nodes deleted along with the name
-//     */
-//    public String deleteName(String name) {
-//        int count = findName(name);
-//
-//        if (count == 0) {
-//            return "";
-//        }
-//
-//        root = deleteNameHelper(root, name);
-//        return count + " " + name;
-//    }
-//
-//
-//    /**
-//     * 
-//     * @param node
-//     * @param name
-//     * @return
-//     */
-//    private BSTNode<T> deleteNameHelper(BSTNode<T> node, String name) {
-//
-//        // Recurse first on left and right subtrees
-//        node.setLeft(deleteNameHelper(node.getLeft(), name));
-//        node.setRight(deleteNameHelper(node.getRight(), name));
-//
-//        // Then check current node
-//        T element = node.getElement();
-//        if (element instanceof City) {
-//            City city = (City)element;
-//            if (city.getName().equalsIgnoreCase(name)) {
-//                // Node deletion logic
-//                if (node.getLeft() == null && node.getRight() == null) {
-//                    return null; // leaf node
-//                }
-//                else if (node.getLeft() == null) {
-//                    return node.getRight(); // only right child
-//                }
-//                else if (node.getRight() == null) {
-//                    return node.getLeft(); // only left child
-//                }
-//                else {
-//                    // Two children: replace with predecessor (max of left)
-//                    BSTNode<T> pred = getMax(node.getLeft());
-//                    node.setElement(pred.getElement());
-//                    node.setLeft(deleteMax(node.getLeft()));
-//                }
-//            }
-//        }
-//
-//        return node;
-//    }
+    /**
+     * Deletes a node or several nodes depending on how many nodes have the same
+     * name
+     * 
+     * @param name
+     *            is the name of the city
+     * @return a string with the coordinates of each city that is deleted listed
+     *         in preorder as they are deleted. "name" (x1, y1) (x2, y2)
+     */
+    public String deleteName(String name) {
+        int count = findName(name);
+
+        if (count == 0) {
+            return "";
+        }
+
+        String deletedCoordinates = deleteNameHelper(root, name).trim();
+
+        return name + " " + deletedCoordinates;
+    }
+
+
+    /**
+     * Deletes all city nodes that a specific name
+     * 
+     * @param node
+     *            is the given node being checked
+     * @param name
+     *            is the name of the city
+     * @return the locations of all cities that have that name in
+     *         preorder.(x1, y1) (x2, y2)
+     */
+    private String deleteNameHelper(BSTNode<T> node, String name) {
+        if (node == null) {
+            return "";
+        }
+        StringBuilder deleted = new StringBuilder();
+
+        City city = (City)node.getElement();
+
+        if (city.getName().equalsIgnoreCase(name)) {
+            // Record this node’s coordinates
+            deleted.append("(").append(city.getX()).append(", ").append(city
+                .getY()).append(") ");
+            // Delete this node by coordinates
+            deleteXY(city.getX(), city.getY());
+        }
+
+        // Recurse left and right
+        deleted.append(deleteNameHelper(node.getLeft(), name));
+        deleted.append(deleteNameHelper(node.getRight(), name));
+
+        return deleted.toString();
+    }
 
 
     /**

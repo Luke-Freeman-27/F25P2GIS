@@ -86,6 +86,7 @@ public class GISDB implements GIS {
      *         deletion process, followed by the name of the city.
      */
     public String delete(int x, int y) {
+        bst.deleteXY(x, y);
         return db.deleteXY(x, y);
     }
 
@@ -104,7 +105,8 @@ public class GISDB implements GIS {
      *         (listed in preorder as they are deleted).
      */
     public String delete(String name) {
-        return db.deleteByName(name);
+        db.deleteByName(name);
+        return bst.deleteName(name);
 
     }
 
