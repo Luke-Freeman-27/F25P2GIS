@@ -50,66 +50,10 @@ public class KDTreeTest extends TestCase {
             "2    city7 20 25"));
 
     }
-    
-    public void testDeleteRootFirst() {
-        City city1 = new City("city1", 12, 16);
-        City city2 = new City("city2", 6, 18);
-        City city3 = new City("city3", 15, 23);
-        City city4 = new City("city4", 10, 16);
-        City city5 = new City("city5", 27, 14);
-        City city6 = new City("city6", 20, 20);
-        City city7 = new City("city7", 20, 25);
-        City cityNull = null;
-        
-        db.insert(city1);
-        db.insert(city2);
-        db.insert(city3);
-        db.insert(city4);
-        db.insert(city5);
-        db.insert(city6);
-        db.insert(city7);
-        
-        assertEquals(db.delete(city1), city1);
-        assertEquals(db.delete(city3), city3);
-        assertEquals(db.delete(cityNull), null);
-        assertEquals(db.delete(city7), city7);
-        assertEquals(db.delete(city5), city5);
-    }
-    
-    public void testDeleteRootLast() {
-        City city1 = new City("city1", 12, 16);
-        City city2 = new City("city2", 6, 18);
-        City city3 = new City("city3", 15, 23);
-        City city4 = new City("city4", 10, 16);
-        City city5 = new City("city5", 27, 14);
-        City city6 = new City("city6", 20, 20);
-        City city7 = new City("city7", 20, 25);
-        City city8 = new City("city8", 5, 30);
-        City city9 = new City ("city9", 9, 9);
-        City cityNull = null;
-        
-        db.insert(city1);
-        db.insert(city2);
-        db.insert(city3);
-        db.insert(city4);
-        db.insert(city5);
-        db.insert(city6);
-        db.insert(city7);
-        db.insert(city8);
-        
-        assertEquals(db.delete(cityNull), null);
-        
-        assertEquals(db.delete(city7), city7);
-        assertEquals(db.delete(city4), city4);
-        assertEquals(db.delete(city6), city6);
-        assertEquals(db.delete(city5), city5);
-        assertEquals(db.delete(city3), city3);
-        assertEquals(db.delete(city1), city1);
-        assertEquals(db.delete(city9), null);
-        assertFuzzyEquals(db.delete(10, 16), "");
-        assertFuzzyEquals(db.delete(6, 18), "2\n" + "city2");
-    }
-    
+
+    /**
+     * Tests the delete function that deletes nodes based on name input
+     */
     public void testDeleteName() {
         City city1 = new City("city1", 12, 16);
         City city2 = new City("city2", 6, 18);
@@ -131,8 +75,34 @@ public class KDTreeTest extends TestCase {
         db.insert(city7);
         db.insert(city8);
         
-        assertFuzzyEquals(db.delete("cityNull"), "");
-        assertFuzzyEquals(db.delete("city9"), "");
-        assertFuzzyEquals(db.delete("city4"), "city4 10 16");
+        assertFuzzyEquals(db.deleteByName("cityNull"), "");
+        assertFuzzyEquals(db.deleteByName("city9"), "");
+        assertFuzzyEquals(db.deleteByName("city4"), "city4 10 16");
+    }
+    
+    public void testDeletePosition() {
+        City city1 = new City("city1", 12, 16);
+        City city2 = new City("city2", 6, 18);
+        City city3 = new City("city3", 15, 23);
+        City city4 = new City("city4", 10, 16);
+        City city5 = new City("city5", 27, 14);
+        City city6 = new City("city6", 20, 20);
+        City city7 = new City("city7", 20, 25);
+        City city8 = new City("city8", 5, 30);
+        City city9 = new City ("city9", 9, 9);
+        City cityNull = null;
+        
+        db.insert(city1);
+        db.insert(city2);
+        db.insert(city3);
+        db.insert(city4);
+        db.insert(city5);
+        db.insert(city6);
+        db.insert(city7);
+        db.insert(city8);
+        
+        assertFuzzyEquals(db.deleteXY(0, 0), "");
+        assertFuzzyEquals(db.deleteXY(5, 30), "3 \n city8");
+        assertFuzzyEquals(db.deleteXY(20, 20), "4 \n city6");
     }
 }
