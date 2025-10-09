@@ -6,6 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/lukea/OneDrive/Desktop/EXTERNAL JAVA/student.jar"/>
+	<classpathentry kind="lib" path="C:/Users/walke/Documents/GitHub/F25P2GIS/student.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

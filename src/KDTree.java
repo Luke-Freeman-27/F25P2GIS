@@ -226,11 +226,12 @@ public class KDTree<T> {
             Node rightMin = findMin(node.right, dim, depth + 1);
 
             Node minNode = node;
-            int minVal = getCoordinate(minNode.city, dim);
+            int minVal;
+            minVal = getCoordinate(minNode.city, dim);
 
             // Check leftMin: if strictly less than current minVal, update
             // minNode
-            if (leftMin != null) {
+            if (leftMin != null && leftMin.city != null) {
                 int leftVal = getCoordinate(leftMin.city, dim);
                 if (leftVal < minVal) {
                     minNode = leftMin;
@@ -339,7 +340,7 @@ public class KDTree<T> {
      */
     public String infoXY(int x, int y) {
         Node found = infoXY(root, x, y, 0);
-        if (found != null) { 
+        if (found != null) {
             return found.city.getName();
         }
         return "";

@@ -192,7 +192,9 @@ public class BST<T extends Comparable<? super T>> {
      *            is the y coordinate
      */
     public BSTNode<T> deleteXYHelper(BSTNode<T> node, int x, int y) {
-
+        if (node == null) {
+            return null;
+        }
         City city = (City)node.getElement();
 
         // Navigate the BST by comparing coordinates

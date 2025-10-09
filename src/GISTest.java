@@ -77,7 +77,7 @@ public class GISTest extends TestCase {
         assertTrue(it.insert("city4", 10, 16));
         assertTrue(it.insert("city5", 27, 14));
 
-        assertFuzzyEquals(it.delete(6, 18), "3\n" + "city4");
+        assertFuzzyEquals(it.delete(6, 18), "4\n" + "city2");
         assertFuzzyEquals(it.delete(27, 14), "3\n" + "city5");
     }
 
@@ -150,11 +150,11 @@ public class GISTest extends TestCase {
         assertTrue(it.insert("Denver", 34, 45));
         assertTrue(it.insert("New York", 24, 35));
         assertTrue(it.insert("Summerville", 54, 63));
-        assertFuzzyEquals(it.delete("Summerville"), "summerville 54 63");
-        assertFuzzyEquals(it.delete("Denver"), "denver 34 45");
-        assertFuzzyEquals(it.delete("Los Angeles"), "los angeles 11 12");
-        assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge 20 30");
-        assertFuzzyEquals(it.delete("New York"), "new york 24 35");
+        assertFuzzyEquals(it.delete("Summerville"), "summerville (54, 63)");
+        assertFuzzyEquals(it.delete("Denver"), "denver (34, 45)");
+        assertFuzzyEquals(it.delete("Los Angeles"), "los angeles (11, 12)");
+        assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge (20, 30)");
+        assertFuzzyEquals(it.delete("New York"), "new york (24, 35)");
     }
 
 // /**
