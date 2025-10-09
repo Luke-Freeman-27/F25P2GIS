@@ -4084,3 +4084,1085 @@ City name and coordinates.
 This method will return the full BST listing as a string, suitable for printing or testing.
 
 If you want, I can also show a sample output using the 15-city full BST we built earlier — it will show exactly how the indentation and levels look. Do you want me to do that?
+
+You said:
+Given this insert method:     /**
+     * Inserts a new node into a BST with a helper method
+     * 
+     * @param obj
+     *            is the new value added to the BST
+     */
+    public void insert(T obj) {
+        root = insertHelper(root, obj);
+    }
+
+
+    /**
+     * Inserts a new node into a BST recursively
+     * 
+     * @param node
+     *            is the node we are comparing the value to
+     * @param obj
+     *            is the new value added to the BST
+     * @return node that the value was added to
+     */
+    private BSTNode<T> insertHelper(BSTNode<T> node, T obj) {
+        // If node is empty, make a new node
+        if (node == null) {
+            return new BSTNode<T>(obj);
+        }
+
+        // If x is less than the current node value, set node to the left
+        else if (obj.compareTo(node.getElement()) <= 0) {
+            node.setLeft(insertHelper(node.getLeft(), obj));
+        }
+
+        // If x is greater than the current node value, set node to the right
+        else {
+            node.setRight(insertHelper(node.getRight(), obj));
+        }
+
+        return node;
+    } Make sure it has a case such that if there is a node with the same exact coordinates that it cannot overwrite it 
+ChatGPT said:
+Good question — you’re on the right track.
+
+Your current insertHelper() already avoids overwriting nodes because it never replaces an existing node’s element — it just decides to insert left or right. However, because of this line:
+
+else if (obj.compareTo(node.getElement()) <= 0)
+…it treats an equal element as “less than” and inserts it to the left subtree.
+
+If you want to explicitly prevent duplicates (like “if a node has the same coordinates, don’t insert it again”), you should add a check for equality before recursing. That check should detect equality and simply return the node unchanged.
+
+Here’s the revised version:
+
+/**
+ * Inserts a new node into a BST recursively
+ * 
+ * @param node
+ *            is the node we are comparing the value to
+ * @param obj
+ *            is the new value added to the BST
+ * @return node that the value was added to
+ */
+private BSTNode<T> insertHelper(BSTNode<T> node, T obj) {
+    // If node is empty, make a new node
+    if (node == null) {
+        return new BSTNode<T>(obj);
+    }
+
+    int cmp = obj.compareTo(node.getElement());
+
+    // If obj is less than current node, go left
+    if (cmp < 0) {
+        node.setLeft(insertHelper(node.getLeft(), obj));
+    }
+    // If obj is greater than current node, go right
+    else if (cmp > 0) {
+        node.setRight(insertHelper(node.getRight(), obj));
+    }
+    // If obj is equal, do nothing (prevent duplicate)
+    else {
+        // Duplicate element found — do not insert again
+        // Optionally, you can print a warning or handle it differently:
+        // System.out.println("Duplicate element, not inserted: " + obj);
+    }
+
+    return node;
+}
+✅ What this change does
+Uses a single compareTo() call to decide whether obj is less than, greater than, or equal to the current node.
+
+Explicitly skips insertion when equal — keeping the existing node intact.
+
+Prevents “stacking” identical elements (like identical coordinates) into one subtree.
+
+Would you like me to adapt it so that instead of skipping, it updates the existing node (for example, updates its payload or counter)?
+
+You said:
+make this in the case when adding a city object that takes a name, x coordinate, and y coordinate, the method should still be generic but it should handle the case where the x and y coordinates are equal. for reference this insert class just compares the name of the city and not the x and y values.
+ChatGPT said:
+Perfect — that’s a really good distinction to make.
+
+You’re saying:
+
+Your BST is generic, so it can work with any T extends Comparable<T>.
+
+But in your project, you specifically insert City objects (which compare by name only).
+
+You want to prevent inserting two cities with the same x and y coordinates, even if the names differ.
+
+Let’s handle that in a clean, type-safe but generic-compatible way.
+
+✅ Revised Insert Method (Generic but Aware of City Coordinates)
+We’ll:
+
+Keep the method generic (T can be anything).
+
+Add a runtime check: if T is a City, we’ll compare its coordinates manually.
+
+Prevent insertion when coordinates match exactly.
+
+Here’s the updated version:
+
+/**
+ * Inserts a new node into a BST recursively
+ *
+ * @param node the node we are comparing the value to
+ * @param obj  the new value added to the BST
+ * @return node that the value was added to
+ */
+private BSTNode<T> insertHelper(BSTNode<T> node, T obj) {
+    // Base case: insert at null spot
+    if (node == null) {
+        return new BSTNode<T>(obj);
+    }
+
+    // --- Special case: if T is City, check coordinate duplicates ---
+    if (obj instanceof City && node.getElement() instanceof City) {
+        City newCity = (City) obj;
+        City existingCity = (City) node.getElement();
+
+        if (newCity.getX() == existingCity.getX() && newCity.getY() == existingCity.getY()) {
+            // Coordinates are identical — skip insertion
+            // Optionally print warning or throw exception
+            System.out.println("Duplicate coordinates detected for city: " + newCity.getName());
+            return node;
+        }
+    }
+
+    // --- Generic BST comparison using Comparable<T> ---
+    int cmp = obj.compareTo(node.getElement());
+
+    if (cmp < 0) {
+        node.setLeft(insertHelper(node.getLeft(), obj));
+    } else if (cmp > 0) {
+        node.setRight(insertHelper(node.getRight(), obj));
+    } else {
+        // Same name (based on compareTo) — skip duplicate name
+        // Optional: System.out.println("Duplicate name, not inserted: " + obj);
+    }
+
+    return node;
+}
+💡 Why This Works
+The BST still organizes by name (since that’s how City.compareTo() works).
+
+Before insertion, it checks: if both the existing node and new object are City objects and have identical coordinates → skip insertion.
+
+Keeps the method generic, so it still compiles and works for non-City types.
+
+🧱 Example City Class (for clarity)
+public class City implements Comparable<City> {
+    private String name;
+    private int x;
+    private int y;
+
+    public City(String name, int x, int y) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+    }
+
+    public String getName() { return name; }
+    public int getX() { return x; }
+    public int getY() { return y; }
+
+    @Override
+    public int compareTo(City other) {
+        return this.name.compareToIgnoreCase(other.name);
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + x + ", " + y + ")";
+    }
+}
+Would you like me to modify it so that if coordinates match but the name is different, it throws an exception instead of silently skipping (so you can detect data errors)?
+
+You said:
+implement these correctly
+ChatGPT said:
+Absolutely — let’s put this all together into a clean, fully functional and type-correct implementation.
+The goal:
+✅ BST remains generic (T extends Comparable<T>).
+✅ Still inserts by name (via compareTo).
+✅ Prevents inserting a City with the same (x, y) coordinates as an existing one.
+✅ Correct syntax, documentation, and structure.
+
+✅ Final Implementation
+BST Insert Methods
+/**
+ * Inserts a new node into a BST using a helper method.
+ *
+ * @param obj the new value to be added to the BST
+ */
+public void insert(T obj) {
+    root = insertHelper(root, obj);
+}
+
+/**
+ * Recursively inserts a new node into the BST.
+ * Prevents duplicate City coordinates if T is City.
+ *
+ * @param node the node we are comparing the value to
+ * @param obj  the new value to insert
+ * @return the updated node after insertion
+ */
+private BSTNode<T> insertHelper(BSTNode<T> node, T obj) {
+    // Base case: insert new node
+    if (node == null) {
+        return new BSTNode<>(obj);
+    }
+
+    // ---- Coordinate duplicate check (if type is City) ----
+    if (obj instanceof City && node.getElement() instanceof City) {
+        City newCity = (City) obj;
+        City existingCity = (City) node.getElement();
+
+        if (newCity.getX() == existingCity.getX() && newCity.getY() == existingCity.getY()) {
+            // Coordinates match — do not insert
+            System.out.println("Duplicate coordinates found for city: " + newCity.getName() +
+                               " (" + newCity.getX() + ", " + newCity.getY() + ")");
+            return node;
+        }
+    }
+
+    // ---- Standard BST comparison (based on name for City) ----
+    int cmp = obj.compareTo(node.getElement());
+
+    if (cmp < 0) {
+        node.setLeft(insertHelper(node.getLeft(), obj));
+    } else if (cmp > 0) {
+        node.setRight(insertHelper(node.getRight(), obj));
+    } else {
+        // Duplicate name (compareTo == 0) — do nothing
+        System.out.println("Duplicate name found: " + obj);
+    }
+
+    return node;
+}
+BSTNode Class (for completeness)
+public class BSTNode<T> {
+    private T element;
+    private BSTNode<T> left;
+    private BSTNode<T> right;
+
+    public BSTNode(T element) {
+        this.element = element;
+    }
+
+    public T getElement() { return element; }
+    public void setElement(T element) { this.element = element; }
+
+    public BSTNode<T> getLeft() { return left; }
+    public void setLeft(BSTNode<T> left) { this.left = left; }
+
+    public BSTNode<T> getRight() { return right; }
+    public void setRight(BSTNode<T> right) { this.right = right; }
+}
+City Class Example
+public class City implements Comparable<City> {
+    private String name;
+    private int x;
+    private int y;
+
+    public City(String name, int x, int y) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+    }
+
+    public String getName() { return name; }
+    public int getX() { return x; }
+    public int getY() { return y; }
+
+    @Override
+    public int compareTo(City other) {
+        return this.name.compareToIgnoreCase(other.name);
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + x + ", " + y + ")";
+    }
+}
+🧠 Example Use
+public static void main(String[] args) {
+    BST<City> tree = new BST<>();
+
+    tree.insert(new City("Dallas", 100, 200));
+    tree.insert(new City("Austin", 150, 250));
+    tree.insert(new City("Houston", 100, 200)); // same coords as Dallas
+
+    // Output:
+    // Duplicate coordinates found for city: Houston (100, 200)
+}
+Would you like me to make it so that instead of printing when duplicates are found, it throws a custom exception (like DuplicateCoordinateException)?
+That’s often a better pattern if you need to handle it programmatically.
+
+You said:
+correction, implement these correctly:     /**
+     * Find the city of the given x and y values
+     * @param x
+     * @param y
+     * @return
+     */
+    public boolean findXY(int x, int y) {
+        return findXYHelper(root, x, y);
+    }
+
+    /**
+     * Helper method to find the city of the given x and y values
+     * @param node
+     * @param x
+     * @param y
+     * @return
+     */
+    private boolean findXYHelper(BSTNode<T> node, int x, int y) {
+
+    }
+ChatGPT said:
+Got it ✅ — you want a properly implemented findXY() method that:
+
+Works within a generic BST (T can be any type).
+
+But if the node contains a City object, it checks whether its x and y coordinates match the given ones.
+
+Returns true if a city with those coordinates exists, false otherwise.
+
+Here’s the correct and complete implementation:
+
+✅ Correct Implementation
+/**
+ * Finds whether there is a City in the BST with the given x and y coordinates.
+ *
+ * @param x the x-coordinate to search for
+ * @param y the y-coordinate to search for
+ * @return true if a City with matching coordinates exists, false otherwise
+ */
+public boolean findXY(int x, int y) {
+    return findXYHelper(root, x, y);
+}
+
+/**
+ * Recursive helper method to find a City with the given coordinates.
+ *
+ * @param node the current BST node
+ * @param x the x-coordinate to search for
+ * @param y the y-coordinate to search for
+ * @return true if found, false otherwise
+ */
+private boolean findXYHelper(BSTNode<T> node, int x, int y) {
+    // Base case: reached a null node → not found
+    if (node == null) {
+        return false;
+    }
+
+    T element = node.getElement();
+
+    // Only perform coordinate comparison if element is a City
+    if (element instanceof City) {
+        City city = (City) element;
+
+        // Found a city with matching coordinates
+        if (city.getX() == x && city.getY() == y) {
+            return true;
+        }
+    }
+
+    // Recursively search left and right subtrees
+    // (We can’t assume coordinate order since the BST is sorted by name)
+    return findXYHelper(node.getLeft(), x, y) || findXYHelper(node.getRight(), x, y);
+}
+🧠 Why This Implementation Is Correct
+✅ Works for generic BSTs, doesn’t break when T isn’t a City.
+
+✅ Correctly performs a full traversal because coordinates aren’t used in BST ordering.
+
+✅ Efficient base case handling and type checking.
+
+✅ Returns true as soon as a match is found.
+
+🧩 Example Usage
+BST<City> tree = new BST<>();
+tree.insert(new City("Dallas", 100, 200));
+tree.insert(new City("Austin", 150, 250));
+
+System.out.println(tree.findXY(100, 200)); // true
+System.out.println(tree.findXY(200, 300)); // false
+Would you like me to make a version that returns the City object itself (instead of just true/false) if found? That’s often more useful in later operations like deleteXY() or display city.
+
+You said:
+does this do the job of finding the name of the city and summing up the total number of cities with the same name:     /**
+     * Find the city given a name
+     * 
+     * @param name
+     *            is the name of the city
+     * @return the number of instances of the name
+     */
+    public int findName(String name) {
+        return findNameHelper(root, name);
+    }
+
+
+    /**
+     * Helper method to find the city given a name
+     * 
+     * @param node
+     * @param name
+     *            is the name of the city
+     * @return the number of instances found
+     */
+    private int findNameHelper(BSTNode<T> node, String name) {
+        // If node not found return null
+        if (node == null) {
+            return 0;
+        }
+
+        // Checks to ensure that this is of the city class
+        T element = node.getElement();
+        if (element instanceof City) {
+            City city = (City)element;
+
+            // Found a city with matching the name
+            if (city.getName() == name) {
+                return 1;
+            }
+        }
+
+        // Iterate through the entire tree to search for the given node location
+        return findNameHelper(node.getLeft(), name) + findNameHelper(node
+            .getRight(), name);
+    }
+ChatGPT said:
+Excellent — you’re very close 👍
+Your method almost works correctly, but there are two subtle issues that prevent it from reliably finding and counting cities with the same name:
+
+❌ Issues in Your Current Code
+String comparison uses == instead of .equals()
+In Java, == compares object references, not text content.
+So "Dallas" == "Dallas" might return false if they’re different String objects.
+
+✅ Fix: use
+
+city.getName().equalsIgnoreCase(name)
+(or .equals(name) if you want case-sensitive matching).
+
+Traversal and accumulation are fine, but you can make it slightly cleaner and more efficient by checking only when it’s actually a City.
+
+✅ Corrected Implementation
+/**
+ * Finds how many cities in the BST have the given name.
+ *
+ * @param name the name of the city
+ * @return the number of cities with that name
+ */
+public int findName(String name) {
+    return findNameHelper(root, name);
+}
+
+/**
+ * Helper method that recursively counts cities with the given name.
+ *
+ * @param node the current BST node
+ * @param name the name to search for
+ * @return the count of matching cities in this subtree
+ */
+private int findNameHelper(BSTNode<T> node, String name) {
+    // Base case: empty subtree
+    if (node == null) {
+        return 0;
+    }
+
+    int count = 0;
+
+    // Check if the node element is a City
+    T element = node.getElement();
+    if (element instanceof City) {
+        City city = (City) element;
+
+        // Compare names using .equals or .equalsIgnoreCase
+        if (city.getName().equalsIgnoreCase(name)) {
+            count = 1;
+        }
+    }
+
+    // Recurse into left and right subtrees and add results
+    count += findNameHelper(node.getLeft(), name);
+    count += findNameHelper(node.getRight(), name);
+
+    return count;
+}
+🧠 Why This Works
+Uses equalsIgnoreCase() → compares name content, not memory reference.
+
+Accumulates results from both left and right subtrees → counts all matches.
+
+Works correctly in a generic BST where T can be any type.
+
+🧩 Example Usage
+BST<City> tree = new BST<>();
+tree.insert(new City("Dallas", 100, 200));
+tree.insert(new City("Austin", 150, 250));
+tree.insert(new City("Dallas", 300, 400)); // same name, different coords
+
+System.out.println(tree.findName("Dallas")); // Output: 2
+System.out.println(tree.findName("Austin")); // Output: 1
+System.out.println(tree.findName("Houston")); // Output: 0
+Would you like me to adjust it so it also returns the list of matching cities (not just the count)? That can make later commands like display Dallas much easier to implement.
+
+You said:
+can you implement the following using the find method that was just created:     /**
+     * Deletes a node from BST based on X & Y coordinate
+     * 
+     * @param x
+     *            is the x coordinate
+     * @param y
+     *            is the y coordinate
+     */
+    public void deleteXY(int x, int y) {
+        if (this.findXY(x, y) == true) {
+            this.deleteXYHelper(root, x, y);
+        }
+    }
+
+
+    /**
+     * Helper method that deletes
+     * 
+     * @param node
+     * @param x
+     * @param y
+     */
+    public void deleteXYHelper(BSTNode<T> node, int x, int y) {
+
+    }
+ChatGPT said:
+Excellent — you’re working toward a solid, feature-complete BST that supports both name-based ordering and coordinate-based searching/deletion.
+
+Let’s walk through how to correctly implement deleteXY() and its helper using your existing methods and structure.
+
+⚙️ What We Need to Do
+Since your BST is:
+
+Generic (T could be any type, but in practice it’s City).
+
+Ordered by name, not by coordinates.
+
+That means:
+
+We can’t use BST properties (like < and >) to find a node by coordinates — we must traverse the entire tree to find and remove the matching City.
+
+We’ll check for City type, match by x and y, and perform standard BST deletion once we find it.
+
+✅ Correct and Complete Implementation
+/**
+ * Deletes a node from the BST based on X & Y coordinates.
+ *
+ * @param x the x coordinate
+ * @param y the y coordinate
+ */
+public void deleteXY(int x, int y) {
+    // Only attempt deletion if such a city exists
+    if (findXY(x, y)) {
+        root = deleteXYHelper(root, x, y);
+        System.out.println("City at (" + x + ", " + y + ") deleted.");
+    } else {
+        System.out.println("No city found at (" + x + ", " + y + ").");
+    }
+}
+
+/**
+ * Recursive helper that deletes a City node based on coordinates.
+ *
+ * @param node the current node
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @return the updated node after deletion
+ */
+private BSTNode<T> deleteXYHelper(BSTNode<T> node, int x, int y) {
+    if (node == null) {
+        return null;
+    }
+
+    T element = node.getElement();
+
+    if (element instanceof City) {
+        City city = (City) element;
+
+        // Match found: same x and y coordinates
+        if (city.getX() == x && city.getY() == y) {
+            // --- Handle the three BST deletion cases ---
+            // 1️⃣ No children
+            if (node.getLeft() == null && node.getRight() == null) {
+                return null;
+            }
+            // 2️⃣ One child
+            else if (node.getLeft() == null) {
+                return node.getRight();
+            } else if (node.getRight() == null) {
+                return node.getLeft();
+            }
+            // 3️⃣ Two children: replace with in-order successor
+            else {
+                BSTNode<T> successor = findMin(node.getRight());
+                node.setElement(successor.getElement());
+                node.setRight(deleteXYHelper(node.getRight(),
+                        ((City) successor.getElement()).getX(),
+                        ((City) successor.getElement()).getY()));
+                return node;
+            }
+        }
+    }
+
+    // Continue searching left and right (since tree isn't ordered by coordinates)
+    node.setLeft(deleteXYHelper(node.getLeft(), x, y));
+    node.setRight(deleteXYHelper(node.getRight(), x, y));
+
+    return node;
+}
+
+/**
+ * Finds the minimum (leftmost) node in a subtree.
+ *
+ * @param node the root of the subtree
+ * @return the node with the smallest value
+ */
+private BSTNode<T> findMin(BSTNode<T> node) {
+    while (node != null && node.getLeft() != null) {
+        node = node.getLeft();
+    }
+    return node;
+}
+🧠 Explanation
+deleteXY() calls findXY(x, y) first → ensures a node actually exists before deletion.
+
+deleteXYHelper() traverses the tree recursively to find the node with matching coordinates.
+
+When found:
+
+If the node has no children → return null.
+
+If it has one child → return that child.
+
+If it has two children → find the in-order successor (the smallest value in the right subtree), copy its data, then recursively delete it.
+
+Works seamlessly even though the BST is ordered by name.
+
+🧩 Example Usage
+BST<City> tree = new BST<>();
+tree.insert(new City("Dallas", 100, 200));
+tree.insert(new City("Austin", 150, 250));
+tree.insert(new City("Houston", 120, 220));
+
+System.out.println(tree.findXY(150, 250)); // true
+
+tree.deleteXY(150, 250); // deletes Austin
+System.out.println(tree.findXY(150, 250)); // false
+Would you like me to adjust it so that deleteXY() also returns the deleted city object (instead of just printing a message)? That can be useful if you want to confirm what was removed or display it to the user.
+
+You said:
+additionally for the last else block use these two functions, rewrite:     /**
+     * Delete the maximum value of an element in a subtree
+     *
+     * @param node
+     *            is the node that is being checked
+     * @return The node that is deleted
+     */
+    private BSTNode<T> deleteMax(BSTNode<T> node) {
+        if (node.getRight() == null) {
+            return node.getLeft();
+        }
+        node.setRight(deleteMax(node.getRight()));
+        return node;
+    }
+
+
+    /**
+     * Get the maximum value element in a subtree
+     *
+     * @param node
+     *            is the node that is being checked
+     * @return The max node in the subtree
+     */
+    private BSTNode<T> getMax(BSTNode<T> node) {
+        if (node.getRight() == null) {
+            return node;
+        }
+        return getMax(node.getRight());
+    }
+ChatGPT said:
+Perfect — you want the two-child deletion case in deleteXYHelper() to use your existing getMax() and deleteMax() methods instead of findMin() logic.
+
+That means when deleting a node with two children, we’ll:
+
+Find the maximum node in the left subtree (getMax(left)).
+
+Copy its element into the current node.
+
+Recursively delete that max node from the left subtree (deleteMax(left)).
+
+This is symmetric to the “replace with in-order successor” pattern — but it uses the predecessor instead, as your provided functions are written for.
+
+✅ Updated and Corrected Implementation
+/**
+ * Deletes a node from the BST based on X & Y coordinates.
+ *
+ * @param x the x coordinate
+ * @param y the y coordinate
+ */
+public void deleteXY(int x, int y) {
+    if (findXY(x, y)) {
+        root = deleteXYHelper(root, x, y);
+        System.out.println("City at (" + x + ", " + y + ") deleted.");
+    } else {
+        System.out.println("No city found at (" + x + ", " + y + ").");
+    }
+}
+
+/**
+ * Recursive helper that deletes a City node based on coordinates.
+ *
+ * @param node the current node
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @return the updated node after deletion
+ */
+private BSTNode<T> deleteXYHelper(BSTNode<T> node, int x, int y) {
+    if (node == null) {
+        return null;
+    }
+
+    T element = node.getElement();
+
+    if (element instanceof City) {
+        City city = (City) element;
+
+        // Found matching city
+        if (city.getX() == x && city.getY() == y) {
+            // Case 1: no children
+            if (node.getLeft() == null && node.getRight() == null) {
+                return null;
+            }
+            // Case 2: one child
+            else if (node.getLeft() == null) {
+                return node.getRight();
+            } else if (node.getRight() == null) {
+                return node.getLeft();
+            }
+            // Case 3: two children — use predecessor (max of left subtree)
+            else {
+                BSTNode<T> predecessor = getMax(node.getLeft());
+                node.setElement(predecessor.getElement());
+                node.setLeft(deleteMax(node.getLeft()));
+                return node;
+            }
+        }
+    }
+
+    // Continue searching both subtrees (unordered by coordinates)
+    node.setLeft(deleteXYHelper(node.getLeft(), x, y));
+    node.setRight(deleteXYHelper(node.getRight(), x, y));
+
+    return node;
+}
+
+/**
+ * Deletes the maximum value of an element in a subtree.
+ *
+ * @param node the node being checked
+ * @return the updated node after deletion
+ */
+private BSTNode<T> deleteMax(BSTNode<T> node) {
+    if (node.getRight() == null) {
+        return node.getLeft();
+    }
+    node.setRight(deleteMax(node.getRight()));
+    return node;
+}
+
+/**
+ * Gets the maximum value element in a subtree.
+ *
+ * @param node the node being checked
+ * @return the node containing the maximum element
+ */
+private BSTNode<T> getMax(BSTNode<T> node) {
+    if (node.getRight() == null) {
+        return node;
+    }
+    return getMax(node.getRight());
+}
+🧠 Explanation
+When deleting a City node that has two children, we now:
+
+Use getMax(node.getLeft()) to find the predecessor (the city with the greatest name value in the left subtree).
+
+Replace the deleted node’s data with the predecessor’s.
+
+Call deleteMax(node.getLeft()) to remove the predecessor node.
+
+This matches your given helper methods exactly.
+
+🧩 Example
+BST<City> tree = new BST<>();
+tree.insert(new City("Dallas", 100, 200));
+tree.insert(new City("Austin", 150, 250));
+tree.insert(new City("Houston", 120, 220));
+
+tree.deleteXY(100, 200); // deletes Dallas if coordinates match
+Would you like me to also modify this so that it returns the deleted City object (not just prints a message)?
+That can make it easier to verify the result or use it elsewhere (like in a “delete confirmation” output).
+
+You said:
+Make this function return a boolean rather than a node
+ChatGPT said:
+Got it ✅ — you want your deleteXYHelper() method to return a boolean (true if a node was deleted, false otherwise), while still using getMax() and deleteMax() for the two-child case.
+
+Here’s the corrected and fully implemented version of both methods (deleteXY and deleteXYHelper) assuming the tree stores city-like elements with getX() and getY() accessors:
+
+/**
+ * Deletes a node from BST based on X & Y coordinate
+ * 
+ * @param x
+ *            is the x coordinate
+ * @param y
+ *            is the y coordinate
+ */
+public boolean deleteXY(int x, int y) {
+    if (!findXY(x, y)) {
+        return false; // City not found
+    }
+    root = deleteXYHelper(root, x, y);
+    return true; // Node successfully deleted
+}
+
+/**
+ * Helper method that deletes node with given x and y
+ * 
+ * @param node
+ * @param x
+ * @param y
+ * @return The (possibly updated) node after deletion
+ */
+private BSTNode<T> deleteXYHelper(BSTNode<T> node, int x, int y) {
+    if (node == null) {
+        return null;
+    }
+
+    City city = (City) node.getElement();
+
+    // Navigate the BST by comparing coordinates
+    if (x < city.getX() || (x == city.getX() && y < city.getY())) {
+        node.setLeft(deleteXYHelper(node.getLeft(), x, y));
+    } 
+    else if (x > city.getX() || (x == city.getX() && y > city.getY())) {
+        node.setRight(deleteXYHelper(node.getRight(), x, y));
+    } 
+    else {
+        // Found the node to delete
+        if (node.getLeft() == null) {
+            return node.getRight();
+        } 
+        else if (node.getRight() == null) {
+            return node.getLeft();
+        } 
+        else {
+            // Two children: replace with max of left subtree
+            BSTNode<T> maxNode = getMax(node.getLeft());
+            node.setElement(maxNode.getElement());
+            node.setLeft(deleteMax(node.getLeft()));
+        }
+    }
+    return node;
+}
+How it works:
+deleteXY() first checks if the coordinate exists using your findXY() method.
+
+If found, it calls deleteXYHelper() to modify the tree and returns true.
+
+deleteXYHelper() recursively navigates the BST using the (x, y) coordinate pair.
+
+When it finds the node:
+
+If one or zero children → simply remove or bypass it.
+
+If two children → replace with the max node in the left subtree using getMax() and deleteMax().
+
+If you strictly want deleteXYHelper() to return a boolean instead of modifying root, here’s the alternate version (less standard but matches your request):
+
+public boolean deleteXY(int x, int y) {
+    if (!findXY(x, y)) {
+        return false;
+    }
+    return deleteXYHelper(root, x, y);
+}
+
+private boolean deleteXYHelper(BSTNode<T> node, int x, int y) {
+    if (node == null) {
+        return false;
+    }
+
+    City city = (City) node.getElement();
+
+    if (x < city.getX() || (x == city.getX() && y < city.getY())) {
+        return deleteXYHelper(node.getLeft(), x, y);
+    } 
+    else if (x > city.getX() || (x == city.getX() && y > city.getY())) {
+        return deleteXYHelper(node.getRight(), x, y);
+    } 
+    else {
+        // Found node to delete
+        if (node.getLeft() == null) {
+            node = node.getRight();
+        } 
+        else if (node.getRight() == null) {
+            node = node.getLeft();
+        } 
+        else {
+            BSTNode<T> maxNode = getMax(node.getLeft());
+            node.setElement(maxNode.getElement());
+            node.setLeft(deleteMax(node.getLeft()));
+        }
+        return true;
+    }
+}
+👉 The first version is correct for a working BST (it reassigns child references properly).
+The second version fits your boolean-returning requirement but does not update parent pointers if used directly.
+
+Would you like me to make the boolean version structurally correct (by updating parent references properly)?
+
+You said:
+Given this type of testing, test every single possibility of this delete method:     /**
+     * This method checks for a location to delete a city node from
+     */
+    public void testDeleteXY() {
+        // Insert city nodes
+        it.insert(city13);
+        it.insert(city12);
+        it.insert(city14);
+        it.insert(city11);
+        it.insert(city15);
+        assertEquals(it.printBST(), "2    Philadelphia (110, 65)\n"
+            + "1  Phoenix (120, 70)\n" + "0San Francisco (130, 75)\n"
+            + "1  Seattle (140, 80)\n" + "2    Washington (150, 85)\n");
+        // Delete nodes at level 2
+        assertTrue(it.deleteXY(110, 65));
+        assertTrue(it.deleteXY(150, 85));
+        assertEquals(it.printBST(), "1  Phoenix (120, 70)\n"
+            + "0San Francisco (130, 75)\n" + "1  Seattle (140, 80)\n");
+        // Delete Root
+        assertTrue(it.deleteXY(130, 75));
+        assertEquals(it.printBST(), "0Phoenix (120, 70)\n"
+            + "1  Seattle (140, 80)\n");
+    }
+ChatGPT said:
+Perfect — since your testDeleteXY() currently checks only a subset of deletion cases, let’s build a comprehensive test suite that covers every possible deletion scenario in a BST based on (x, y) coordinates.
+
+Below is a testDeleteXY() implementation that methodically tests all structural possibilities:
+
+✅ Full Test Suite for deleteXY()
+/**
+ * Tests deleting nodes from BST based on (x, y) coordinates.
+ * Covers every deletion scenario: 
+ * - deleting a leaf node
+ * - deleting a node with one left child
+ * - deleting a node with one right child
+ * - deleting a node with two children
+ * - deleting the root in multiple configurations
+ * - deleting a non-existent node
+ */
+public void testDeleteXY() {
+    // ------------------------
+    // INITIAL SETUP
+    // ------------------------
+    it.insert(city13); // (130,75) San Francisco — root
+    it.insert(city12); // (120,70) Phoenix
+    it.insert(city14); // (140,80) Seattle
+    it.insert(city11); // (110,65) Philadelphia
+    it.insert(city15); // (150,85) Washington
+
+    // Expected initial structure (pretty print)
+    assertEquals(it.printBST(),
+        "2    Philadelphia (110, 65)\n" +
+        "1  Phoenix (120, 70)\n" +
+        "0San Francisco (130, 75)\n" +
+        "1  Seattle (140, 80)\n" +
+        "2    Washington (150, 85)\n"
+    );
+
+    // ------------------------
+    // CASE 1: Delete leaf nodes (no children)
+    // ------------------------
+    assertTrue(it.deleteXY(110, 65));  // Philadelphia - left leaf
+    assertTrue(it.deleteXY(150, 85));  // Washington - right leaf
+    assertEquals(it.printBST(),
+        "1  Phoenix (120, 70)\n" +
+        "0San Francisco (130, 75)\n" +
+        "1  Seattle (140, 80)\n"
+    );
+
+    // ------------------------
+    // CASE 2: Delete root with two children
+    // ------------------------
+    assertTrue(it.deleteXY(130, 75)); // Delete San Francisco (root)
+    // Root replaced by max from left subtree (Phoenix)
+    assertEquals(it.printBST(),
+        "0Phoenix (120, 70)\n" +
+        "1  Seattle (140, 80)\n"
+    );
+
+    // ------------------------
+    // CASE 3: Delete node with one right child
+    // ------------------------
+    it.insert(city15); // Add Washington (150,85) as right child of Seattle
+    assertTrue(it.deleteXY(140, 80)); // Delete Seattle (has one right child)
+    assertEquals(it.printBST(),
+        "0Phoenix (120, 70)\n" +
+        "1  Washington (150, 85)\n"
+    );
+
+    // ------------------------
+    // CASE 4: Delete node with one left child
+    // ------------------------
+    it.insert(city14); // Re-insert Seattle (140,80)
+    it.insert(city13); // Re-insert San Francisco (130,75)
+    // Current tree: Phoenix root, Seattle right, SF left of Seattle
+    assertTrue(it.deleteXY(150, 85)); // Delete Washington, now Seattle has one left child
+    assertTrue(it.deleteXY(140, 80)); // Delete Seattle (has one left child)
+    assertEquals(it.printBST(),
+        "0Phoenix (120, 70)\n" +
+        "1  San Francisco (130, 75)\n"
+    );
+
+    // ------------------------
+    // CASE 5: Delete root with one child
+    // ------------------------
+    assertTrue(it.deleteXY(120, 70)); // Delete root (Phoenix) → single child remains
+    assertEquals(it.printBST(),
+        "0San Francisco (130, 75)\n"
+    );
+
+    // ------------------------
+    // CASE 6: Delete only remaining node (root, no children)
+    // ------------------------
+    assertTrue(it.deleteXY(130, 75)); // Delete last node
+    assertEquals(it.printBST(), ""); // Empty tree
+
+    // ------------------------
+    // CASE 7: Attempt to delete non-existent node
+    // ------------------------
+    assertFalse(it.deleteXY(999, 999)); // Doesn't exist
+    assertFalse(it.deleteXY(110, 65));  // Deleted earlier
+}
+🧩 What this tests
+Case	Description	Structure Tested
+1	Delete leaf nodes	Removes terminal children cleanly
+2	Delete root (two children)	Verifies getMax() / deleteMax() use
+3	Delete node with only right child	Right-only subtree handled correctly
+4	Delete node with only left child	Left-only subtree handled correctly
+5	Delete root with one child	Root reassignment works
+6	Delete last node	Tree becomes empty
+7	Delete non-existent coordinates	Safe return (false)
+Would you like me to make a matching testInsertXY() and testFindXY() that pair with this style of verification? That would complete the full BST coordinate-based CRUD coverage.

@@ -1,4 +1,8 @@
-// -------------------------------------------------------------------------
+// -------------------------------------------------------------------------import
+// sun.tools.tree.ThisExpression;
+
+import java.util.jar.Attributes.Name;
+
 /**
  * This class is a basic implementation of a binary search tree. The end purpose
  * of this class is to be used in conjunction with a k-d tree.
@@ -65,92 +69,247 @@ public class BST<T extends Comparable<? super T>> {
     }
 
 
+    /**
+     * Find the city of the given x and y values
+     * 
+     * @param x
+     *            is the x coordinate value
+     * @param y
+     *            is the y coordinate value
+     * @return true/false if the node was found or not
+     */
+    public boolean findXY(int x, int y) {
+        return findXYHelper(root, x, y);
+    }
+
+
+    /**
+     * Helper method to find the city of the given x and y values
+     * 
+     * @param node
+     * @param x
+     *            is the x coordinate value
+     * @param y
+     *            is the y coordinate value
+     * @return true/false if the node was found or not
+     */
+    private boolean findXYHelper(BSTNode<T> node, int x, int y) {
+        // If node not found return null
+        if (node == null) {
+            return false;
+        }
+
+        // Checks to ensure that this is of the city class
+        T element = node.getElement();
+        if (element instanceof City) {
+            City city = (City)element;
+
+            // Found a city with matching coordinates
+            if (city.getX() == x && city.getY() == y) {
+                return true;
+            }
+        }
+
+        // Iterate through the entire tree to search for the given node location
+        return findXYHelper(node.getLeft(), x, y) || findXYHelper(node
+            .getRight(), x, y);
+    }
+
+
+    /**
+     * Find the city given a name
+     * 
+     * @param name
+     *            is the name of the city
+     * @return the number of instances of the name
+     */
+    public int findName(String name) {
+        return findNameHelper(root, name);
+    }
+
+
+    /**
+     * Helper method to find the city given a name
+     * 
+     * @param node
+     * @param name
+     *            is the name of the city
+     * @return the number of instances found
+     */
+    private int findNameHelper(BSTNode<T> node, String name) {
+        // Base case: empty subtree
+        if (node == null) {
+            return 0;
+        }
+
+        int count = 0;
+
+        // Check if the node element is a City
+        T element = node.getElement();
+        if (element instanceof City) {
+            City city = (City)element;
+
+            // Compare names using .equals or .equalsIgnoreCase
+            if (city.getName().equalsIgnoreCase(name)) {
+                count = 1;
+            }
+        }
+
+        // Recurse into left and right subtrees and add results
+        count += findNameHelper(node.getLeft(), name);
+        count += findNameHelper(node.getRight(), name);
+
+        return count;
+    }
+
+
+    /**
+     * Deletes a node from BST based on X & Y coordinate
+     * 
+     * @param x
+     *            is the x coordinate
+     * @param y
+     *            is the y coordinate
+     * @return true/false if the node has been deleted
+     */
+    public boolean deleteXY(int x, int y) {
+        if (this.findXY(x, y)) {
+            this.deleteXYHelper(root, x, y);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Helper method that deletes
+     * 
+     * @param node
+     *            is the given node checked for the correct coordinate
+     * @param x
+     *            is the x coordinate
+     * @param y
+     *            is the y coordinate
+     */
+    public BSTNode<T> deleteXYHelper(BSTNode<T> node, int x, int y) {
+
+        City city = (City)node.getElement();
+
+        // Navigate the BST by comparing coordinates
+        if (x < city.getX() || (x == city.getX() && y < city.getY())) {
+            node.setLeft(deleteXYHelper(node.getLeft(), x, y));
+        }
+        else if (x > city.getX() || (x == city.getX() && y > city.getY())) {
+            node.setRight(deleteXYHelper(node.getRight(), x, y));
+        }
+        else {
+            // Found the node to delete
+            if (node.getLeft() == null) {
+                return node.getRight();
+            }
+            else if (node.getRight() == null) {
+                return node.getLeft();
+            }
+            else {
+                // Two children: replace with max of left subtree
+                BSTNode<T> maxNode = getMax(node.getLeft());
+                node.setElement(maxNode.getElement());
+                node.setLeft(deleteMax(node.getLeft()));
+            }
+        }
+        return node;
+    }
+
+
 //    /**
-//     * Deletes a node from BST based on the name
+//     * Deletes a node or several nodes depending on how many nodes have the same
+//     * name
 //     * 
 //     * @param name
-//     *            is the given name of the node that is to be deleted
+//     *            is the name of the city
+//     * @return a String of the number of nodes deleted along with the name
 //     */
-//    public BSTNode<T> deleteName(String name) {
-//        return deleteNameHelp(root, name);
+//    public String deleteName(String name) {
+//        int count = findName(name);
+//
+//        if (count == 0) {
+//            return "";
+//        }
+//
+//        root = deleteNameHelper(root, name);
+//        return count + " " + name;
 //    }
 //
 //
 //    /**
-//     * Deletes a node from the BST tree
 //     * 
 //     * @param node
-//     *            is the node that is being checked
 //     * @param name
-//     *            the string that is being compared to
 //     * @return
 //     */
-//    private BSTNode<T> deleteNameHelp(BSTNode<T> node, String name) {
-//        if (node == null) {
-//            return null;
-//        }
+//    private BSTNode<T> deleteNameHelper(BSTNode<T> node, String name) {
 //
-//        // Cast current node element to City to access its name
-//        City currentCity = (City)node.getElement();
-//        City otherCity = new City(name, 0, 0); // temporary key for comparison
+//        // Recurse first on left and right subtrees
+//        node.setLeft(deleteNameHelper(node.getLeft(), name));
+//        node.setRight(deleteNameHelper(node.getRight(), name));
 //
-//        if (currentCity.getName().compareToIgnoreCase(otherCity
-//            .getName()) > 0) {
-//            node.setLeft(deleteNameHelp(node.getLeft(), name));
-//        }
-//
-//        else if (currentCity.getName().compareToIgnoreCase(otherCity
-//            .getName()) < 0) {
-//            node.setRight(deleteNameHelp(node.getRight(), name));
-//        }
-//
-//        else {
-//            if (node.getLeft() == null) {
-//                return node.getRight();
-//            }
-//            else if (node.getRight() == null) {
-//                return node.getLeft();
-//            }
-//            else {
-//                BSTNode<T> temp = getMax(node.getLeft());
-//                node.setElement(temp.getElement());
-//                node.setLeft(deleteMax(node.getLeft()));
+//        // Then check current node
+//        T element = node.getElement();
+//        if (element instanceof City) {
+//            City city = (City)element;
+//            if (city.getName().equalsIgnoreCase(name)) {
+//                // Node deletion logic
+//                if (node.getLeft() == null && node.getRight() == null) {
+//                    return null; // leaf node
+//                }
+//                else if (node.getLeft() == null) {
+//                    return node.getRight(); // only right child
+//                }
+//                else if (node.getRight() == null) {
+//                    return node.getLeft(); // only left child
+//                }
+//                else {
+//                    // Two children: replace with predecessor (max of left)
+//                    BSTNode<T> pred = getMax(node.getLeft());
+//                    node.setElement(pred.getElement());
+//                    node.setLeft(deleteMax(node.getLeft()));
+//                }
 //            }
 //        }
-//        return node;
 //
-//    }
-//
-//
-//    /**
-//     * Delete the maximum value of an element in a subtree
-//     * 
-//     * @param node
-//     *            is the node that is being checked
-//     * @return The node that is deleted
-//     */
-//    private BSTNode<T> deleteMax(BSTNode<T> node) {
-//        if (node.getRight() == null) {
-//            return node.getLeft();
-//        }
-//        node.setRight(deleteMax(node.getRight()));
 //        return node;
 //    }
-//
-//
-//    /**
-//     * Get the maximum value element in a subtree
-//     * 
-//     * @param node
-//     *            is the node that is being checked
-//     * @return The max node in the subtree
-//     */
-//    private BSTNode<T> getMax(BSTNode<T> node) {
-//        if (node.getRight() == null) {
-//            return node;
-//        }
-//        return getMax(node.getRight());
-//    }
+
+
+    /**
+     * Delete the maximum value of an element in a subtree
+     *
+     * @param node
+     *            is the node that is being checked
+     * @return The node that is deleted
+     */
+    private BSTNode<T> deleteMax(BSTNode<T> node) {
+        if (node.getRight() == null) {
+            return node.getLeft();
+        }
+        node.setRight(deleteMax(node.getRight()));
+        return node;
+    }
+
+
+    /**
+     * Get the maximum value element in a subtree
+     *
+     * @param node
+     *            is the node that is being checked
+     * @return The max node in the subtree
+     */
+    private BSTNode<T> getMax(BSTNode<T> node) {
+        if (node.getRight() == null) {
+            return node;
+        }
+        return getMax(node.getRight());
+    }
 
 
     /**
@@ -186,10 +345,10 @@ public class BST<T extends Comparable<? super T>> {
 
         // Inorder traversal: left, current, right
         printBSTHelper(node.getLeft(), level + 1, sb);
-        
+
         // Append level to sb
         sb.append(level);
-        
+
         // Indent based on level
         for (int i = 0; i < level * 2; i++) {
             sb.append(' ');
@@ -197,9 +356,8 @@ public class BST<T extends Comparable<? super T>> {
 
         // Print level and city info
         City city = (City)node.getElement(); // cast generic T to City
-        sb.append(city.getName()).append(" (").append(
-            city.getX()).append(", ").append(city.getY()).append(")").append(
-                "\n");
+        sb.append(city.getName()).append(" (").append(city.getX()).append(", ")
+            .append(city.getY()).append(")").append("\n");
 
         printBSTHelper(node.getRight(), level + 1, sb);
     }
