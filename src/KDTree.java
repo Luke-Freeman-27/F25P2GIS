@@ -99,206 +99,203 @@ public class KDTree<T> {
     }
 
 
+    // ----------------------------------------------------------
     /**
-     * Deletes the city with the given (x, y) coordinates from the KDTree.
-     *
+     * Deletes a node that has matching x and y values and returns its status
+     * 
      * @param x
-     *            The x-coordinate of the city.
      * @param y
-     *            The y-coordinate of the city.
-     * @return A string:
-     *         - If city is found: "N [cityName]" where N is nodes visited
-     *         - If not found: "No city found at (x, y)"
+     * @return a string that gives information on the deleted node
      */
-    public String delete(int x, int y) {
-        FindResult result = findCity(x, y);
-        if (result.city == null) {
-            return "";
+    public String deleteXY(int x, int y) {
+        DeletionResult result = delete(root, x, y, 0, 0);
+        root = result.node; // update root in case it changed
+
+        if (result.deletedCity != null) {
+            return result.visited + "\n" + result.deletedCity.getName();
+        }
+        return ""; // empty string if no city found/deleted
+    }
+
+    private static class DeletionResult {
+        Node node;
+        int visited;
+        City deletedCity;
+
+        DeletionResult(Node node, int visited, City deletedCity) {
+            this.node = node;
+            this.visited = visited;
+            this.deletedCity = deletedCity;
+        }
+    }
+
+    private DeletionResult delete(
+        Node node,
+        int x,
+        int y,
+        int depth,
+        int visited) {
+        if (node == null) {
+            return new DeletionResult(null, visited, null); // Not found
         }
 
-        delete(result.city);
-        return result.count + "\n" + result.city.getName();
-    }
+        visited++;
 
+        // If this node matches the (x, y) to delete
+        if (node.city.getX() == x && node.city.getY() == y) {
+            // Node found, delete it
 
-    // ----------------------------------------------------------
-    /**
-     * Deletes the city with the given name from the KDTree
-     * 
-     * @param name
-     *            - name of string to delete
-     * @return the node if it has been deleted successfully
-     */
-    public String delete(String name) {
-        City city = findCityByName(name);
-
-        if (city == null) {
-            return "";
+            // If right subtree exists, find min in right subtree and replace
+            if (node.right != null) {
+                Node min = findMin(node.right, depth % 2, depth + 1);
+                node.city = min.city;
+                DeletionResult delRes = delete(node.right, min.city.getX(),
+                    min.city.getY(), depth + 1, visited);
+                node.right = delRes.node;
+                visited = delRes.visited;
+                return new DeletionResult(node, visited, min.city);
+            }
+            // Else if left subtree exists, find min in left subtree and replace
+            else if (node.left != null) {
+                Node min = findMin(node.left, depth % 2, depth + 1);
+                node.city = min.city;
+                DeletionResult delRes = delete(node.left, min.city.getX(),
+                    min.city.getY(), depth + 1, visited);
+                node.left = delRes.node;
+                visited = delRes.visited;
+                return new DeletionResult(node, visited, min.city);
+            }
+            // No children - just delete this node
+            else {
+                return new DeletionResult(null, visited, node.city);
+            }
         }
-
-        delete(city);
-        return city.getName() + " " + city.getX() + " " + city.getY();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Deletes the specific city object from the DBTree.
-     * 
-     * @param city
-     * @return the city object that was deleted.
-     */
-    public City delete(City city) {
-        if (city == null)
-            return null;
-        Node[] result = deleteHelper(root, city, 0);
-        root = result[0]; // update root
-        return result[1] != null ? result[1].city : null; // return deleted
-                                                          // city's data
-    }
-
-
-    private Node[] deleteHelper(Node node, City target, int depth) {
-        if (node == null)
-            return new Node[] { null, null };
 
         int cd = depth % 2;
 
-        if (node.city != null && node.city.equals(target)) {
-            // Case 1: Node to delete found
-
-            // Case 1.1: Node has right child
-            if (node.right != null) {
-                Node min = findPreorderMin(node.right, cd, depth + 1);
-                node.city = min.city;
-                Node[] result = deleteHelper(node.right, min.city, depth + 1);
-                node.right = result[0];
-                return new Node[] { node, new Node(target, depth) };
-            }
-            // Case 1.2: No right child, but has left
-            else if (node.left != null) {
-                Node min = findPreorderMin(node.left, cd, depth + 1);
-                node.city = min.city;
-                Node[] result = deleteHelper(node.left, min.city, depth + 1);
-                node.left = result[0];
-                return new Node[] { node, new Node(target, depth) };
-            }
-            // Case 1.3: Leaf node
-            else {
-                return new Node[] { null, new Node(target, depth) };
-            }
+        if ((cd == 0 && x < node.city.getX()) || (cd == 1 && y < node.city
+            .getY())) {
+            DeletionResult delRes = delete(node.left, x, y, depth + 1, visited);
+            node.left = delRes.node;
+            visited = delRes.visited;
+            return new DeletionResult(node, visited, delRes.deletedCity);
         }
-
-        // Recur left or right depending on dimension
-        if ((cd == 0 && target.getX() < node.city.getX()) || (cd == 1 && target
-            .getY() < node.city.getY())) {
-            Node[] result = deleteHelper(node.left, target, depth + 1);
-            node.left = result[0];
-            return new Node[] { node, result[1] };
-        }
-        Node[] result = deleteHelper(node.right, target, depth + 1);
-        node.right = result[0];
-        return new Node[] { node, result[1] };
+        DeletionResult delRes = delete(node.right, x, y, depth + 1, visited);
+        node.right = delRes.node;
+        visited = delRes.visited;
+        return new DeletionResult(node, visited, delRes.deletedCity);
     }
 
 
-    private Node findPreorderMin(Node node, int dim, int depth) {
+    private Node findMin(Node node, int dim, int depth) {
         if (node == null)
             return null;
 
-        Node min = node;
-        Node leftMin = findPreorderMin(node.left, dim, depth + 1);
-        Node rightMin = findPreorderMin(node.right, dim, depth + 1);
+        int cd = depth % 2;
 
-        if (leftMin != null && compareByDim(leftMin.city, min.city, dim) < 0) {
+        if (cd == dim) {
+            if (node.left == null) {
+                return node;
+            }
+            return findMin(node.left, dim, depth + 1);
+        }
+
+        Node leftMin = findMin(node.left, dim, depth + 1);
+        Node rightMin = findMin(node.right, dim, depth + 1);
+
+        Node min = node;
+        if (leftMin != null && getCoordinate(leftMin.city, dim) < getCoordinate(
+            min.city, dim))
             min = leftMin;
-        }
-        if (rightMin != null && compareByDim(rightMin.city, min.city,
-            dim) < 0) {
+        if (rightMin != null && getCoordinate(rightMin.city,
+            dim) < getCoordinate(min.city, dim))
             min = rightMin;
-        }
 
         return min;
     }
 
 
-    private int compareByDim(City a, City b, int dim) {
-        return dim == 0
-            ? Integer.compare(a.getX(), b.getX())
-            : Integer.compare(a.getY(), b.getY());
+    private int getCoordinate(City city, int dim) {
+        return dim == 0 ? city.getX() : city.getY();
     }
-
-    // Helper result class to hold city and count
-    private static class FindResult {
-        City city;
-        int count;
-
-        FindResult(City city, int count) {
-            this.city = city;
-            this.count = count;
-        }
-    }
-
-    public FindResult findCity(int x, int y) {
-        return findCityHelper(root, x, y, 0);
-    }
-
-    // Helper method that returns FindResult with city and count
-    private FindResult findCityHelper(Node node, int x, int y, int count) {
-        if (node == null) {
-            return new FindResult(null, count);
-        }
-        count++; // increment nodes visited
-
-        City city = node.city;
-        if (city.getX() == x && city.getY() == y) {
-            return new FindResult(city, count);
-        }
-
-        // Search left subtree
-        FindResult leftResult = findCityHelper(node.left, x, y, count);
-        if (leftResult.city != null) {
-            return leftResult;
-        }
-
-        // Search right subtree
-        return findCityHelper(node.right, x, y, leftResult.count);
-    }
-
 
     // ----------------------------------------------------------
     /**
-     * Finds a city by its name
+     * Takes a string input and deletes the first found node with that string as
+     * a name
      * 
      * @param name
-     * @return the city node being searched for, if found.
+     * @return - a string indicating if the node was deleted correctly.
      */
-    public City findCityByName(String name) {
-        return findCityByNameHelper(root, name);
+    public String deleteByName(String name) {
+        DeletionByNameResult result = deleteByName(root, name, 0, 0);
+        root = result.node;
+        if (result.deletedCity != null) {
+            return result.deletedCity.getName() + " " + result.deletedCity
+                .getX() + " " + result.deletedCity.getY() + " ";
+        }
+        return ""; // empty string if no city found/deleted
     }
 
+    private static class DeletionByNameResult {
+        Node node;
+        int visited;
+        City deletedCity;
 
-    private City findCityByNameHelper(Node node, String name) {
+        DeletionByNameResult(Node node, int visited, City deletedCity) {
+            this.node = node;
+            this.visited = visited;
+            this.deletedCity = deletedCity;
+        }
+    }
+
+    private DeletionByNameResult deleteByName(
+        Node node,
+        String name,
+        int depth,
+        int visited) {
         if (node == null) {
-            return null;
+            return new DeletionByNameResult(null, visited, null);
         }
 
-        City city = node.city;
-        if (city.getName().equals(name)) {
-            return city;
+        visited++;
+
+        if (node.city.getName().equals(name)) {
+            // Delete node found by name
+            // Use the same deletion logic as delete by (x, y)
+            int x = node.city.getX();
+            int y = node.city.getY();
+
+            DeletionResult delRes = delete(node, x, y, depth, visited - 1); // subtract
+                                                                            // 1
+                                                                            // because
+                                                                            // 'delete'
+                                                                            // increments
+                                                                            // again
+            return new DeletionByNameResult(delRes.node, delRes.visited,
+                delRes.deletedCity);
         }
 
-        City leftResult = findCityByNameHelper(node.left, name);
-        if (leftResult != null) {
-            return leftResult;
+        // Recursively search left subtree
+        DeletionByNameResult leftRes = deleteByName(node.left, name, depth + 1,
+            visited);
+        if (leftRes.deletedCity != null) {
+            node.left = leftRes.node;
+            return new DeletionByNameResult(node, leftRes.visited,
+                leftRes.deletedCity);
         }
 
-        return findCityByNameHelper(node.right, name);
+        // Recursively search right subtree
+        DeletionByNameResult rightRes = deleteByName(node.right, name, depth
+            + 1, leftRes.visited);
+        node.right = rightRes.node;
+        return new DeletionByNameResult(node, rightRes.visited,
+            rightRes.deletedCity);
     }
 
 
     /**
-     * Clear method, restarts the tree
+     * Clears the KDTree, removing all nodes.
      */
     public void clear() {
         root = null;
