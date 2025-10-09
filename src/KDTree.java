@@ -141,7 +141,6 @@ public class KDTree<T> {
 
         visited++;
 
-        // If this node matches the (x, y) to delete
         if (node.city.getX() == x && node.city.getY() == y) {
             // Node found, delete it
 
@@ -180,6 +179,7 @@ public class KDTree<T> {
             visited = delRes.visited;
             return new DeletionResult(node, visited, delRes.deletedCity);
         }
+
         DeletionResult delRes = delete(node.right, x, y, depth + 1, visited);
         node.right = delRes.node;
         visited = delRes.visited;
@@ -188,36 +188,77 @@ public class KDTree<T> {
 
 
     private Node findMin(Node node, int dim, int depth) {
-        if (node == null)
+        if (node == null) {
             return null;
+        }
 
         int cd = depth % 2;
 
         if (cd == dim) {
+            // When discriminator matches the dimension, only check left subtree
+            // (if any)
             if (node.left == null) {
+                // No left subtree, current node is min candidate
                 return node;
             }
-            return findMin(node.left, dim, depth + 1);
+
+            // Find min in left subtree
+            Node leftMin = findMin(node.left, dim, depth + 1);
+
+            // Compare leftMin with current node
+            int currentVal = getCoordinate(node.city, dim);
+            int leftMinVal = getCoordinate(leftMin.city, dim);
+
+            // If leftMin is strictly less, choose leftMin, else current node
+            if (leftMinVal < currentVal) {
+                return leftMin;
+            }
+            else {
+                // Equal or greater: prefer current node (preorder)
+                return node;
+            }
         }
+        else {
+            // Discriminator does not match dimension; check both subtrees and
+            // current node
 
-        Node leftMin = findMin(node.left, dim, depth + 1);
-        Node rightMin = findMin(node.right, dim, depth + 1);
+            Node leftMin = findMin(node.left, dim, depth + 1);
+            Node rightMin = findMin(node.right, dim, depth + 1);
 
-        Node min = node;
-        if (leftMin != null && getCoordinate(leftMin.city, dim) < getCoordinate(
-            min.city, dim))
-            min = leftMin;
-        if (rightMin != null && getCoordinate(rightMin.city,
-            dim) < getCoordinate(min.city, dim))
-            min = rightMin;
+            Node minNode = node;
+            int minVal = getCoordinate(minNode.city, dim);
 
-        return min;
+            // Check leftMin: if strictly less than current minVal, update
+            // minNode
+            if (leftMin != null) {
+                int leftVal = getCoordinate(leftMin.city, dim);
+                if (leftVal < minVal) {
+                    minNode = leftMin;
+                    minVal = leftVal;
+                }
+            }
+
+            // Check rightMin: if strictly less than current minVal, update
+            // minNode
+            // If equal, DO NOT update to preserve preorder preference for
+            // minNode
+            if (rightMin != null) {
+                int rightVal = getCoordinate(rightMin.city, dim);
+                if (rightVal < minVal) {
+                    minNode = rightMin;
+                    minVal = rightVal;
+                }
+            }
+
+            return minNode;
+        }
     }
 
 
     private int getCoordinate(City city, int dim) {
         return dim == 0 ? city.getX() : city.getY();
     }
+
 
     // ----------------------------------------------------------
     /**

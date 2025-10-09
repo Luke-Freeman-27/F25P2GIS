@@ -80,6 +80,10 @@ public class KDTreeTest extends TestCase {
         assertFuzzyEquals(db.deleteByName("city4"), "city4 10 16");
     }
     
+    // ----------------------------------------------------------
+    /**
+     * Deletes a city based on an input x and y position
+     */
     public void testDeletePosition() {
         City city1 = new City("city1", 12, 16);
         City city2 = new City("city2", 6, 18);
