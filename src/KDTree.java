@@ -329,6 +329,48 @@ public class KDTree<T> {
 
 
     /**
+     * Display the name of the city at coordinate (x, y) if it exists.
+     * 
+     * @param x
+     *            X coordinate.
+     * @param y
+     *            Y coordinate.
+     * @return The city name if there is such a city, empty otherwise
+     */
+    public String infoXY(int x, int y) {
+        Node found = infoXY(root, x, y, 0);
+        if (found != null) { 
+            return found.city.getName();
+        }
+        return "";
+    }
+
+
+    private Node infoXY(Node node, int x, int y, int depth) {
+        if (node == null) {
+            return null;
+        }
+
+        // Check if this node matches the coordinates
+        if (node.city.getX() == x && node.city.getY() == y) {
+            return node;
+        }
+
+        int cd = depth % 2; // current dimension
+
+        // Decide which subtree to explore based on comparison at current
+        // dimension
+        if ((cd == 0 && x < node.city.getX()) || (cd == 1 && y < node.city
+            .getY())) {
+            return infoXY(node.left, x, y, depth + 1);
+        }
+        else {
+            return infoXY(node.right, x, y, depth + 1);
+        }
+    }
+
+
+    /**
      * Clears the KDTree, removing all nodes.
      */
     public void clear() {
