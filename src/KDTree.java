@@ -419,9 +419,13 @@ public class KDTree<T> {
         int radius,
         StringBuilder foundCities,
         int[] count) {
+
         if (node == null) {
             return;
         }
+
+        // Increment count since this node is being searched (visited)
+        count[0]++;
 
         int dx = node.city.getX() - x;
         int dy = node.city.getY() - y;
@@ -432,7 +436,6 @@ public class KDTree<T> {
             foundCities.append(node.city.getName()).append(" (").append(
                 node.city.getX()).append(", ").append(node.city.getY()).append(
                     ")\n");
-            count[0]++;
         }
 
         int cd = node.depth % 2;
@@ -448,6 +451,7 @@ public class KDTree<T> {
             search(node.right, x, y, radius, foundCities, count);
         }
     }
+
 
 
     /**

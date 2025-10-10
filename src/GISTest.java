@@ -156,7 +156,6 @@ public class GISTest extends TestCase {
         assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge (20, 30)");
         assertFuzzyEquals(it.delete("New York"), "new york (24, 35)");
     }
-
 //    /**
 //     * Insert some records and check output requirements for various commands
 //     * @throws IOException
@@ -189,12 +188,12 @@ public class GISTest extends TestCase {
 //        assertFuzzyEquals("L (101, 150)\nL (11, 500)", it.info("L"));
 //        assertFuzzyEquals("L", it.info(101, 150));
 //        assertFuzzyEquals("Tacoma (1000, 100)", it.delete("Tacoma"));
-//        assertFuzzyEquals("3\nChicago", it.delete(100, 150));
+//        //assertFuzzyEquals("3\nChicago", it.delete(100, 150));
 //        assertFuzzyEquals("L (101, 150)\n"
 //                + "Atlanta (10, 500)\n"
 //                + "Baltimore (0, 300)\n"
 //                + "Washington (5, 350)\n"
 //                + "L (11, 500)\n5", it.search(0, 0, 2000));
-//        assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
+//        //assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
 //    }
 }

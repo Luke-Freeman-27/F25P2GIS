@@ -172,15 +172,20 @@ public class KDTreeTest extends TestCase {
         db.insert(city9);
 
         assertFuzzyEquals(db.search(5, 10, -1), "");
-        assertFuzzyEquals(db.search(20, 20, 1), "city6 (20, 20)\n1");
+        assertFuzzyEquals(db.search(20, 20, 1), "city6 (20, 20)\n4");
         assertFuzzyEquals(db.search(20, 20, 5),
-            "city6 (20, 20)\n city7 (20, 25)\n 2");
+            "city6 (20, 20)\n city7 (20, 25)\n 5");
+        assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n 4");
 
         KDTree<City> db2 = new KDTree<City>();
 
         assertFuzzyEquals(db2.search(0, 0, 0), "");
     }
     
+    // ----------------------------------------------------------
+    /**
+     * Tests the clear function on a filled tree.
+     */
     public void testClear() {
         City city1 = new City("city1", 12, 16);
         City city2 = new City("city2", 6, 18);
