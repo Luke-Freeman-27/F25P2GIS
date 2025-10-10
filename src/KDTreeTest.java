@@ -106,6 +106,7 @@ public class KDTreeTest extends TestCase {
         assertFuzzyEquals(db.deleteXY(0, 0), "");
         assertFuzzyEquals(db.deleteXY(5, 30), "3 \n city8");
         assertFuzzyEquals(db.deleteXY(20, 20), "4 \n city6");
+        assertFuzzyEquals(db.deleteXY(15,23), "6 \n city3");
     }
     
     // ----------------------------------------------------------

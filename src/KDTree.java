@@ -142,8 +142,6 @@ public class KDTree<T> {
         visited++;
 
         if (node.city.getX() == x && node.city.getY() == y) {
-            // Node found, delete it
-
             // If right subtree exists, find min in right subtree and replace
             if (node.right != null) {
                 Node min = findMin(node.right, depth % 2, depth + 1);
