@@ -63,6 +63,11 @@ public class GISDB implements GIS {
         if (x > MAXCOORD || y > MAXCOORD || x < 0 || y < 0) {
             return false;
         }
+
+        if (bst.findXY(x, y)) {
+            return false;
+        }
+
         City newCity = new City(name, x, y);
         db.insert(newCity);
         bst.insert(newCity);
