@@ -122,7 +122,7 @@ public class GISDB implements GIS {
      * @return The city name if there is such a city, null otherwise
      */
     public String info(int x, int y) {
-        return "";
+        return db.infoXY(x, y);
     }
 
 
