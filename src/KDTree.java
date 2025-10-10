@@ -142,40 +142,40 @@ public class KDTree<T> {
         visited++;
 
         // Check if current node matches (x,y)
-        if (node.city.getX() == x && node.city.getY() == y) {
-            // Node found; time to delete
-
-            // Case 1: Right subtree exists — replace with min in right subtree
-            // by current dimension
-            if (node.right != null) {
-                int cd = depth % 2;
-                Node min = findMin(node.right, cd, depth + 1);
-                // Replace current node's city with min node's city
-                node.city = min.city;
-                // Delete the min node from right subtree (recursive delete)
-                DeletionResult delRes = delete(node.right, min.city.getX(),
-                    min.city.getY(), depth + 1, visited);
-                node.right = delRes.node; // Update right subtree root
-                visited = delRes.visited;
-                return new DeletionResult(node, visited, min.city);
-            }
-            // Case 2: Right subtree null but left subtree exists — replace with
-            // min in left subtree by current dimension
-            else if (node.left != null) {
-                int cd = depth % 2;
-                Node min = findMin(node.left, cd, depth + 1);
-                node.city = min.city;
-                DeletionResult delRes = delete(node.left, min.city.getX(),
-                    min.city.getY(), depth + 1, visited);
-                node.left = delRes.node; // Update left subtree root
-                visited = delRes.visited;
-                return new DeletionResult(node, visited, min.city);
-            }
-            // Case 3: No children — simply delete node
-            else {
-                return new DeletionResult(null, visited, node.city);
-            }
-        }
+//        if (node.city.getX() == x && node.city.getY() == y) {
+//            // Node found; time to delete
+//
+//            // Case 1: Right subtree exists — replace with min in right subtree
+//            // by current dimension
+//            if (node.right != null) {
+//                int cd = depth % 2;
+//                Node min = findMin(node.right, cd, depth + 1);
+//                // Replace current node's city with min node's city
+//                node.city = min.city;
+//                // Delete the min node from right subtree (recursive delete)
+//                DeletionResult delRes = delete(node.right, min.city.getX(),
+//                    min.city.getY(), depth + 1, visited);
+//                node.right = delRes.node; // Update right subtree root
+//                visited = delRes.visited;
+//                return new DeletionResult(node, visited, min.city);
+//            }
+//            // Case 2: Right subtree null but left subtree exists — replace with
+//            // min in left subtree by current dimension
+//            else if (node.left != null) {
+//                int cd = depth % 2;
+//                Node min = findMin(node.left, cd, depth + 1);
+//                node.city = min.city;
+//                DeletionResult delRes = delete(node.left, min.city.getX(),
+//                    min.city.getY(), depth + 1, visited);
+//                node.left = delRes.node; // Update left subtree root
+//                visited = delRes.visited;
+//                return new DeletionResult(node, visited, min.city);
+//            }
+//            // Case 3: No children — simply delete node
+//            else {
+//                return new DeletionResult(null, visited, node.city);
+//            }
+//        }
 
         // Node doesn't match; recurse down correct subtree based on current
         // dimension
@@ -198,72 +198,72 @@ public class KDTree<T> {
     }
 
 
-    /**
-     * Finds the node with the minimum coordinate value in dimension `dim`
-     * within the subtree rooted at `node`.
-     * 
-     * The preorder preference is maintained by always preferring the root node
-     * if values are equal.
-     */
-    private Node findMin(Node node, int dim, int depth) {
-        if (node == null) {
-            return null;
-        }
-
-        int cd = depth % 2;
-
-        if (cd == dim) {
-            // Only need to check left subtree when discriminator matches
-            // dimension
-            if (node.left == null) {
-                return node;
-            }
-            Node leftMin = findMin(node.left, dim, depth + 1);
-
-            int currentVal = getCoordinate(node.city, dim);
-            int leftVal = getCoordinate(leftMin.city, dim);
-
-            // If leftMin is strictly less, pick leftMin, else pick current node
-            // (preorder preference)
-            if (leftVal < currentVal) {
-                return leftMin;
-            }
-            else {
-                return node;
-            }
-        }
-        else {
-            // Need to check both subtrees and current node when discriminator
-            // doesn't match dimension
-            Node leftMin = findMin(node.left, dim, depth + 1);
-            Node rightMin = findMin(node.right, dim, depth + 1);
-
-            Node minNode = node;
-            int minVal = getCoordinate(node.city, dim);
-
-            if (leftMin != null) {
-                int leftVal = getCoordinate(leftMin.city, dim);
-                if (leftVal < minVal) {
-                    minNode = leftMin;
-                    minVal = leftVal;
-                }
-            }
-
-            if (rightMin != null) {
-                int rightVal = getCoordinate(rightMin.city, dim);
-                if (rightVal < minVal) {
-                    minNode = rightMin;
-                    minVal = rightVal;
-                }
-            }
-
-            return minNode;
-        }
-    }
-
-    private int getCoordinate(City city, int dim) {
-        return dim == 0 ? city.getX() : city.getY();
-    }
+//    /**
+//     * Finds the node with the minimum coordinate value in dimension `dim`
+//     * within the subtree rooted at `node`.
+//     * 
+//     * The preorder preference is maintained by always preferring the root node
+//     * if values are equal.
+//     */
+//    private Node findMin(Node node, int dim, int depth) {
+//        if (node == null) {
+//            return null;
+//        }
+//
+//        int cd = depth % 2;
+//
+//        if (cd == dim) {
+//            // Only need to check left subtree when discriminator matches
+//            // dimension
+//            if (node.left == null) {
+//                return node;
+//            }
+//            Node leftMin = findMin(node.left, dim, depth + 1);
+//
+//            int currentVal = getCoordinate(node.city, dim);
+//            int leftVal = getCoordinate(leftMin.city, dim);
+//
+//            // If leftMin is strictly less, pick leftMin, else pick current node
+//            // (preorder preference)
+//            if (leftVal < currentVal) {
+//                return leftMin;
+//            }
+//            else {
+//                return node;
+//            }
+//        }
+//        else {
+//            // Need to check both subtrees and current node when discriminator
+//            // doesn't match dimension
+//            Node leftMin = findMin(node.left, dim, depth + 1);
+//            Node rightMin = findMin(node.right, dim, depth + 1);
+//
+//            Node minNode = node;
+//            int minVal = getCoordinate(node.city, dim);
+//
+//            if (leftMin != null) {
+//                int leftVal = getCoordinate(leftMin.city, dim);
+//                if (leftVal < minVal) {
+//                    minNode = leftMin;
+//                    minVal = leftVal;
+//                }
+//            }
+//
+//            if (rightMin != null) {
+//                int rightVal = getCoordinate(rightMin.city, dim);
+//                if (rightVal < minVal) {
+//                    minNode = rightMin;
+//                    minVal = rightVal;
+//                }
+//            }
+//
+//            return minNode;
+//        }
+//    }
+//
+//    private int getCoordinate(City city, int dim) {
+//        return dim == 0 ? city.getX() : city.getY();
+//    }
 
 
     // ----------------------------------------------------------
