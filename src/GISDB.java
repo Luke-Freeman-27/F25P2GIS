@@ -75,15 +75,15 @@ public class GISDB implements GIS {
      * The city with these coordinates is deleted from the database
      * (if it exists).
      * Print the name of the city if it exists.
-     * If no such city at this location exist, print that.
+     * If no city at this location exists, print the empty string.
      * 
      * @param x
      *            City x-coordinate.
      * @param y
      *            City y-coordinate.
-     * @return A string that is empty if there is no such city, otherwise
-     *         a string with the number of KD-tree nodes visited during the
-     *         deletion process, followed by the name of the city.
+     * @return A string with the number of nodes visited during the deletion
+     *         followed by the name of the city (this is blank if nothing
+     *         was deleted).
      */
     public String delete(int x, int y) {
         bst.deleteXY(x, y);

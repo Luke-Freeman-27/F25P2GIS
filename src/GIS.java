@@ -15,7 +15,6 @@ public interface GIS {
      */
     public boolean clear();
 
-
     // ----------------------------------------------------------
     /**
      * A city at coordinate (x, y) with name name is entered into the database.
@@ -34,7 +33,7 @@ public interface GIS {
      * The city with these coordinates is deleted from the database
      * (if it exists).
      * Print the name of the city if it exists.
-     * If no such city at this location exist, print that.
+     * If no city at this location exists, print the empty string.
      * @param x City x-coordinate.
      * @param y City y-coordinate.
      * @return A string with the number of nodes visited during the deletion
@@ -50,10 +49,11 @@ public interface GIS {
      * If two or more cities have this name, then ALL such cities must be
      * removed.
      * Print the coordinates of each city that is deleted.
-     * If no such city at this location exists, print that.
+     * If no city with this name exists, print the empty string.
      * @param name City name.
      * @return A string with the coordinates of each city that is deleted
      *          (listed in preorder as they are deleted).
+     *          Print the empty string if no cites match.
      */
     public String delete(String name);
 
@@ -98,7 +98,7 @@ public interface GIS {
 
     // ----------------------------------------------------------
     /**
-     * Print a listing of the database as a preorder traversal of the k-d tree.
+     * Print a listing of the database as an inorder traversal of the k-d tree.
      * Each city should be printed on a separate line. Each line should start
      * with the level of the current node, then be indented by 2 * level spaces
      * for a node at a given level, counting the root as level 0.
@@ -109,7 +109,9 @@ public interface GIS {
 
     // ----------------------------------------------------------
     /**
-     * Print a listing of the BST in alphabetical order on the names.
+    /**
+     * Print a listing of the BST in alphabetical order (inorder traversal)
+     * on the names.
      * Each city should be printed on a separate line. Each line should start
      * with the level of the current node, then be indented by 2 * level spaces
      * for a node at a given level, counting the root as level 0.
