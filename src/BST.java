@@ -319,6 +319,54 @@ public class BST<T extends Comparable<? super T>> {
 
 
     /**
+     * Lists the information for a given city name in the BST.
+     * 
+     * @param name
+     *            The city name to search for.
+     * @return
+     *            A string listing all cities with that name and their coordinates,
+     *            one per line in the format "City (x, y)".
+     *            If no cities are found, returns "No city with this name exists."
+     */
+    public String infoName(String name) {
+        StringBuilder result = new StringBuilder();
+        infoNameHelp(root, name, result);
+
+        if (result.length() == 0) {
+            return "";
+        }
+
+        // Remove last newline if needed
+        return result.toString().trim();
+    }
+
+    /**
+     * Recursive helper to find and append all cities with the given name.
+     */
+    private void infoNameHelp(BSTNode<T> node, String name, StringBuilder result) {
+        if (node == null) {
+            return;
+        }
+
+        City city = (City) node.getElement();
+
+        // Case-insensitive comparison
+        if (city.getName().equalsIgnoreCase(name)) {
+            result.append(city.getName())
+                  .append(" (")
+                  .append(city.getX())
+                  .append(", ")
+                  .append(city.getY())
+                  .append(")\n");
+        }
+
+        // Continue searching both sides (there can be duplicates)
+        infoNameHelp(node.getLeft(), name, result);
+        infoNameHelp(node.getRight(), name, result);
+    }
+
+
+    /**
      * Print a listing of the BST in alphabetical order on the names.
      * Each city printed on a separate line.
      * Each line starts with the level, then indented 2*level spaces.

@@ -140,7 +140,7 @@ public class GISDB implements GIS {
      * @return String representing the cities found
      */
     public String info(String name) {
-        return "";
+        return bst.infoName(name);
     }
 
 

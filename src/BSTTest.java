@@ -225,4 +225,36 @@ public class BSTTest extends TestCase {
         assertFuzzyEquals(it.deleteName("No Name"), "");
     }
 
+
+    /**
+     * This method tests the infoName method in the BST
+     */
+    public void testInfoName() {
+        // Insert city nodes
+        it.insert(city13);
+        it.insert(city12);
+        it.insert(city14);
+        it.insert(city11);
+        it.insert(city15);
+        assertEquals(it.printBST(), "2    Philadelphia (110, 65)\n"
+            + "1  Phoenix (120, 70)\n" + "0San Francisco (130, 75)\n"
+            + "1  Seattle (140, 80)\n" + "2    Washington (150, 85)\n");
+        assertFuzzyEquals(it.infoName("Washington"), "Washington (150, 85)");
+        City cityRepeat1 = new City("Repeat City", 100, 100);
+        City cityRepeat2 = new City("Repeat City", 100, 200);
+        City cityRepeat3 = new City("Repeat City", 200, 100);
+        it.insert(cityRepeat1);
+        it.insert(cityRepeat2);
+        it.insert(cityRepeat3);
+        assertEquals(it.printBST(), "2    Philadelphia (110, 65)\n"
+            + "1  Phoenix (120, 70)\n" + "4        Repeat City (200, 100)\n"
+            + "3      Repeat City (100, 200)\n"
+            + "2    Repeat City (100, 100)\n" + "0San Francisco (130, 75)\n"
+            + "1  Seattle (140, 80)\n" + "2    Washington (150, 85)\n");
+        assertFuzzyEquals(it.infoName("Silly City"), "");
+        assertFuzzyEquals(it.infoName("Phoenix"), "Phoenix (120, 70)");
+        assertFuzzyEquals(it.infoName("Repeat City"), "Repeat City (100, 100)\n"
+            + "Repeat City (100, 200)\n" + "Repeat City (200, 100)\n");
+    }
+
 }
