@@ -155,7 +155,7 @@ public class GISDB implements GIS {
      * @param x
      *            Search circle center: X coordinate. May be negative.
      * @param y
-     *            Search circle center: X coordinate. May be negative.
+     *            Search circle center: Y coordinate. May be negative.
      * @param radius
      *            Search radius, must be non-negative.
      * @return String listing the cities found (if any) , followed by the count
