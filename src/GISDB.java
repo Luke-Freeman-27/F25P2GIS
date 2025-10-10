@@ -92,7 +92,8 @@ public class GISDB implements GIS {
      */
     public String delete(int x, int y) {
         bst.deleteXY(x, y);
-        return db.deleteXY(x, y);
+        //return db.deleteXY(x, y);
+        return "";
     }
 
 
@@ -110,7 +111,7 @@ public class GISDB implements GIS {
      *         (listed in preorder as they are deleted).
      */
     public String delete(String name) {
-        db.deleteByName(name);
+        //db.deleteByName(name);
         return bst.deleteName(name);
 
     }

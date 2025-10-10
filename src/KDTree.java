@@ -99,239 +99,239 @@ public class KDTree<T> {
     }
 
 
-    // ----------------------------------------------------------
-    /**
-     * Deletes a node that has matching x and y values and returns its status
-     * 
-     * @param x
-     * @param y
-     * @return a string that gives information on the deleted node
-     */
-    public String deleteXY(int x, int y) {
-        DeletionResult result = delete(root, x, y, 0, 0);
-        root = result.node; // update root in case it changed
-
-        if (result.deletedCity != null) {
-            return result.visited + "\n" + result.deletedCity.getName();
-        }
-        return ""; // empty string if no city found/deleted
-    }
-
-    private static class DeletionResult {
-        Node node;
-        int visited;
-        City deletedCity;
-
-        DeletionResult(Node node, int visited, City deletedCity) {
-            this.node = node;
-            this.visited = visited;
-            this.deletedCity = deletedCity;
-        }
-    }
-
-    private DeletionResult delete(
-        Node node,
-        int x,
-        int y,
-        int depth,
-        int visited) {
-        if (node == null) {
-            return new DeletionResult(null, visited, null); // Not found
-        }
-
-        visited++;
-
-        // Check if current node matches (x,y)
-// if (node.city.getX() == x && node.city.getY() == y) {
-// // Node found; time to delete
+//    // ----------------------------------------------------------
+//    /**
+//     * Deletes a node that has matching x and y values and returns its status
+//     * 
+//     * @param x
+//     * @param y
+//     * @return a string that gives information on the deleted node
+//     */
+//    public String deleteXY(int x, int y) {
+//        DeletionResult result = delete(root, x, y, 0, 0);
+//        root = result.node; // update root in case it changed
 //
-// // Case 1: Right subtree exists — replace with min in right subtree
-// // by current dimension
-// if (node.right != null) {
-// int cd = depth % 2;
-// Node min = findMin(node.right, cd, depth + 1);
-// // Replace current node's city with min node's city
-// node.city = min.city;
-// // Delete the min node from right subtree (recursive delete)
-// DeletionResult delRes = delete(node.right, min.city.getX(),
-// min.city.getY(), depth + 1, visited);
-// node.right = delRes.node; // Update right subtree root
-// visited = delRes.visited;
-// return new DeletionResult(node, visited, min.city);
-// }
-// // Case 2: Right subtree null but left subtree exists — replace with
-// // min in left subtree by current dimension
-// else if (node.left != null) {
-// int cd = depth % 2;
-// Node min = findMin(node.left, cd, depth + 1);
-// node.city = min.city;
-// DeletionResult delRes = delete(node.left, min.city.getX(),
-// min.city.getY(), depth + 1, visited);
-// node.left = delRes.node; // Update left subtree root
-// visited = delRes.visited;
-// return new DeletionResult(node, visited, min.city);
-// }
-// // Case 3: No children — simply delete node
-// else {
-// return new DeletionResult(null, visited, node.city);
-// }
-// }
-
-        // Node doesn't match; recurse down correct subtree based on current
-        // dimension
-        int cd = depth % 2;
-
-        if ((cd == 0 && x < node.city.getX()) || (cd == 1 && y < node.city
-            .getY())) {
-            DeletionResult delRes = delete(node.left, x, y, depth + 1, visited);
-            node.left = delRes.node;
-            visited = delRes.visited;
-            return new DeletionResult(node, visited, delRes.deletedCity);
-        }
-        else {
-            DeletionResult delRes = delete(node.right, x, y, depth + 1,
-                visited);
-            node.right = delRes.node;
-            visited = delRes.visited;
-            return new DeletionResult(node, visited, delRes.deletedCity);
-        }
-    }
-
-// /**
-// * Finds the node with the minimum coordinate value in dimension `dim`
-// * within the subtree rooted at `node`.
-// *
-// * The preorder preference is maintained by always preferring the root node
-// * if values are equal.
-// */
-// private Node findMin(Node node, int dim, int depth) {
-// if (node == null) {
-// return null;
-// }
+//        if (result.deletedCity != null) {
+//            return result.visited + "\n" + result.deletedCity.getName();
+//        }
+//        return ""; // empty string if no city found/deleted
+//    }
 //
-// int cd = depth % 2;
+//    private static class DeletionResult {
+//        Node node;
+//        int visited;
+//        City deletedCity;
 //
-// if (cd == dim) {
-// // Only need to check left subtree when discriminator matches
-// // dimension
-// if (node.left == null) {
-// return node;
-// }
-// Node leftMin = findMin(node.left, dim, depth + 1);
+//        DeletionResult(Node node, int visited, City deletedCity) {
+//            this.node = node;
+//            this.visited = visited;
+//            this.deletedCity = deletedCity;
+//        }
+//    }
 //
-// int currentVal = getCoordinate(node.city, dim);
-// int leftVal = getCoordinate(leftMin.city, dim);
+//    private DeletionResult delete(
+//        Node node,
+//        int x,
+//        int y,
+//        int depth,
+//        int visited) {
+//        if (node == null) {
+//            return new DeletionResult(null, visited, null); // Not found
+//        }
 //
-// // If leftMin is strictly less, pick leftMin, else pick current node
-// // (preorder preference)
-// if (leftVal < currentVal) {
-// return leftMin;
-// }
-// else {
-// return node;
-// }
-// }
-// else {
-// // Need to check both subtrees and current node when discriminator
-// // doesn't match dimension
-// Node leftMin = findMin(node.left, dim, depth + 1);
-// Node rightMin = findMin(node.right, dim, depth + 1);
+//        visited++;
 //
-// Node minNode = node;
-// int minVal = getCoordinate(node.city, dim);
+//        // Check if current node matches (x,y)
+//// if (node.city.getX() == x && node.city.getY() == y) {
+//// // Node found; time to delete
+////
+//// // Case 1: Right subtree exists — replace with min in right subtree
+//// // by current dimension
+//// if (node.right != null) {
+//// int cd = depth % 2;
+//// Node min = findMin(node.right, cd, depth + 1);
+//// // Replace current node's city with min node's city
+//// node.city = min.city;
+//// // Delete the min node from right subtree (recursive delete)
+//// DeletionResult delRes = delete(node.right, min.city.getX(),
+//// min.city.getY(), depth + 1, visited);
+//// node.right = delRes.node; // Update right subtree root
+//// visited = delRes.visited;
+//// return new DeletionResult(node, visited, min.city);
+//// }
+//// // Case 2: Right subtree null but left subtree exists — replace with
+//// // min in left subtree by current dimension
+//// else if (node.left != null) {
+//// int cd = depth % 2;
+//// Node min = findMin(node.left, cd, depth + 1);
+//// node.city = min.city;
+//// DeletionResult delRes = delete(node.left, min.city.getX(),
+//// min.city.getY(), depth + 1, visited);
+//// node.left = delRes.node; // Update left subtree root
+//// visited = delRes.visited;
+//// return new DeletionResult(node, visited, min.city);
+//// }
+//// // Case 3: No children — simply delete node
+//// else {
+//// return new DeletionResult(null, visited, node.city);
+//// }
+//// }
 //
-// if (leftMin != null) {
-// int leftVal = getCoordinate(leftMin.city, dim);
-// if (leftVal < minVal) {
-// minNode = leftMin;
-// minVal = leftVal;
-// }
-// }
+//        // Node doesn't match; recurse down correct subtree based on current
+//        // dimension
+//        int cd = depth % 2;
 //
-// if (rightMin != null) {
-// int rightVal = getCoordinate(rightMin.city, dim);
-// if (rightVal < minVal) {
-// minNode = rightMin;
-// minVal = rightVal;
-// }
-// }
+//        if ((cd == 0 && x < node.city.getX()) || (cd == 1 && y < node.city
+//            .getY())) {
+//            DeletionResult delRes = delete(node.left, x, y, depth + 1, visited);
+//            node.left = delRes.node;
+//            visited = delRes.visited;
+//            return new DeletionResult(node, visited, delRes.deletedCity);
+//        }
+//        else {
+//            DeletionResult delRes = delete(node.right, x, y, depth + 1,
+//                visited);
+//            node.right = delRes.node;
+//            visited = delRes.visited;
+//            return new DeletionResult(node, visited, delRes.deletedCity);
+//        }
+//    }
 //
-// return minNode;
-// }
-// }
+//// /**
+//// * Finds the node with the minimum coordinate value in dimension `dim`
+//// * within the subtree rooted at `node`.
+//// *
+//// * The preorder preference is maintained by always preferring the root node
+//// * if values are equal.
+//// */
+//// private Node findMin(Node node, int dim, int depth) {
+//// if (node == null) {
+//// return null;
+//// }
+////
+//// int cd = depth % 2;
+////
+//// if (cd == dim) {
+//// // Only need to check left subtree when discriminator matches
+//// // dimension
+//// if (node.left == null) {
+//// return node;
+//// }
+//// Node leftMin = findMin(node.left, dim, depth + 1);
+////
+//// int currentVal = getCoordinate(node.city, dim);
+//// int leftVal = getCoordinate(leftMin.city, dim);
+////
+//// // If leftMin is strictly less, pick leftMin, else pick current node
+//// // (preorder preference)
+//// if (leftVal < currentVal) {
+//// return leftMin;
+//// }
+//// else {
+//// return node;
+//// }
+//// }
+//// else {
+//// // Need to check both subtrees and current node when discriminator
+//// // doesn't match dimension
+//// Node leftMin = findMin(node.left, dim, depth + 1);
+//// Node rightMin = findMin(node.right, dim, depth + 1);
+////
+//// Node minNode = node;
+//// int minVal = getCoordinate(node.city, dim);
+////
+//// if (leftMin != null) {
+//// int leftVal = getCoordinate(leftMin.city, dim);
+//// if (leftVal < minVal) {
+//// minNode = leftMin;
+//// minVal = leftVal;
+//// }
+//// }
+////
+//// if (rightMin != null) {
+//// int rightVal = getCoordinate(rightMin.city, dim);
+//// if (rightVal < minVal) {
+//// minNode = rightMin;
+//// minVal = rightVal;
+//// }
+//// }
+////
+//// return minNode;
+//// }
+//// }
+////
+//// private int getCoordinate(City city, int dim) {
+//// return dim == 0 ? city.getX() : city.getY();
+//// }
 //
-// private int getCoordinate(City city, int dim) {
-// return dim == 0 ? city.getX() : city.getY();
-// }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Takes a string input and deletes the first found node with that string as
-     * a name
-     * 
-     * @param name
-     * @return - a string indicating if the node was deleted correctly.
-     */
-    public String deleteByName(String name) {
-        DeletionByNameResult result = deleteByName(root, name, 0, 0);
-        root = result.node;
-        if (result.deletedCity != null) {
-            return result.deletedCity.getName() + " " + result.deletedCity
-                .getX() + " " + result.deletedCity.getY() + " ";
-        }
-        return ""; // empty string if no city found/deleted
-    }
-
-    private static class DeletionByNameResult {
-        Node node;
-        int visited;
-        City deletedCity;
-
-        DeletionByNameResult(Node node, int visited, City deletedCity) {
-            this.node = node;
-            this.visited = visited;
-            this.deletedCity = deletedCity;
-        }
-    }
-
-    private DeletionByNameResult deleteByName(
-        Node node,
-        String name,
-        int depth,
-        int visited) {
-        if (node == null) {
-            return new DeletionByNameResult(null, visited, null);
-        }
-
-        visited++;
-
-        if (node.city.getName().equalsIgnoreCase(name)) {
-            System.out.println("Deleting node: " + node.city.getName() + " ("
-                + node.city.getX() + "," + node.city.getY() + ")");
-            int x = node.city.getX();
-            int y = node.city.getY();
-
-            DeletionResult delRes = delete(node, x, y, depth, visited - 1);
-            return new DeletionByNameResult(delRes.node, delRes.visited,
-                delRes.deletedCity);
-        }
-
-        DeletionByNameResult leftRes = deleteByName(node.left, name, depth + 1,
-            visited);
-        if (leftRes.deletedCity != null) {
-            node.left = leftRes.node;
-            return new DeletionByNameResult(node, leftRes.visited,
-                leftRes.deletedCity);
-        }
-
-        DeletionByNameResult rightRes = deleteByName(node.right, name, depth
-            + 1, leftRes.visited);
-        node.right = rightRes.node;
-        return new DeletionByNameResult(node, rightRes.visited,
-            rightRes.deletedCity);
-    }
-
+//
+//    // ----------------------------------------------------------
+//    /**
+//     * Takes a string input and deletes the first found node with that string as
+//     * a name
+//     * 
+//     * @param name
+//     * @return - a string indicating if the node was deleted correctly.
+//     */
+//    public String deleteByName(String name) {
+//        DeletionByNameResult result = deleteByName(root, name, 0, 0);
+//        root = result.node;
+//        if (result.deletedCity != null) {
+//            return result.deletedCity.getName() + " " + result.deletedCity
+//                .getX() + " " + result.deletedCity.getY() + " ";
+//        }
+//        return ""; // empty string if no city found/deleted
+//    }
+//
+//    private static class DeletionByNameResult {
+//        Node node;
+//        int visited;
+//        City deletedCity;
+//
+//        DeletionByNameResult(Node node, int visited, City deletedCity) {
+//            this.node = node;
+//            this.visited = visited;
+//            this.deletedCity = deletedCity;
+//        }
+//    }
+//
+//    private DeletionByNameResult deleteByName(
+//        Node node,
+//        String name,
+//        int depth,
+//        int visited) {
+//        if (node == null) {
+//            return new DeletionByNameResult(null, visited, null);
+//        }
+//
+//        visited++;
+//
+//        if (node.city.getName().equalsIgnoreCase(name)) {
+//            System.out.println("Deleting node: " + node.city.getName() + " ("
+//                + node.city.getX() + "," + node.city.getY() + ")");
+//            int x = node.city.getX();
+//            int y = node.city.getY();
+//
+//            DeletionResult delRes = delete(node, x, y, depth, visited - 1);
+//            return new DeletionByNameResult(delRes.node, delRes.visited,
+//                delRes.deletedCity);
+//        }
+//
+//        DeletionByNameResult leftRes = deleteByName(node.left, name, depth + 1,
+//            visited);
+//        if (leftRes.deletedCity != null) {
+//            node.left = leftRes.node;
+//            return new DeletionByNameResult(node, leftRes.visited,
+//                leftRes.deletedCity);
+//        }
+//
+//        DeletionByNameResult rightRes = deleteByName(node.right, name, depth
+//            + 1, leftRes.visited);
+//        node.right = rightRes.node;
+//        return new DeletionByNameResult(node, rightRes.visited,
+//            rightRes.deletedCity);
+//    }
+//
 
     /**
      * Display the name of the city at coordinate (x, y) if it exists.
