@@ -5166,3 +5166,124 @@ Case	Description	Structure Tested
 6	Delete last node	Tree becomes empty
 7	Delete non-existent coordinates	Safe return (false)
 Would you like me to make a matching testInsertXY() and testFindXY() that pair with this style of verification? That would complete the full BST coordinate-based CRUD coverage.
+
+Got it. You want the `delete(int x, int y)` method to:
+
+* **Return the number of searched nodes and the city name**, **if the city is found and deleted**.
+* **Return an empty string** if no city at the specified `(x, y)` was found.
+
+---
+
+## ✅ Updated `delete(int x, int y)` Implementation
+
+```java
+public String delete(int x, int y) {
+    City[] deletedCity = new City[1]; // to store the deleted city
+    int[] searched = new int[1];      // to count searched nodes
+
+    root = delete(root, x, y, 0, deletedCity, searched);
+
+    if (deletedCity[0] == null) {
+        return ""; // city not found, return empty string
+    }
+
+    // city found and deleted
+    StringBuilder result = new StringBuilder();
+    result.append("(").append(searched[0]).append(")\n");
+    result.append(deletedCity[0].getName()).append("\n");
+    return result.toString();
+}
+```
+
+---
+
+## ✅ The Rest of the Supporting Code
+
+These helper methods remain the same as in the previous message:
+
+### 🔧 `delete(...)`
+
+```java
+private Node delete(Node node, int x, int y, int depth, City[] deletedCity, int[] searched) {
+    if (node == null) return null;
+
+    searched[0]++;
+
+    int cd = depth % 2;
+
+    if (node.city.getX() == x && node.city.getY() == y) {
+        deletedCity[0] = node.city;
+
+        if (node.right != null) {
+            Node min = findMinNode(node.right, cd);
+            node.city = min.city;
+            node.right = delete(node.right, min.city.getX(), min.city.getY(), depth + 1, new City[1], searched);
+        } else if (node.left != null) {
+            Node min = findMinNode(node.left, cd);
+            node.city = min.city;
+            node.right = delete(node.left, min.city.getX(), min.city.getY(), depth + 1, new City[1], searched);
+            node.left = null;
+        } else {
+            return null;
+        }
+
+        return node;
+    }
+
+    int targetCoord = (cd == 0) ? x : y;
+    int nodeCoord = (cd == 0) ? node.city.getX() : node.city.getY();
+
+    if (targetCoord < nodeCoord) {
+        node.left = delete(node.left, x, y, depth + 1, deletedCity, searched);
+    } else {
+        node.right = delete(node.right, x, y, depth + 1, deletedCity, searched);
+    }
+
+    return node;
+}
+```
+
+### 🔍 `findMinNode(...)` with preorder rule
+
+```java
+private Node findMinNode(Node node, int dim) {
+    if (node == null) return null;
+
+    Node min = node;
+
+    Node leftMin = findMinNode(node.left, dim);
+    if (leftMin != null && compareDim(leftMin.city, min.city, dim) < 0) {
+        min = leftMin;
+    }
+
+    Node rightMin = findMinNode(node.right, dim);
+    if (rightMin != null && compareDim(rightMin.city, min.city, dim) < 0) {
+        min = rightMin;
+    }
+
+    return min;
+}
+```
+
+### 🧮 `compareDim(...)`
+
+```java
+private int compareDim(City a, City b, int dim) {
+    return (dim == 0)
+        ? Integer.compare(a.getX(), b.getX())
+        : Integer.compare(a.getY(), b.getY());
+}
+```
+
+---
+
+## ✅ Example Outputs
+
+| Case                   | Output Format       |
+| ---------------------- | ------------------- |
+| City found and deleted | `(4)\nGotham\n`     |
+| City not found         | `""` (empty string) |
+
+---
+
+Let me know if you'd like to integrate this into a full `KDTree` class or need the `City` class and sample tests!

@@ -77,8 +77,8 @@ public class GISTest extends TestCase {
         assertTrue(it.insert("city4", 10, 16));
         assertTrue(it.insert("city5", 27, 14));
 
-//        assertFuzzyEquals(it.delete(6, 18), "2\n" + "city2");
-//        assertFuzzyEquals(it.delete(27, 14), "3\n" + "city5");
+        assertFuzzyEquals(it.delete(6, 18), "4\n" + "city2");
+        assertFuzzyEquals(it.delete(27, 14), "3\n" + "city5");
     }
 
 
@@ -156,44 +156,44 @@ public class GISTest extends TestCase {
         assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge (20, 30)");
         assertFuzzyEquals(it.delete("New York"), "new york (24, 35)");
     }
-//    /**
-//     * Insert some records and check output requirements for various commands
-//     * @throws IOException
-//     */
-//    public void testRefOutput()
-//        throws IOException
-//    {
-//        assertTrue(it.insert("Chicago", 100, 150));
-//        assertTrue(it.insert("Atlanta", 10, 500));
-//        assertTrue(it.insert("Tacoma", 1000, 100));
-//        assertTrue(it.insert("Baltimore", 0, 300));
-//        assertTrue(it.insert("Washington", 5, 350));
-//        assertFalse(it.insert("X", 100, 150));
-//        assertTrue(it.insert("L", 101, 150));
-//        assertTrue(it.insert("L", 11, 500));
-//        assertFuzzyEquals("1  Atlanta (10, 500)\n"
-//            + "2    Baltimore (0, 300)\n"
-//            + "0Chicago (100, 150)\n"
-//            + "3      L (11, 500)\n"
-//            + "2    L (101, 150)\n"
-//            + "1  Tacoma (1000, 100)\n"
-//            + "2    Washington (5, 350)\n", it.print());
-//        assertFuzzyEquals("2    Baltimore (0, 300)\n"
-//            + "3      Washington (5, 350)\n"
-//            + "1  Atlanta (10, 500)\n"
-//            + "2    L (11, 500)\n"
-//            + "0Chicago (100, 150)\n"
-//            + "1  Tacoma (1000, 100)\n"
-//            + "2    L (101, 150)\n", it.debug());
-//        assertFuzzyEquals("L (101, 150)\nL (11, 500)", it.info("L"));
-//        assertFuzzyEquals("L", it.info(101, 150));
-//        assertFuzzyEquals("Tacoma (1000, 100)", it.delete("Tacoma"));
-//        //assertFuzzyEquals("3\nChicago", it.delete(100, 150));
+    /**
+     * Insert some records and check output requirements for various commands
+     * @throws IOException
+     */
+    public void testRefOutput()
+        throws IOException
+    {
+        assertTrue(it.insert("Chicago", 100, 150));
+        assertTrue(it.insert("Atlanta", 10, 500));
+        assertTrue(it.insert("Tacoma", 1000, 100));
+        assertTrue(it.insert("Baltimore", 0, 300));
+        assertTrue(it.insert("Washington", 5, 350));
+        assertFalse(it.insert("X", 100, 150));
+        assertTrue(it.insert("L", 101, 150));
+        assertTrue(it.insert("L", 11, 500));
+        assertFuzzyEquals("1  Atlanta (10, 500)\n"
+            + "2    Baltimore (0, 300)\n"
+            + "0Chicago (100, 150)\n"
+            + "3      L (11, 500)\n"
+            + "2    L (101, 150)\n"
+            + "1  Tacoma (1000, 100)\n"
+            + "2    Washington (5, 350)\n", it.print());
+        assertFuzzyEquals("2    Baltimore (0, 300)\n"
+            + "3      Washington (5, 350)\n"
+            + "1  Atlanta (10, 500)\n"
+            + "2    L (11, 500)\n"
+            + "0Chicago (100, 150)\n"
+            + "1  Tacoma (1000, 100)\n"
+            + "2    L (101, 150)\n", it.debug());
+        assertFuzzyEquals("L (101, 150)\nL (11, 500)", it.info("L"));
+        assertFuzzyEquals("L", it.info(101, 150));
+        assertFuzzyEquals("Tacoma (1000, 100)", it.delete("Tacoma"));
+//        assertFuzzyEquals("3\nChicago", it.delete(100, 150));
 //        assertFuzzyEquals("L (101, 150)\n"
 //                + "Atlanta (10, 500)\n"
 //                + "Baltimore (0, 300)\n"
 //                + "Washington (5, 350)\n"
 //                + "L (11, 500)\n5", it.search(0, 0, 2000));
-//        //assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
-//    }
+//        assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
+    }
 }
