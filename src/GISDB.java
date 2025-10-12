@@ -91,7 +91,6 @@ public class GISDB implements GIS {
      *         was deleted).
      */
     public String delete(int x, int y) {
-        bst.deleteXY(x, y);
         return db.delete(x, y);
     }
 

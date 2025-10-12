@@ -102,6 +102,20 @@ public class KDTree<T> {
     }
 
 
+    /**
+     * The city with these coordinates is deleted from the database
+     * (if it exists).
+     * Print the name of the city if it exists.
+     * If no city at this location exists, print the empty string.
+     * 
+     * @param x
+     *            City x-coordinate.
+     * @param y
+     *            City y-coordinate.
+     * @return A string with the number of nodes visited during the deletion
+     *         followed by the name of the city (this is blank if nothing
+     *         was deleted).
+     */
     public String delete(int x, int y) {
         City[] deletedCity = new City[1]; // to store the deleted city
         int[] searched = new int[1]; // to count searched nodes
