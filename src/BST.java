@@ -1,7 +1,6 @@
 // -------------------------------------------------------------------------import
 // sun.tools.tree.ThisExpression;
 
-import java.util.jar.Attributes.Name;
 
 /**
  * This class is a basic implementation of a binary search tree. The end purpose
@@ -224,24 +223,10 @@ public class BST<T extends Comparable<? super T>> {
 
 
     /**
-     * Deletes a node or several nodes depending on how many nodes have the same
-     * name
-     * 
-     * @param name
-     *            is the name of the city
-     * @return a string with the coordinates of each city that is deleted listed
-     *         in preorder as they are deleted. "name" (x1, y1) (x2, y2)
+     * Delete
      */
     public String deleteName(String name) {
-        int count = findName(name);
-
-        if (count == 0) {
-            return "";
-        }
-
-        String deletedCoordinates = deleteNameHelper(root, name).trim();
-
-        return name + " " + deletedCoordinates;
+        return deleteNameHelper(root, name).trim();
     }
 
 
@@ -252,26 +237,26 @@ public class BST<T extends Comparable<? super T>> {
      *            is the given node being checked
      * @param name
      *            is the name of the city
-     * @return the locations of all cities that have that name in
-     *         preorder.(x1, y1) (x2, y2)
+     * @return A string of the coordinates deleted by the delete method.
      */
     private String deleteNameHelper(BSTNode<T> node, String name) {
         if (node == null) {
             return "";
         }
+
         StringBuilder deleted = new StringBuilder();
+        City city = (City) node.getElement();
 
-        City city = (City)node.getElement();
-
+        // If city name matches, delete and record coordinates
         if (city.getName().equalsIgnoreCase(name)) {
-            // Record this node’s coordinates
-            deleted.append("(").append(city.getX()).append(", ").append(city
-                .getY()).append(") ");
-            // Delete this node by coordinates
+            deleted.append("(")
+                   .append(city.getX())
+                   .append(", ")
+                   .append(city.getY())
+                   .append(") ");
             deleteXY(city.getX(), city.getY());
         }
-
-        // Recurse left and right
+        // Traverse left and right subtrees (preorder: process → left → right)
         deleted.append(deleteNameHelper(node.getLeft(), name));
         deleted.append(deleteNameHelper(node.getRight(), name));
 
@@ -324,9 +309,9 @@ public class BST<T extends Comparable<? super T>> {
      * @param name
      *            The city name to search for.
      * @return
-     *            A string listing all cities with that name and their coordinates,
-     *            one per line in the format "City (x, y)".
-     *            If no cities are found, returns "No city with this name exists."
+     *         A string listing all cities with that name and their coordinates,
+     *         one per line in the format "City (x, y)".
+     *         If no cities are found, returns "No city with this name exists."
      */
     public String infoName(String name) {
         StringBuilder result = new StringBuilder();
@@ -340,24 +325,24 @@ public class BST<T extends Comparable<? super T>> {
         return result.toString().trim();
     }
 
+
     /**
      * Recursive helper to find and append all cities with the given name.
      */
-    private void infoNameHelp(BSTNode<T> node, String name, StringBuilder result) {
+    private void infoNameHelp(
+        BSTNode<T> node,
+        String name,
+        StringBuilder result) {
         if (node == null) {
             return;
         }
 
-        City city = (City) node.getElement();
+        City city = (City)node.getElement();
 
         // Case-insensitive comparison
         if (city.getName().equalsIgnoreCase(name)) {
-            result.append(city.getName())
-                  .append(" (")
-                  .append(city.getX())
-                  .append(", ")
-                  .append(city.getY())
-                  .append(")\n");
+            result.append(city.getName()).append(" (").append(city.getX())
+                .append(", ").append(city.getY()).append(")\n");
         }
 
         // Continue searching both sides (there can be duplicates)

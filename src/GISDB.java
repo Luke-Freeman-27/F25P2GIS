@@ -109,8 +109,37 @@ public class GISDB implements GIS {
      *         (listed in preorder as they are deleted).
      */
     public String delete(String name) {
-        return bst.deleteName(name);
+        if (bst.findName(name) == 0) {
+            return "";
+        }
+        
+        // Get the string of deleted coordinates from the BST
+        String deletedCoords = bst.deleteName(name).trim();
 
+        // --- FOR LOOP: break coordinates into ints and call db.delete(x, y) ---
+        String[] parts = deletedCoords.split("\\)");
+        for (String part : parts) {
+            part = part.trim();
+            if (part.isEmpty()) continue;
+
+            int start = part.indexOf('(');
+            if (start != -1) {
+                String coords = part.substring(start + 1).trim(); // e.g. "10, 5"
+                String[] xy = coords.split(",");
+                if (xy.length == 2) {
+                    try {
+                        int x = Integer.parseInt(xy[0].trim());
+                        int y = Integer.parseInt(xy[1].trim());
+                        db.delete(x, y); // <-- call to delete by coordinates
+                    } catch (NumberFormatException e) {
+                        // Ignore any malformed coordinate pairs
+                    }
+                }
+            }
+        }
+        // ---------------------------------------------------------------------
+
+        return name + " " + deletedCoords;
     }
 
 

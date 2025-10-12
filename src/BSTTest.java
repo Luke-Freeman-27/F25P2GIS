@@ -202,9 +202,9 @@ public class BSTTest extends TestCase {
             + "1  Phoenix (120, 70)\n" + "0San Francisco (130, 75)\n"
             + "1  Seattle (140, 80)\n" + "2    Washington (150, 85)\n");
         // Delete nodes at level 2
-        assertFuzzyEquals(it.deleteName("Washington"), "Washington (150, 85)");
+        assertFuzzyEquals(it.deleteName("Washington"), "(150, 85)");
         assertFuzzyEquals(it.deleteName("Philadelphia"),
-            "Philadelphia (110, 65)");
+            "(110, 65)");
         assertEquals(it.printBST(), "1  Phoenix (120, 70)\n"
             + "0San Francisco (130, 75)\n" + "1  Seattle (140, 80)\n");
         // Add multiple cities with the same name but in different locations
@@ -220,7 +220,7 @@ public class BSTTest extends TestCase {
             + "2    Repeat City (100, 100)\n" + "0San Francisco (130, 75)\n"
             + "1  Seattle (140, 80)\n");
         assertFuzzyEquals(it.deleteName("Repeat City"),
-            "Repeat City (100, 100) (100, 200) (200, 100)");
+            "(100, 100) (100, 200) (200, 100)");
         // Name that does not exist
         assertFuzzyEquals(it.deleteName("No Name"), "");
     }
