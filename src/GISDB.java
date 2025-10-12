@@ -109,7 +109,6 @@ public class GISDB implements GIS {
      *         (listed in preorder as they are deleted).
      */
     public String delete(String name) {
-        //db.deleteByName(name);
         return bst.deleteName(name);
 
     }
