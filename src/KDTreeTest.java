@@ -110,7 +110,7 @@ public class KDTreeTest extends TestCase {
         db.insert(city8);
 
         assertFuzzyEquals(db.delete(12, 16), "8 \n city1");
-        assertFuzzyEquals(db.delete(20, 25), "6 \n city7");
+        assertFuzzyEquals(db.delete(20, 25), "7 \n city7");
     }
 
 

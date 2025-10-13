@@ -270,8 +270,8 @@ public class KDTree<T> {
         int cd = depth % 2;
         if (cd == d) {
             if (node.right == null)
-                return node;
-            return findMax(node.right, d, depth + 1); // Go right for max
+
+                return findMax(node.right, d, depth + 1); // Go right for max
         }
         Node leftMax = findMax(node.left, d, depth + 1);
         Node rightMax = findMax(node.right, d, depth + 1);
@@ -345,7 +345,7 @@ public class KDTree<T> {
         }
 
         // Increment count since this node is being searched (visited)
-            count[0]++;
+        count[0]++;
 
         int dx = node.city.getX() - x;
         int dy = node.city.getY() - y;
