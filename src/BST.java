@@ -53,7 +53,6 @@ public class BST<T extends Comparable<? super T>> {
         if (node == null) {
             return new BSTNode<T>(obj);
         }
-
         // If x is less than the current node value, set node to the left
         else if (obj.compareTo(node.getElement()) <= 0) {
             node.setLeft(insertHelper(node.getLeft(), obj));

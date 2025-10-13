@@ -8,23 +8,15 @@ import student.TestCase;
 public class GISTest extends TestCase {
 
     private GIS it;
+    private GIS db;
 
     /**
      * Sets up the tests that follow. In general, used for initialization
      */
     public void setUp() {
         it = new GISDB();
+        db = new GISDB();
     }
-
-// /**
-// * Test clearing on initial
-// * @throws IOException
-// */
-// public void testRefClearInit()
-// throws IOException
-// {
-// assertTrue(it.clear());
-// }
 
 
     /**
@@ -193,5 +185,150 @@ public class GISTest extends TestCase {
             + "Baltimore (0, 300)\n" + "Washington (5, 350)\n"
             + "L (11, 500)\n5", it.search(0, 0, 2000));
 //        assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
+    }
+    
+    ////////////////////////////////////////////////////////////////////////
+    
+    
+ // ----------------------------------------------------------
+    /**
+     * Tests inserting nodes (Cities) to the KDTree.
+     */
+    public void testInsertKD() {
+        
+        db.insert(null, 0 , 0);
+
+        db.insert("city1", 12, 16);
+        db.insert("city2", 6, 18);
+        db.insert("city3", 15, 23);
+        db.insert("city4", 10, 16);
+        db.insert("city5", 27, 14);
+
+        assertFuzzyEquals(db.debug(), multiline("2    city4 10 16",
+            "1  city2 6 18", "0city1 12 16", "2    city5 27 14",
+            "1  city3 15 23"));
+
+        db.insert("city6", 20, 20);
+        db.insert("city7", 20, 25);
+
+        assertFuzzyEquals(db.debug(), multiline("2    city4 10 16",
+            "1  city2 6 18", "0city1 12 16", "3      city6 20 20",
+            "2    city5 27 14", "1  city3 15 23", "2    city7 20 25"));
+
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Deletes a city based on an input x and y position
+     */
+    public void testDeletePositionKD() {
+        db.insert("city1", 12, 16);
+        db.insert("city2", 6, 18);
+        db.insert("city3", 15, 23);
+        db.insert("city4", 10, 16);
+        db.insert("city5", 27, 14);
+        db.insert("city6", 20, 20);
+        db.insert("city7", 20, 25);
+        db.insert("city8", 5, 30);
+
+        assertFuzzyEquals(db.delete(0, 0), "");
+        assertFuzzyEquals(db.delete(5, 30), "3 \n city8");
+        assertFuzzyEquals(db.delete(20, 20), "4 \n city6");
+        assertFuzzyEquals(db.delete(20, 25), "3 \n city7");
+        assertFuzzyEquals(db.delete(-10, 10), "");
+        assertFuzzyEquals(db.delete(27, 6), "");
+        assertFuzzyEquals(db.delete(10,16), "3, \n city4");
+    }
+
+ // ----------------------------------------------------------
+    /**
+     * Deletes a city based on an input x and y position
+     */
+    public void testDeletePositionRootKD() {
+        db.insert("city1", 12, 16);
+        db.insert("city2", 6, 18);
+        db.insert("city3", 15, 23);
+        db.insert("city4", 10, 16);
+        db.insert("city5", 27, 14);
+        db.insert("city6", 20, 20);
+        db.insert("city7", 20, 25);
+        db.insert("city8", 5, 30);
+
+        assertFuzzyEquals(db.delete(12, 16), "5 \n city1");
+        assertFuzzyEquals(db.delete(20, 25), "6 \n city7");
+    }
+
+    // ----------------------------------------------------------
+    /**
+     * Tests the info function for a x and y input.
+     */
+    public void testInfoXYKD() {
+        db.insert("city1", 12, 16);
+        db.insert("city2", 6, 18);
+        db.insert("city3", 15, 23);
+        db.insert("city4", 10, 16);
+        db.insert("city5", 27, 14);
+        db.insert("city6", 20, 20);
+        db.insert("city7", 20, 25);
+        db.insert("city8", 5, 30);
+        db.insert("city9", 9, 9);
+
+        assertFuzzyEquals(db.info(0, 0), "");
+        assertFuzzyEquals(db.info(5, 30), "city8");
+        assertFuzzyEquals(db.info(10, 16), "city4");
+        assertFuzzyEquals(db.info(20, 14), "");
+        assertFuzzyEquals(db.info(14, 20), "");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Tests the Search function
+     */
+    public void testSearchKD() {
+        db.insert("city1", 12, 16);
+        db.insert("city2", 6, 18);
+        db.insert("city3", 15, 23);
+        db.insert("city4", 10, 16);
+        db.insert("city5", 27, 14);
+        db.insert("city6", 20, 20);
+        db.insert("city7", 20, 25);
+        db.insert("city8", 5, 30);
+        db.insert("city9", 9, 9);
+
+        assertFuzzyEquals(db.search(5, 10, -1), "");
+        assertFuzzyEquals(db.search(20, 20, 1), "city6 (20, 20)\n4");
+        assertFuzzyEquals(db.search(20, 20, 5),
+            "city6 (20, 20)\n city7 (20, 25)\n 5");
+        assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n 1");
+        assertFuzzyEquals(db.search(15, 15, 0), "");
+
+        KDTree<City> db2 = new KDTree<City>();
+
+        assertFuzzyEquals(db2.search(0, 0, 0), "");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Tests the clear function on a filled tree.
+     */
+    public void testClearKD() {
+        db.insert("city1", 12, 16);
+        db.insert("city2", 6, 18);
+        db.insert("city3", 15, 23);
+        db.insert("city4", 10, 16);
+        db.insert("city5", 27, 14);
+        db.insert("city6", 20, 20);
+        db.insert("city7", 20, 25);
+
+        assertFuzzyEquals(db.debug(), multiline("2    city4 10 16",
+            "1  city2 6 18", "0city1 12 16", "3      city6 20 20",
+            "2    city5 27 14", "1  city3 15 23", "2    city7 20 25"));
+
+        db.clear();
+
+        assertFuzzyEquals(db.debug(), "");
     }
 }
