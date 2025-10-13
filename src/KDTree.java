@@ -209,8 +209,9 @@ public class KDTree<T> {
             else if (node.left != null) {
                 Node maxNode = findMax(node.left, cd, depth + 1);
                 node.city = maxNode.city;
-                node.left = deleteAndCount(node.left, maxNode.city.getX(), maxNode.city.getY(), depth + 1);
-                return node;  // Keep structure, but with replaced data
+                node.left = deleteAndCount(node.left, maxNode.city.getX(),
+                    maxNode.city.getY(), depth + 1);
+                return node; // Keep structure, but with replaced data
             }
             else {
                 return null;
@@ -259,23 +260,28 @@ public class KDTree<T> {
         }
         return minNode;
     }
-    
- // Add findMax (similar to findMin, but maximize coord):
+
+
+    // Add findMax (similar to findMin, but maximize coord):
     private Node findMax(Node node, int d, int depth) {
-        if (node == null) return null;
+        if (node == null)
+            return null;
         KDTree.traversedNodes++;
         int cd = depth % 2;
         if (cd == d) {
-            if (node.right == null) return node;
-            return findMax(node.right, d, depth + 1);  // Go right for max
+            if (node.right == null)
+                return node;
+            return findMax(node.right, d, depth + 1); // Go right for max
         }
         Node leftMax = findMax(node.left, d, depth + 1);
         Node rightMax = findMax(node.right, d, depth + 1);
         Node maxNode = node;
-        if (leftMax != null && getCoord(leftMax.city, d) > getCoord(maxNode.city, d)) {
+        if (leftMax != null && getCoord(leftMax.city, d) > getCoord(
+            maxNode.city, d)) {
             maxNode = leftMax;
         }
-        if (rightMax != null && getCoord(rightMax.city, d) > getCoord(maxNode.city, d)) {
+        if (rightMax != null && getCoord(rightMax.city, d) > getCoord(
+            maxNode.city, d)) {
             maxNode = rightMax;
         }
         return maxNode;
@@ -315,45 +321,14 @@ public class KDTree<T> {
             return ""; // no cities found
         }
 
-        if (radius == 0) {
-            // Special case: return the city exactly at (x, y) if it exists
-            City city = findCityAt(root, x, y);
-            if (city != null) {
-                return city.getName() + " (" + city.getX() + ", " + city.getY()
-                    + ")\n1\n";
-            }
-            else {
-                return "";
-            }
-        }
-
         StringBuilder foundCities = new StringBuilder();
         int[] count = new int[1]; // count of cities within radius
 
         search(root, x, y, radius, foundCities, count);
 
         foundCities.append(count[0]).append("\n");
+
         return foundCities.toString();
-    }
-
-
-    private City findCityAt(Node node, int x, int y) {
-        if (node == null) {
-            return null;
-        }
-
-        if (node.city.getX() == x && node.city.getY() == y) {
-            return node.city;
-        }
-
-        int cd = node.depth % 2;
-        int coord = (cd == 0) ? x : y;
-        int nodeCoord = (cd == 0) ? node.city.getX() : node.city.getY();
-
-        if (coord < nodeCoord) {
-            return findCityAt(node.left, x, y);
-        }
-        return findCityAt(node.right, x, y);
     }
 
 
@@ -370,7 +345,7 @@ public class KDTree<T> {
         }
 
         // Increment count since this node is being searched (visited)
-        count[0]++;
+            count[0]++;
 
         int dx = node.city.getX() - x;
         int dy = node.city.getY() - y;

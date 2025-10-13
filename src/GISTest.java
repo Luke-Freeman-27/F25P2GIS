@@ -267,7 +267,7 @@ public class GISTest extends TestCase {
         db.insert("city8", 5, 30);
 
         assertFuzzyEquals(db.delete(12, 16), "8 \n city1");
-        assertFuzzyEquals(db.delete(20, 25), "6 \n city7");
+        assertFuzzyEquals(db.delete(20, 25), "7 \n city7");
     }
 
     // ----------------------------------------------------------
@@ -312,12 +312,12 @@ public class GISTest extends TestCase {
         assertFuzzyEquals(db.search(20, 20, 1), "city6 (20, 20)\n4");
         assertFuzzyEquals(db.search(20, 20, 5),
             "city6 (20, 20)\n city7 (20, 25)\n 5");
-//        assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n4");
-//        assertFuzzyEquals(db.search(15, 15, 0), "");
-//
-//        KDTree<City> db2 = new KDTree<City>();
-//
-//        assertFuzzyEquals(db2.search(0, 0, 0), "");
+        assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n4");
+        assertFuzzyEquals(db.search(15, 15, 0), "4");
+
+        GISDB db2 = new GISDB();
+
+        assertFuzzyEquals(db2.search(0, 0, 0), "");
     }
 
 

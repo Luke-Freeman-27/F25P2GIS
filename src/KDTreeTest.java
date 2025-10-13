@@ -177,8 +177,8 @@ public class KDTreeTest extends TestCase {
         assertFuzzyEquals(db.search(20, 20, 1), "city6 (20, 20)\n4");
         assertFuzzyEquals(db.search(20, 20, 5),
             "city6 (20, 20)\n city7 (20, 25)\n 5");
-        assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n 1");
-        assertFuzzyEquals(db.search(15, 15, 0), "");
+        assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n 4");
+        assertFuzzyEquals(db.search(15, 15, 0), "4");
 
         KDTree<City> db2 = new KDTree<City>();
 
