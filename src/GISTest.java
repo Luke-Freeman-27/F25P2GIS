@@ -195,8 +195,6 @@ public class GISTest extends TestCase {
      * Tests inserting nodes (Cities) to the KDTree.
      */
     public void testInsertKD() {
-        
-        db.insert(null, 0 , 0);
 
         db.insert("city1", 12, 16);
         db.insert("city2", 6, 18);
@@ -240,6 +238,22 @@ public class GISTest extends TestCase {
         assertFuzzyEquals(db.delete(27, 6), "");
         assertFuzzyEquals(db.delete(10,16), "3, \n city4");
     }
+    
+    public void testDeletePositionKD2() {
+        db.insert("Memphis", 35, 35);
+        db.insert("Jacksonville", 20, 20);
+        db.insert("Daytona", 20, 25);
+        db.insert("Los Angeles", 50, 35);
+        db.insert("Richmond", 5, 10);
+        db.insert("Harrisonburg", 15, 15);
+        db.insert("Seattle", 40, 50);
+        db.insert("Chicago", 40, 20);
+        db.insert("Portland", 60, 55);
+        db.insert("Houston", 30, 35);
+        
+        assertFuzzyEquals(db.delete(50, 35), "\n Los Angeles"
+        
+    }
 
  // ----------------------------------------------------------
     /**
@@ -255,7 +269,7 @@ public class GISTest extends TestCase {
         db.insert("city7", 20, 25);
         db.insert("city8", 5, 30);
 
-        assertFuzzyEquals(db.delete(12, 16), "5 \n city1");
+        assertFuzzyEquals(db.delete(12, 16), "8 \n city1");
         assertFuzzyEquals(db.delete(20, 25), "6 \n city7");
     }
 
@@ -301,7 +315,7 @@ public class GISTest extends TestCase {
         assertFuzzyEquals(db.search(20, 20, 1), "city6 (20, 20)\n4");
         assertFuzzyEquals(db.search(20, 20, 5),
             "city6 (20, 20)\n city7 (20, 25)\n 5");
-        assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n 1");
+        assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n 4");
         assertFuzzyEquals(db.search(15, 15, 0), "");
 
         KDTree<City> db2 = new KDTree<City>();

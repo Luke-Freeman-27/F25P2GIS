@@ -101,7 +101,8 @@ public class KDTree<T> {
         inorder(node.right, level + 1, sb);
     }
 
-
+    
+    
     /**
      * The city with these coordinates is deleted from the database
      * (if it exists).
@@ -116,146 +117,10 @@ public class KDTree<T> {
      *         followed by the name of the city (this is blank if nothing
      *         was deleted).
      */
-    public String delete(int x, int y) {
-        City[] deletedCity = new City[1]; // to store the deleted city
-        int[] searched = new int[1]; // to count searched nodes
-
-        root = delete(root, x, y, 0, deletedCity, searched);
-
-        if (deletedCity[0] == null) {
-            return ""; // city not found, return empty string
-        }
-
-        // city found and deleted
-        StringBuilder result = new StringBuilder();
-        result.append("(").append(searched[0]).append(")\n");
-        result.append(deletedCity[0].getName()).append("\n");
-        return result.toString();
-    }
-
-
-    private Node delete(
-        Node node,
-        int x,
-        int y,
-        int depth,
-        City[] deletedCity,
-        int[] searched) {
-        if (node == null)
-            return null;
-
-        searched[0]++;
-
-        int cd = depth % 2;
-
-        if (node.city.getX() == x && node.city.getY() == y) {
-            deletedCity[0] = node.city;
-
-            if (node.right != null) {
-                Node min = findMinNode(node.right, cd);
-                searched[0]++;
-                node.city = min.city;
-                node.right = delete(node.right, min.city.getX(), min.city
-                    .getY(), depth + 1, new City[1], searched);
-            }
-            else if (node.left != null) {
-                Node min = findMinNode(node.left, cd);
-                searched[0]++;
-                node.city = min.city;
-                node.right = delete(node.left, min.city.getX(), min.city.getY(),
-                    depth + 1, new City[1], searched);
-                node.left = null;
-            }
-            else {
-                return null;
-            }
-            return node;
-        }
-
-        int targetCoord = (cd == 0) ? x : y;
-        int nodeCoord = (cd == 0) ? node.city.getX() : node.city.getY();
-
-        if (targetCoord < nodeCoord) {
-            node.left = delete(node.left, x, y, depth + 1, deletedCity,
-                searched);
-        }
-        else {
-            node.right = delete(node.right, x, y, depth + 1, deletedCity,
-                searched);
-        }
-
-        return node;
-    }
-
-
-    private Node findMinNode(Node node, int dim) {
-        if (node == null)
-            return null;
-
-        Node min = node;
-
-        Node leftMin = findMinNode(node.left, dim);
-        if (leftMin != null && compareDim(leftMin.city, min.city, dim) < 0) {
-            min = leftMin;
-        }
-
-        Node rightMin = findMinNode(node.right, dim);
-        if (rightMin != null && compareDim(rightMin.city, min.city, dim) < 0) {
-            min = rightMin;
-        }
-
-        return min;
-    }
-
-
-    private int compareDim(City a, City b, int dim) {
-        return (dim == 0)
-            ? Integer.compare(a.getX(), b.getX())
-            : Integer.compare(a.getY(), b.getY());
-    }
-
-
-    /**
-     * Display the name of the city at coordinate (x, y) if it exists.
-     * 
-     * @param x
-     *            X coordinate.
-     * @param y
-     *            Y coordinate.
-     * @return The city name if there is such a city, empty otherwise
-     */
-    public String infoXY(int x, int y) {
-        Node found = infoXY(root, x, y, 0);
-        if (found != null) {
-            return found.city.getName();
-        }
+    public String delete(int x, int y) {        
+        
         return "";
     }
-
-
-    private Node infoXY(Node node, int x, int y, int depth) {
-        if (node == null) {
-            return null;
-        }
-
-        // Check if this node matches the coordinates
-        if (node.city.getX() == x && node.city.getY() == y) {
-            return node;
-        }
-
-        int cd = depth % 2; // current dimension
-
-        // Decide which subtree to explore based on comparison at current
-        // dimension
-        if ((cd == 0 && x < node.city.getX()) || (cd == 1 && y < node.city
-            .getY())) {
-            return infoXY(node.left, x, y, depth + 1);
-        }
-        else {
-            return infoXY(node.right, x, y, depth + 1);
-        }
-    }
-
 
     // ----------------------------------------------------------
     /**
