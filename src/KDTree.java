@@ -39,13 +39,8 @@ public class KDTree<T> {
      *            added.
      */
     public void insert(City city) {
-        if (city == null) {
-            return;
-        }
         root = insert(root, city, 0);
     }
-
-
     private Node insert(Node node, City city, int depth) {
         if (node == null) {
             return new Node(city, depth);
@@ -63,8 +58,55 @@ public class KDTree<T> {
             // equal values go to the right
             node.right = insert(node.right, city, depth + 1);
         }
-
         return node;
+    }
+
+
+    /**
+     * 
+     * Display the name of the city at coordinate (x, y) if it exists.
+     * 
+     * 
+     * 
+     * @param x
+     * 
+     *            X coordinate.
+     * 
+     * @param y
+     * 
+     *            Y coordinate.
+     * 
+     * @return The city name if there is such a city, empty otherwise
+     * 
+     */
+
+    public String infoXY(int x, int y) {
+        Node found = infoXY(root, x, y, 0);
+        if (found != null) {
+            return found.city.getName();
+        }
+        return "";
+    }
+
+
+    private Node infoXY(Node node, int x, int y, int depth) {
+        if (node == null) {
+            return null;
+        }
+        // Check if this node matches the coordinates
+        if (node.city.getX() == x && node.city.getY() == y) {
+            return node;
+        }
+        int cd = depth % 2; // current dimension
+        // Decide which subtree to explore based on comparison at current
+        // dimension
+        if ((cd == 0 && x < node.city.getX()) || (cd == 1 && y < node.city
+            .getY())) {
+            return infoXY(node.left, x, y, depth + 1);
+        }
+        else {
+            return infoXY(node.right, x, y, depth + 1);
+        }
     }
 
 
@@ -101,26 +143,117 @@ public class KDTree<T> {
         inorder(node.right, level + 1, sb);
     }
 
-    
-    
-    /**
-     * The city with these coordinates is deleted from the database
-     * (if it exists).
-     * Print the name of the city if it exists.
-     * If no city at this location exists, print the empty string.
-     * 
-     * @param x
-     *            City x-coordinate.
-     * @param y
-     *            City y-coordinate.
-     * @return A string with the number of nodes visited during the deletion
-     *         followed by the name of the city (this is blank if nothing
-     *         was deleted).
-     */
-    public String delete(int x, int y) {        
-        
-        return "";
+
+    // Helper method to find City object at given coords (no counting)
+    private City findCity(Node node, int x, int y) {
+        if (node == null)
+            return null;
+        if (node.city.getX() == x && node.city.getY() == y)
+            return node.city;
+
+        City foundInLeft = findCity(node.left, x, y);
+        if (foundInLeft != null)
+            return foundInLeft;
+
+        return findCity(node.right, x, y);
     }
+
+
+    public String delete(int x, int y) {
+        City cityToDelete = findCity(root, x, y);
+        if (cityToDelete == null) {
+            return "";
+        }
+
+        int[] count = new int[1];
+        root = deleteAndCount(root, x, y, 0, count);
+
+        return count[0] + "\n" + cityToDelete.getName();
+    }
+
+
+    private Node deleteAndCount(
+        Node node,
+        int x,
+        int y,
+        int depth,
+        int[] count) {
+        if (node == null)
+            return null;
+
+        count[0]++; // Count every node visited during search and delete
+
+        int cd = depth % 2;
+        int nodeX = node.city.getX();
+        int nodeY = node.city.getY();
+
+        if (nodeX == x && nodeY == y) {
+            // Node to delete found
+            if (node.right != null) {
+                Node minNode = findMin(node.right, cd, depth + 1, count);
+                node.city = minNode.city;
+                node.right = deleteAndCount(node.right, minNode.city.getX(),
+                    minNode.city.getY(), depth + 1, count);
+            }
+            else if (node.left != null) {
+                node.right = node.left;
+                node.left = null;
+                node.right = deleteAndCount(node.right, x, y, depth + 1, count);
+            }
+            else {
+                return null;
+            }
+            return node;
+        }
+
+        int coord = (cd == 0) ? x : y;
+        int nodeCoord = (cd == 0) ? nodeX : nodeY;
+
+        if (coord < nodeCoord) {
+            node.left = deleteAndCount(node.left, x, y, depth + 1, count);
+        }
+        else {
+            node.right = deleteAndCount(node.right, x, y, depth + 1, count);
+        }
+        return node;
+    }
+
+
+    // findMin remains unchanged, counts nodes visited
+    private Node findMin(Node node, int d, int depth, int[] count) {
+        if (node == null)
+            return null;
+
+        count[0]++;
+
+        int cd = depth % 2;
+
+        if (cd == d) {
+            if (node.left == null)
+                return node;
+            return findMin(node.left, d, depth + 1, count);
+        }
+
+        Node leftMin = findMin(node.left, d, depth + 1, count);
+        Node rightMin = findMin(node.right, d, depth + 1, count);
+
+        Node minNode = node;
+        if (leftMin != null && getCoord(leftMin.city, d) < getCoord(
+            minNode.city, d)) {
+            minNode = leftMin;
+        }
+        if (rightMin != null && getCoord(rightMin.city, d) < getCoord(
+            minNode.city, d)) {
+            minNode = rightMin;
+        }
+        return minNode;
+    }
+
+
+    private int getCoord(City city, int d) {
+        return (d == 0) ? city.getX() : city.getY();
+    }
+
 
     // ----------------------------------------------------------
     /**
