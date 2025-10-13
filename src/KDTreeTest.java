@@ -82,10 +82,11 @@ public class KDTreeTest extends TestCase {
         assertFuzzyEquals(db.delete(20, 25), "3 \n city7");
         assertFuzzyEquals(db.delete(-10, 10), "");
         assertFuzzyEquals(db.delete(27, 6), "");
-        assertFuzzyEquals(db.delete(10,16), "3, \n city4");
+        assertFuzzyEquals(db.delete(10, 16), "3, \n city4");
     }
 
- // ----------------------------------------------------------
+
+    // ----------------------------------------------------------
     /**
      * Deletes a city based on an input x and y position
      */
@@ -109,8 +110,9 @@ public class KDTreeTest extends TestCase {
         db.insert(city8);
 
         assertFuzzyEquals(db.delete(12, 16), "8 \n city1");
-        assertFuzzyEquals(db.delete(20, 25), "4 \n city7");
+        assertFuzzyEquals(db.delete(20, 25), "6 \n city7");
     }
+
 
     // ----------------------------------------------------------
     /**

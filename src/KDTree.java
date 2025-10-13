@@ -8,6 +8,11 @@
  * @param <T>
  */
 public class KDTree<T> {
+
+    private Node root;
+
+    public static int traversedNodes = 0;
+
     private static class Node {
         City city;
         Node left;
@@ -29,7 +34,6 @@ public class KDTree<T> {
         this.root = null;
     }
 
-    private Node root;
 
     /**
      * Insert a city into the KDTree
@@ -39,8 +43,13 @@ public class KDTree<T> {
      *            added.
      */
     public void insert(City city) {
+        if (city == null) {
+            return;
+        }
         root = insert(root, city, 0);
     }
+
+
     private Node insert(Node node, City city, int depth) {
         if (node == null) {
             return new Node(city, depth);
@@ -160,28 +169,29 @@ public class KDTree<T> {
 
 
     public String delete(int x, int y) {
+        // Reset the global counter
+        KDTree.traversedNodes = 0;
+
+        // If no city found return empty string
         City cityToDelete = findCity(root, x, y);
         if (cityToDelete == null) {
             return "";
         }
 
-        int[] count = new int[1];
-        root = deleteAndCount(root, x, y, 0, count);
+        // Call the delete help method
+        root = deleteAndCount(root, x, y, 0);
 
-        return count[0] + "\n" + cityToDelete.getName();
+        // Return the
+        return KDTree.traversedNodes + "\n" + cityToDelete.getName();
     }
 
 
-    private Node deleteAndCount(
-        Node node,
-        int x,
-        int y,
-        int depth,
-        int[] count) {
+    private Node deleteAndCount(Node node, int x, int y, int depth) {
         if (node == null)
             return null;
 
-        count[0]++; // Count every node visited during search and delete
+        // Count every node visited during search and delete
+        KDTree.traversedNodes++;
 
         int cd = depth % 2;
         int nodeX = node.city.getX();
@@ -190,52 +200,53 @@ public class KDTree<T> {
         if (nodeX == x && nodeY == y) {
             // Node to delete found
             if (node.right != null) {
-                Node minNode = findMin(node.right, cd, depth + 1, count);
+                Node minNode = findMin(node.right, cd, depth + 1);
                 node.city = minNode.city;
                 node.right = deleteAndCount(node.right, minNode.city.getX(),
-                    minNode.city.getY(), depth + 1, count);
+                    minNode.city.getY(), depth + 1);
+                return node;
             }
             else if (node.left != null) {
-                node.right = node.left;
-                node.left = null;
-                node.right = deleteAndCount(node.right, x, y, depth + 1, count);
+                Node maxNode = findMax(node.left, cd, depth + 1);
+                node.city = maxNode.city;
+                node.left = deleteAndCount(node.left, maxNode.city.getX(), maxNode.city.getY(), depth + 1);
+                return node;  // Keep structure, but with replaced data
             }
             else {
                 return null;
             }
-            return node;
         }
 
         int coord = (cd == 0) ? x : y;
         int nodeCoord = (cd == 0) ? nodeX : nodeY;
 
         if (coord < nodeCoord) {
-            node.left = deleteAndCount(node.left, x, y, depth + 1, count);
+            node.left = deleteAndCount(node.left, x, y, depth + 1);
         }
         else {
-            node.right = deleteAndCount(node.right, x, y, depth + 1, count);
+            node.right = deleteAndCount(node.right, x, y, depth + 1);
         }
         return node;
     }
 
 
     // findMin remains unchanged, counts nodes visited
-    private Node findMin(Node node, int d, int depth, int[] count) {
+    private Node findMin(Node node, int d, int depth) {
         if (node == null)
             return null;
 
-        count[0]++;
+        KDTree.traversedNodes++;
 
         int cd = depth % 2;
 
         if (cd == d) {
             if (node.left == null)
                 return node;
-            return findMin(node.left, d, depth + 1, count);
+            return findMin(node.left, d, depth + 1);
         }
 
-        Node leftMin = findMin(node.left, d, depth + 1, count);
-        Node rightMin = findMin(node.right, d, depth + 1, count);
+        Node leftMin = findMin(node.left, d, depth + 1);
+        Node rightMin = findMin(node.right, d, depth + 1);
 
         Node minNode = node;
         if (leftMin != null && getCoord(leftMin.city, d) < getCoord(
@@ -247,6 +258,27 @@ public class KDTree<T> {
             minNode = rightMin;
         }
         return minNode;
+    }
+    
+ // Add findMax (similar to findMin, but maximize coord):
+    private Node findMax(Node node, int d, int depth) {
+        if (node == null) return null;
+        KDTree.traversedNodes++;
+        int cd = depth % 2;
+        if (cd == d) {
+            if (node.right == null) return node;
+            return findMax(node.right, d, depth + 1);  // Go right for max
+        }
+        Node leftMax = findMax(node.left, d, depth + 1);
+        Node rightMax = findMax(node.right, d, depth + 1);
+        Node maxNode = node;
+        if (leftMax != null && getCoord(leftMax.city, d) > getCoord(maxNode.city, d)) {
+            maxNode = leftMax;
+        }
+        if (rightMax != null && getCoord(rightMax.city, d) > getCoord(maxNode.city, d)) {
+            maxNode = rightMax;
+        }
+        return maxNode;
     }
 
 
