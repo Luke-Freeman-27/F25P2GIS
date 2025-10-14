@@ -114,4 +114,35 @@ public class City implements Comparable<City> {
     public int compareTo(City city) {
         return this.name.compareTo(city.getName());
     }
+    
+    /**
+     * Checks equality between this city and another object.
+     * Two cities are equal if they have the same name, x, and y coordinates.
+     *
+     * @param obj the object to compare with
+     * @return true if the cities are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;  // same reference
+        if (obj == null) return false; // null check
+        if (!(obj instanceof City)) return false; // type check
+
+        City other = (City) obj;
+        return this.name.equals(other.name) && this.x == other.x && this.y == other.y;
+    }
+    
+    /**
+     * Compares two cities based on their coordinates (x first, then y).
+     *
+     * @param city the other city to compare
+     * @return negative if this city comes before, positive if after, 0 if equal
+     */
+    public int compareToCoordinates(City city) {
+        if (this.x != city.x) {
+            return this.x - city.x; // compare by x-coordinate first
+        } else {
+            return this.y - city.y; // if x is equal, compare by y-coordinate
+        }
+    }
 }

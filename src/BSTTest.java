@@ -29,7 +29,7 @@ public class BSTTest extends TestCase {
      * Sets up the tests that follow.
      */
     public void setUp() {
-        it = new BST<City>(); // ✅ diamond operator (inferred as BST<Integer>)
+        it = new BST<City>();
         stringBST = new BST<String>(); // String BST for edge cases
         city1 = new City("Atlanta", 10, 10);
         city2 = new City("Boston", 20, 15);
@@ -140,89 +140,55 @@ public class BSTTest extends TestCase {
 
 
     /**
-     * This method checks for a location to delete a city node from
-     */
-    public void testDeleteXY() {
-        // Insert city nodes
-        it.insert(city13);
-        it.insert(city12);
-        it.insert(city14);
-        it.insert(city11);
-        it.insert(city15);
-        assertEquals(it.printBST(), "2    Philadelphia (110, 65)\n"
-            + "1  Phoenix (120, 70)\n" + "0San Francisco (130, 75)\n"
-            + "1  Seattle (140, 80)\n" + "2    Washington (150, 85)\n");
-        // Delete nodes at level 2
-        assertTrue(it.deleteXY(110, 65));
-        assertTrue(it.deleteXY(150, 85));
-        assertFuzzyEquals(it.printBST(), "1  Phoenix (120, 70)\n"
-            + "0San Francisco (130, 75)\n" + "1  Seattle (140, 80)\n");
-        // Delete Root
-        assertTrue(it.deleteXY(130, 75));
-        assertFuzzyEquals(it.printBST(), "0Phoenix (120, 70)\n"
-            + "1  Seattle (140, 80)\n");
-        // Delete right leaf
-        it.insert(city15);
-        assertTrue(it.deleteXY(140, 80));
-        assertFuzzyEquals(it.printBST(), "0Phoenix (120, 70)\n"
-            + "1  Washington (150, 85)\n");
-        // Delete left leaf
-        it.insert(city14);
-        it.insert(city13);
-        assertTrue(it.deleteXY(150, 85));
-        assertTrue(it.deleteXY(140, 80));
-        assertEquals(it.printBST(), "0Phoenix (120, 70)\n"
-            + "1  San Francisco (130, 75)\n");
-
-        // Delete the root node
-        assertTrue(it.deleteXY(120, 70));
-        assertEquals(it.printBST(), "0San Francisco (130, 75)\n");
-
-        // Delete node with one leaf
-        assertTrue(it.deleteXY(130, 75));
-        assertEquals(it.printBST(), "");
-
-        // Deleting a node with no location
-        assertFalse(it.deleteXY(999, 999));
-        assertFalse(it.deleteXY(110, 65));
-    }
-
-
-    /**
      * This method checks for several city nodes with the same name
      */
     public void testDeleteName() {
-        // Insert city nodes
-        it.insert(city13);
-        it.insert(city12);
-        it.insert(city14);
-        it.insert(city11);
-        it.insert(city15);
-        assertEquals(it.printBST(), "2    Philadelphia (110, 65)\n"
-            + "1  Phoenix (120, 70)\n" + "0San Francisco (130, 75)\n"
-            + "1  Seattle (140, 80)\n" + "2    Washington (150, 85)\n");
-        // Delete nodes at level 2
-        assertFuzzyEquals(it.deleteName("Washington"), "(150, 85)");
-        assertFuzzyEquals(it.deleteName("Philadelphia"),
-            "(110, 65)");
-        assertEquals(it.printBST(), "1  Phoenix (120, 70)\n"
-            + "0San Francisco (130, 75)\n" + "1  Seattle (140, 80)\n");
-        // Add multiple cities with the same name but in different locations
-        City cityRepeat1 = new City("Repeat City", 100, 100);
-        City cityRepeat2 = new City("Repeat City", 100, 200);
-        City cityRepeat3 = new City("Repeat City", 200, 100);
-        it.insert(cityRepeat1);
-        it.insert(cityRepeat2);
-        it.insert(cityRepeat3);
-        assertEquals(it.printBST(), "1  Phoenix (120, 70)\n"
-            + "4        Repeat City (200, 100)\n"
-            + "3      Repeat City (100, 200)\n"
-            + "2    Repeat City (100, 100)\n" + "0San Francisco (130, 75)\n"
-            + "1  Seattle (140, 80)\n");
-        assertFuzzyEquals(it.deleteName("Repeat City"),
-            "(100, 100) (100, 200) (200, 100)");
-        // Name that does not exist
-        assertFuzzyEquals(it.deleteName("No Name"), "");
+        it.insert(city8); // Los Angeles (root)
+        it.insert(city4); // Dallas
+        it.insert(city12); // Phoenix
+        it.insert(city2); // Boston
+        it.insert(city6); // Houston
+        it.insert(city10); // New York
+        it.insert(city14); // Seattle
+        it.insert(city1); // Atlanta
+        it.insert(city3); // Chicago
+        it.insert(city5); // Denver
+        it.insert(city7); // Las Vegas
+        it.insert(city9); // Miami
+        it.insert(city11); // Philadelphia
+        it.insert(city13); // San Francisco
+        it.insert(city15); // Washington
+
+        assertFuzzyEquals(it.printBST(), "3      Atlanta (10, 10)\n"
+            + "2    Boston (20, 15)\n" + "3      Chicago (30, 25)\n"
+            + "1  Dallas (40, 30)\n" + "3      Denver (50, 35)\n"
+            + "2    Houston (60, 40)\n" + "3      Las Vegas (70, 45)\n"
+            + "0Los Angeles (80, 50)\n" + "3      Miami (90, 55)\n"
+            + "2    New York (100, 60)\n" + "3      Philadelphia (110, 65)\n"
+            + "1  Phoenix (120, 70)\n" + "3      San Francisco (130, 75)\n"
+            + "2    Seattle (140, 80)\n" + "3      Washington (150, 85)\n");
+
+        it.deleteName(city1);
+        it.deleteName(city15);
+
+        assertFuzzyEquals(it.printBST(), "2    Boston (20, 15)\n"
+            + "3      Chicago (30, 25)\n" + "1  Dallas (40, 30)\n"
+            + "3      Denver (50, 35)\n" + "2    Houston (60, 40)\n"
+            + "3      Las Vegas (70, 45)\n" + "0Los Angeles (80, 50)\n"
+            + "3      Miami (90, 55)\n" + "2    New York (100, 60)\n"
+            + "3      Philadelphia (110, 65)\n" + "1  Phoenix (120, 70)\n"
+            + "3      San Francisco (130, 75)\n" + "2    Seattle (140, 80)\n");
+        
+        // Delete root
+        it.deleteName(city8);
+        
+        assertFuzzyEquals(it.printBST(), "2    Boston (20, 15)\n"
+            + "3      Chicago (30, 25)\n" + "1  Dallas (40, 30)\n"
+            + "3      Denver (50, 35)\n" + "2    Houston (60, 40)\n"
+            + "0Las Vegas (70, 45)\n"
+            + "3      Miami (90, 55)\n" + "2    New York (100, 60)\n"
+            + "3      Philadelphia (110, 65)\n" + "1  Phoenix (120, 70)\n"
+            + "3      San Francisco (130, 75)\n" + "2    Seattle (140, 80)\n");
     }
 
 

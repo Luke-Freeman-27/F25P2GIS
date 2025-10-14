@@ -1,7 +1,6 @@
 // -------------------------------------------------------------------------import
 // sun.tools.tree.ThisExpression;
 
-
 /**
  * This class is a basic implementation of a binary search tree. The end purpose
  * of this class is to be used in conjunction with a k-d tree.
@@ -162,70 +161,21 @@ public class BST<T extends Comparable<? super T>> {
 
 
     /**
-     * Deletes a node from BST based on X & Y coordinate
+     * Deletes the node of a tree given a name, will delete cities with the same
+     * name.
      * 
-     * @param x
-     *            is the x coordinate
-     * @param y
-     *            is the y coordinate
-     * @return true/false if the node has been deleted
+     * @param city
+     *            is the dumby city used to find the given name of the other
+     *            city in the BST
+     * @return string of the name plus the coordinates of those cities
      */
-    public boolean deleteXY(int x, int y) {
-        if (this.findXY(x, y)) {
-            root = deleteXYHelper(root, x, y);
-            return true;
+    public City deleteName(City city) {
+        // First find the node (optional if you want to return coordinates)
+        T temp = findHelp(root, city);
+        if (temp != null) {
+            return (City)(deleteNameHelper(root, city)).getElement();
         }
-        return false;
-    }
-
-
-    /**
-     * Helper method that deletes
-     * 
-     * @param node
-     *            is the given node checked for the correct coordinate
-     * @param x
-     *            is the x coordinate
-     * @param y
-     *            is the y coordinate
-     */
-    public BSTNode<T> deleteXYHelper(BSTNode<T> node, int x, int y) {
-        if (node == null) {
-            return null;
-        }
-        City city = (City)node.getElement();
-
-        // Navigate the BST by comparing coordinates
-        if (x < city.getX() || (x == city.getX() && y < city.getY())) {
-            node.setLeft(deleteXYHelper(node.getLeft(), x, y));
-        }
-        else if (x > city.getX() || (x == city.getX() && y > city.getY())) {
-            node.setRight(deleteXYHelper(node.getRight(), x, y));
-        }
-        else {
-            // Found the node to delete
-            if (node.getLeft() == null) {
-                return node.getRight();
-            }
-            else if (node.getRight() == null) {
-                return node.getLeft();
-            }
-            else {
-                // Two children: replace with max of left subtree
-                BSTNode<T> maxNode = getMax(node.getLeft());
-                node.setElement(maxNode.getElement());
-                node.setLeft(deleteMax(node.getLeft()));
-            }
-        }
-        return node;
-    }
-
-
-    /**
-     * Delete
-     */
-    public String deleteName(String name) {
-        return deleteNameHelper(root, name).trim();
+        return null;
     }
 
 
@@ -238,28 +188,34 @@ public class BST<T extends Comparable<? super T>> {
      *            is the name of the city
      * @return A string of the coordinates deleted by the delete method.
      */
-    private String deleteNameHelper(BSTNode<T> node, String name) {
-        if (node == null) {
-            return "";
+    private BSTNode<T> deleteNameHelper(BSTNode<T> node, City key) {
+        if (node == null)
+            return null;
+
+        @SuppressWarnings("unchecked")
+        City nodeCity = (City)node.getElement();
+
+        int cmp = nodeCity.getName().compareTo(key.getName());
+
+        if (cmp > 0) {
+            node.setLeft(deleteNameHelper(node.getLeft(), key));
+        }
+        else if (cmp < 0) {
+            node.setRight(deleteNameHelper(node.getRight(), key));
+        }
+        else {
+            // Node found → BST deletion logic
+            if (node.getLeft() == null)
+                return node.getRight();
+            if (node.getRight() == null)
+                return node.getLeft();
+
+            BSTNode<T> maxNode = getMax(node.getLeft());
+            node.setElement(maxNode.getElement());
+            node.setLeft(deleteMax(node.getLeft()));
         }
 
-        StringBuilder deleted = new StringBuilder();
-        City city = (City) node.getElement();
-
-        // If city name matches, delete and record coordinates
-        if (city.getName().equalsIgnoreCase(name)) {
-            deleted.append("(")
-                   .append(city.getX())
-                   .append(", ")
-                   .append(city.getY())
-                   .append(") ");
-            deleteXY(city.getX(), city.getY());
-        }
-        // Traverse left and right subtrees (preorder: process → left → right)
-        deleted.append(deleteNameHelper(node.getLeft(), name));
-        deleted.append(deleteNameHelper(node.getRight(), name));
-
-        return deleted.toString();
+        return node;
     }
 
 
@@ -291,6 +247,33 @@ public class BST<T extends Comparable<? super T>> {
             return node;
         }
         return getMax(node.getRight());
+    }
+
+
+    /*
+     * Finds a node in the BST by city name.
+     *
+     * @param node current node
+     * 
+     * @param key City key to search
+     * 
+     * @return element T if found, null otherwise
+     */
+    private T findHelp(BSTNode<T> node, City key) {
+        if (node == null)
+            return null;
+
+        @SuppressWarnings("unchecked")
+        City nodeCity = (City)node.getElement();
+
+        int cmp = nodeCity.getName().compareTo(key.getName());
+
+        if (cmp == 0)
+            return node.getElement();
+        else if (cmp > 0)
+            return findHelp(node.getLeft(), key);
+        else
+            return findHelp(node.getRight(), key);
     }
 
 

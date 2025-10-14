@@ -91,7 +91,9 @@ public class GISDB implements GIS {
      *         was deleted).
      */
     public String delete(int x, int y) {
-        return db.delete(x, y);
+        String returnString = db.delete(x, y);
+
+        return returnString;
     }
 
 
@@ -109,37 +111,23 @@ public class GISDB implements GIS {
      *         (listed in preorder as they are deleted).
      */
     public String delete(String name) {
-        if (bst.findName(name) == 0) {
-            return "";
+        City city = new City(name, 0, 0);
+        int totalCitites = bst.findName(name);
+        StringBuilder returnString = new StringBuilder();
+        
+        
+        for (int i = 0; i < totalCitites; i++) {
+            City cityReturn =  bst.deleteName(city);
+            db.delete(cityReturn.getX(), cityReturn.getY());
+            returnString.append(cityReturn.getName());
+            returnString.append(" (")
+            .append(cityReturn.getX())
+            .append(", ")
+            .append(cityReturn.getY())
+            .append(")");
         }
         
-        // Get the string of deleted coordinates from the BST
-        String deletedCoords = bst.deleteName(name).trim();
-
-        // --- FOR LOOP: break coordinates into ints and call db.delete(x, y) ---
-        String[] parts = deletedCoords.split("\\)");
-        for (String part : parts) {
-            part = part.trim();
-            if (part.isEmpty()) continue;
-
-            int start = part.indexOf('(');
-            if (start != -1) {
-                String coords = part.substring(start + 1).trim(); // e.g. "10, 5"
-                String[] xy = coords.split(",");
-                if (xy.length == 2) {
-                    try {
-                        int x = Integer.parseInt(xy[0].trim());
-                        int y = Integer.parseInt(xy[1].trim());
-                        db.delete(x, y); // <-- call to delete by coordinates
-                    } catch (NumberFormatException e) {
-                        // Ignore any malformed coordinate pairs
-                    }
-                }
-            }
-        }
-        // ---------------------------------------------------------------------
-
-        return name + " " + deletedCoords;
+        return returnString.toString();
     }
 
 
