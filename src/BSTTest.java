@@ -3,7 +3,7 @@ import student.TestCase;
 /**
  * The purpose of this class is to test the BSTNode class.
  * 
- * @author walkerberndt, lukefreeman
+ * @author walkerberndt, Luke-Freeman-27
  * @version Oct 1, 2025
  */
 public class BSTTest extends TestCase {
@@ -62,7 +62,9 @@ public class BSTTest extends TestCase {
         city1.setY(20);
 
         // Test equals method
+        String checkObj = "Test";
         assertFalse(city1.equals(null)); // Null
+        assertFalse(city1.equals(checkObj));
         assertFalse(city1.equals(1)); // Not instanceof
         assertFalse(city1.equals(city2)); // Different city
         assertTrue(city1.equals(city1)); // Same city
@@ -80,8 +82,8 @@ public class BSTTest extends TestCase {
         repeatCity.setX(20);
         repeatCity.setY(30);
         assertFalse(city1.equals(repeatCity));
-        
-        //compareTo methods
+
+        // compareTo methods
         assertEquals(city1.compareTo(city2), 1);
         assertEquals(city2.compareTo(city1), -1);
         assertEquals(city1.compareToCoordinates(city3), -10);
@@ -199,6 +201,7 @@ public class BSTTest extends TestCase {
         it.insert(city13); // San Francisco
         it.insert(city15); // Washington
 
+        // Test deleting at the end of the BST
         assertFuzzyEquals(it.printBST(), "3      Atlanta (10, 10)\n"
             + "2    Boston (20, 15)\n" + "3      Chicago (30, 25)\n"
             + "1  Dallas (40, 30)\n" + "3      Denver (50, 35)\n"
@@ -219,7 +222,7 @@ public class BSTTest extends TestCase {
             + "3      Philadelphia (110, 65)\n" + "1  Phoenix (120, 70)\n"
             + "3      San Francisco (130, 75)\n" + "2    Seattle (140, 80)\n");
 
-        // Delete root
+        // Test deleting the root of the BST
         it.deleteName(city8);
 
         assertFuzzyEquals(it.printBST(), "2    Boston (20, 15)\n"
@@ -227,6 +230,36 @@ public class BSTTest extends TestCase {
             + "3      Denver (50, 35)\n" + "2    Houston (60, 40)\n"
             + "0Las Vegas (70, 45)\n" + "3      Miami (90, 55)\n"
             + "2    New York (100, 60)\n" + "3      Philadelphia (110, 65)\n"
+            + "1  Phoenix (120, 70)\n" + "3      San Francisco (130, 75)\n"
+            + "2    Seattle (140, 80)\n");
+
+        // Test deleting a city with 2 children
+        it.deleteName(city10);
+
+        assertFuzzyEquals(it.printBST(), "2    Boston (20, 15)\n"
+            + "3      Chicago (30, 25)\n" + "1  Dallas (40, 30)\n"
+            + "3      Denver (50, 35)\n" + "2    Houston (60, 40)\n"
+            + "0Las Vegas (70, 45)\n" + "2    Miami (90, 55)\n"
+            + "3      Philadelphia (110, 65)\n" + "1  Phoenix (120, 70)\n"
+            + "3      San Francisco (130, 75)\n" + "2    Seattle (140, 80)\n");
+
+        // Test a city that does not exist
+        it.deleteName(city1);
+
+        assertFuzzyEquals(it.printBST(), "2    Boston (20, 15)\n"
+            + "3      Chicago (30, 25)\n" + "1  Dallas (40, 30)\n"
+            + "3      Denver (50, 35)\n" + "2    Houston (60, 40)\n"
+            + "0Las Vegas (70, 45)\n" + "2    Miami (90, 55)\n"
+            + "3      Philadelphia (110, 65)\n" + "1  Phoenix (120, 70)\n"
+            + "3      San Francisco (130, 75)\n" + "2    Seattle (140, 80)\n");
+
+        // Test deleting a city with only has a right leaf
+        it.deleteName(city6);
+
+        assertFuzzyEquals(it.printBST(), "2    Boston (20, 15)\n"
+            + "3      Chicago (30, 25)\n" + "1  Dallas (40, 30)\n"
+            + "2    Denver (50, 35)\n" + "0Las Vegas (70, 45)\n"
+            + "2    Miami (90, 55)\n" + "3      Philadelphia (110, 65)\n"
             + "1  Phoenix (120, 70)\n" + "3      San Francisco (130, 75)\n"
             + "2    Seattle (140, 80)\n");
     }

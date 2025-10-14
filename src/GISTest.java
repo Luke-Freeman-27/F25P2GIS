@@ -165,7 +165,8 @@ public class GISTest extends TestCase {
         String deleted = it.delete("Washington");
 
         // Build expected string in preorder (depends on BST insertion logic)
-        String expected = "Washington (10, 20)\nWashington (15, 25)\nWashington (5, 30)";
+        String expected = "Washington (10, 20)\n" + "Washington (15, 25)\n"
+            + "Washington (5, 30)";
 
         // Check that returned string matches expected
         assertEquals(expected, deleted);
@@ -255,6 +256,9 @@ public class GISTest extends TestCase {
     }
 
 
+    /**
+     * Tests the delete method in the KD tree
+     */
     public void testDeletePositionKD2() {
         db.insert("Memphis", 35, 35);
         db.insert("Jacksonville", 20, 20);
@@ -269,7 +273,7 @@ public class GISTest extends TestCase {
 
         assertFuzzyEquals(db.delete(50, 35), "7 \n Los Angeles");
         assertFuzzyEquals(db.delete(40, 20), "3 \n Chicago");
-        assertFuzzyEquals(db.delete(60,55), "3 \n Portland");
+        assertFuzzyEquals(db.delete(60, 55), "3 \n Portland");
         assertFuzzyEquals(db.delete(40, 50), "2 \n Seattle");
         assertFuzzyEquals(db.delete(20, 25), "5 \n Daytona");
     }

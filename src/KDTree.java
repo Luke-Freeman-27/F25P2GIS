@@ -170,7 +170,9 @@ public class KDTree<T> {
      * Finds a node based on an entered x and y value and deletes it.
      * 
      * @param x
+     *            X coordinate.
      * @param y
+     *            y coordinate.
      * @return a string with information on how many nodes the delete function
      *         had to traverse and the node deleted's name.s
      */

@@ -1,11 +1,10 @@
-// -------------------------------------------------------------------------import
-
 /**
  * This class is a basic implementation of a binary search tree. The end purpose
  * of this class is to be used in conjunction with a k-d tree.
  * 
  * @author walkerberndt, Luke-Freeman-27
  * @version Oct 1, 2025
+ * @param <T>
  */
 public class BST<T extends Comparable<? super T>> {
 
@@ -264,34 +263,6 @@ public class BST<T extends Comparable<? super T>> {
         }
         return getMax(node.getRight());
     }
-
-
-    /*
-     * Finds a node in the BST by city name.
-     *
-     * @param node current node
-     * 
-     * @param key City key to search
-     * 
-     * @return element T if found, null otherwise
-     */
-    private T findHelp(BSTNode<T> node, City key) {
-        if (node == null)
-            return null;
-
-        @SuppressWarnings("unchecked")
-        City nodeCity = (City)node.getElement();
-
-        int cmp = nodeCity.getName().compareTo(key.getName());
-
-        if (cmp == 0)
-            return node.getElement();
-        else if (cmp > 0)
-            return findHelp(node.getLeft(), key);
-        else
-            return findHelp(node.getRight(), key);
-    }
-
 
     /**
      * Clear method, restarts the tree
