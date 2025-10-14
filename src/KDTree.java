@@ -275,6 +275,18 @@ public class KDTree<T> {
         return minNode;
     }
 
+    /**
+     * Allows findMin to be called directly for use in testing.
+     * 
+     * @param d
+     * @return the City that is the minimum for a dimension.
+     */
+    public City findMinPublic(int d) {
+        traversedNodes = 0; // reset count for tests if needed
+        Node minNode = findMin(root, d, 0);
+        return (minNode == null) ? null : minNode.city;
+    }
+
 
     private int getCoord(City city, int d) {
         return d == 0 ? city.getX() : city.getY();
