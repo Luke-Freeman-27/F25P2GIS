@@ -92,7 +92,7 @@ public class GISDB implements GIS {
      */
     public String delete(int x, int y) {
         String returnString = db.delete(x, y);
-        if (returnString != "") {
+        if (!(returnString.equals(""))) {
             String[] name = returnString.split("\n");
             String nameInput = name[1].trim();
             City city = new City(nameInput, 0, 0);

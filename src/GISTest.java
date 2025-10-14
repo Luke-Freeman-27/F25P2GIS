@@ -249,6 +249,10 @@ public class GISTest extends TestCase {
         db.insert("Houston", 30, 35);
 
         assertFuzzyEquals(db.delete(50, 35), "7 \n Los Angeles");
+        assertFuzzyEquals(db.delete(40, 20), "3 \n Chicago");
+        assertFuzzyEquals(db.delete(60,55), "3 \n Portland");
+        assertFuzzyEquals(db.delete(40, 50), "2 \n Seattle");
+        assertFuzzyEquals(db.delete(20, 25), "5 \n Daytona");
     }
 
 
