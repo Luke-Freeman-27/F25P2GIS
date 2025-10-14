@@ -244,7 +244,261 @@ public class KDTreeTest extends TestCase {
     }
 
 
+    /**
+     * Test findMin on an empty tree (should return null).
+     */
+    public void testFindMin_EmptyTree() {
+        City minCity = tree.findMinPublic(0);
+        assertNull(minCity);
+
+        minCity = tree.findMinPublic(1);
+        assertNull(minCity);
+    }
+
+
+    /**
+     * Test findMin on a tree with one node.
+     */
+    public void testFindMin_SingleNode() {
+        City c = new City("A", 10, 20);
+        tree.insert(c);
+
+        City minX = tree.findMinPublic(0);
+        assertEquals("A", minX.getName());
+
+        City minY = tree.findMinPublic(1);
+        assertEquals("A", minY.getName());
+    }
+
+
+    /**
+     * Test findMin on a tree with multiple nodes for dimension 0 (X).
+     */
+    public void testFindMin_MultipleNodes_Dim0() {
+        City c1 = new City("A", 30, 40);
+        City c2 = new City("B", 20, 50);
+        City c3 = new City("C", 40, 30);
+        City c4 = new City("D", 10, 60);
+        tree.insert(c1);
+        tree.insert(c2);
+        tree.insert(c3);
+        tree.insert(c4);
+
+        City minX = tree.findMinPublic(0);
+        assertEquals("D", minX.getName()); // city with smallest X = 10
+    }
+
+
+    /**
+     * Test findMin on a tree with multiple nodes for dimension 1 (Y).
+     */
+    public void testFindMin_MultipleNodes_Dim1() {
+        City c1 = new City("A", 30, 40);
+        City c2 = new City("B", 20, 50);
+        City c3 = new City("C", 40, 30);
+        City c4 = new City("D", 10, 60);
+        tree.insert(c1);
+        tree.insert(c2);
+        tree.insert(c3);
+        tree.insert(c4);
+
+        City minY = tree.findMinPublic(1);
+        assertEquals("C", minY.getName()); // city with smallest Y = 30
+    }
+
+
+    /**
+     * Test findMin when multiple nodes have the same coordinate in dimension.
+     */
+    public void testFindMin_MultipleSameCoord() {
+        City c1 = new City("A", 20, 40);
+        City c2 = new City("B", 20, 30);
+        City c3 = new City("C", 20, 50);
+        tree.insert(c1);
+        tree.insert(c2);
+        tree.insert(c3);
+
+        City minX = tree.findMinPublic(0);
+        assertEquals("A", minX.getName()); // all X=20, any one with X=20 is min
+
+        City minY = tree.findMinPublic(1);
+        assertEquals("B", minY.getName()); // smallest Y = 30
+    }
+
+
+    /**
+     * Insert multiple nodes to create at least 3 levels,
+     * check findMin on dimension 0 (X).
+     * Mutation removing depth increment would fail here.
+     */
+    public void testFindMin_Dim0_DeepTree() {
+        // Insert cities forming at least 3 levels
+        // Root (depth=0) splits by x, children alternate dimension
+        City c1 = new City("A", 30, 40); // depth 0
+        City c2 = new City("B", 20, 35); // depth 1
+        City c3 = new City("C", 40, 50); // depth 1
+        City c4 = new City("D", 10, 30); // depth 2 (child of B)
+        City c5 = new City("E", 25, 33); // depth 2 (child of B)
+        tree.insert(c1);
+        tree.insert(c2);
+        tree.insert(c3);
+        tree.insert(c4);
+        tree.insert(c5);
+
+        // findMin dimension 0 (x)
+        City minX = tree.findMinPublic(0);
+
+        // The city with smallest X is D (10,30)
+        assertEquals("D", minX.getName());
+    }
+
+
+    /**
+     * Insert multiple nodes to create at least 3 levels,
+     * check findMin on dimension 1 (Y).
+     * Mutation removing depth increment would fail here.
+     */
+    public void testFindMin_Dim1_DeepTree() {
+        // Same tree as above
+        City c1 = new City("A", 30, 40);
+        City c2 = new City("B", 20, 35);
+        City c3 = new City("C", 40, 50);
+        City c4 = new City("D", 10, 30);
+        City c5 = new City("E", 25, 33);
+        tree.insert(c1);
+        tree.insert(c2);
+        tree.insert(c3);
+        tree.insert(c4);
+        tree.insert(c5);
+
+        // findMin dimension 1 (y)
+        City minY = tree.findMinPublic(1);
+
+        // The city with smallest Y is D (10,30)
+        assertEquals("D", minY.getName());
+    }
+
+
+    /**
+     * Test that findMin on dimension 1 does not always return
+     * the node with minimum x (which would happen if depth
+     * was never incremented).
+     */
+    public void testFindMin_Dim1_CorrectDimension() {
+        // Insert nodes with same x but different y
+        City c1 = new City("A", 20, 50); // depth 0
+        City c2 = new City("B", 25, 30); // depth 1
+        City c3 = new City("C", 22, 40); // depth 2
+        tree.insert(c1);
+        tree.insert(c2);
+        tree.insert(c3);
+
+        // If depth isn't incremented, findMin(1) would wrongly consider only x,
+        // returning city with minimum x instead of y.
+        City minY = tree.findMinPublic(1);
+
+        // The city with smallest Y is B (25, 30)
+        assertEquals("B", minY.getName());
+    }
+
+
+    /**
+     * Test findMin on dimension 0 (x) with multiple levels.
+     */
+    public void testFindMinDimension0() {
+        // Insert cities forming multi-level tree
+        tree.insert(new City("A", 30, 40)); // depth 0 (x)
+        tree.insert(new City("B", 20, 35)); // depth 1 (y)
+        tree.insert(new City("C", 40, 50)); // depth 1 (y)
+        tree.insert(new City("D", 10, 30)); // depth 2 (x)
+        tree.insert(new City("E", 25, 33)); // depth 2 (x)
+
+        // Minimum x should be city "D" with x=10
+        City minX = tree.findMinPublic(0);
+        assertNotNull(minX);
+        assertEquals("D", minX.getName());
+    }
+
+
+    /**
+     * Test findMin on dimension 1 (y) with multiple levels.
+     */
+    public void testFindMinDimension1() {
+        // Insert cities forming multi-level tree
+        tree.insert(new City("A", 30, 40)); // depth 0 (x)
+        tree.insert(new City("B", 20, 35)); // depth 1 (y)
+        tree.insert(new City("C", 40, 50)); // depth 1 (y)
+        tree.insert(new City("D", 10, 30)); // depth 2 (x)
+        tree.insert(new City("E", 25, 33)); // depth 2 (x)
+
+        // Minimum y should be city "D" with y=30
+        City minY = tree.findMinPublic(1);
+        assertNotNull(minY);
+        assertEquals("D", minY.getName());
+    }
+
+
+    /**
+     * Test findMin on dimension 1 returns correct node when x coordinates are
+     * same,
+     * but y differs (to ensure depth increment affects dimension switch).
+     */
+    public void testFindMinDimension1DifferentY() {
+        tree.insert(new City("A", 20, 50)); // depth 0 (x)
+        tree.insert(new City("B", 25, 30)); // depth 1 (y)
+        tree.insert(new City("C", 22, 40)); // depth 2 (x)
+
+        // The minimum y is city "B" with y=30
+        City minY = tree.findMinPublic(1);
+        assertNotNull(minY);
+        assertEquals("B", minY.getName());
+    }
+
+
     // ----------------------------------------------------------
+    /**
+     * Designed to test for a specific mutation.. doesn't catch it for some
+     * reason.
+     */
+    public void testFindMinDepthIncrementMutation() {
+        tree.insert(new City("A", 50, 40)); // depth 0 (x)
+        tree.insert(new City("B", 30, 70)); // depth 1 (y)
+        tree.insert(new City("C", 70, 10)); // depth 1 (y)
+        tree.insert(new City("D", 20, 20)); // depth 2 (x)
+        tree.insert(new City("E", 60, 5)); // depth 2 (x)
+
+        // Find min x (dimension 0) should be city D (x=20)
+        City minX = tree.findMinPublic(0);
+        assertEquals("D", minX.getName());
+
+        // Find min y (dimension 1) should be city E (y=5)
+        City minY = tree.findMinPublic(1);
+        assertEquals("E", minY.getName());
+    }
+
+    public void testFindMinKillsMutationOnBothSides() {
+        // Construct the KDTree:
+        // Depth 0 (cd=0): root (x dim)
+        // Depth 1 (cd=1): children (y dim)
+        // Depth 2 (cd=0): grandchildren (x dim)
+
+        tree.insert(new City("Root", 50, 50));    // depth 0
+        tree.insert(new City("Left", 30, 70));    // depth 1 (left child)
+        tree.insert(new City("Right", 70, 20));   // depth 1 (right child)
+        tree.insert(new City("LeftLeft", 20, 80)); // depth 2 (left-left grandchild)
+        tree.insert(new City("LeftRight", 40, 75)); // depth 2 (left-right grandchild)
+        tree.insert(new City("RightLeft", 60, 10)); // depth 2 (right-left grandchild)
+        tree.insert(new City("RightRight", 80, 15)); // depth 2 (right-right grandchild)
+
+        // For dimension 0 (x), the minimum x should be "LeftLeft" (x=20)
+        City minX = tree.findMinPublic(0);
+        assertEquals("LeftLeft", minX.getName());
+
+        // For dimension 1 (y), the minimum y should be "RightLeft" (y=10)
+        City minY = tree.findMinPublic(1);
+        assertEquals("RightLeft", minY.getName());
+    }
+
     /**
      * Tests the info function for a x and y input.
      */
