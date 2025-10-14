@@ -184,14 +184,14 @@ public class BSTTest extends TestCase {
     /**
      * Test delete root with no children
      */
-    public void testDeleteNoChildren()
-    {
+    public void testDeleteNoChildren() {
         it.insert(city1);
         assertFuzzyEquals(it.printBST(), "0Atlanta (10, 10)");
         it.deleteName(city1);
         assertFuzzyEquals(it.printBST(), "");
     }
-    
+
+
     /**
      * This method checks for several city nodes with the same name
      */

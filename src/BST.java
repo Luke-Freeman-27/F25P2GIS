@@ -218,19 +218,24 @@ public class BST<T extends Comparable<? super T>> {
 
             if (node.getLeft() == null)
                 return new DeleteResult(node.getRight(), deletedCity);
-            if (node.getRight() == null)
+            else if (node.getRight() == null)
                 return new DeleteResult(node.getLeft(), deletedCity);
             // Two children: replace with max of left
-            BSTNode<T> maxNode = getMax(node.getLeft());
-            node.setElement(maxNode.getElement());
-            DeleteResult leftResult = deleteNameHelper(node.getLeft(),
-                (City)maxNode.getElement());
-            node.setLeft(leftResult.node);
+            else {
+                BSTNode<T> maxNode = getMax(node.getLeft());
+                City maxCity = (City)maxNode.getElement();
+                node.setElement((T)new City(maxCity.getName(), maxCity.getX(),
+                    maxCity.getY()));
+                DeleteResult leftResult = deleteNameHelper(node.getLeft(),
+                    (City)maxNode.getElement());
+                node.setLeft(leftResult.node);
+            }
 
             return new DeleteResult(node, deletedCity); // return original
                                                         // deleted city
         }
     }
+
 
     /**
      * Get the maximum value element in a subtree

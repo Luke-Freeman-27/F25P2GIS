@@ -157,19 +157,60 @@ public class GISTest extends TestCase {
      * Test the delete method with duplicates
      */
     public void testDeleteDups() {
-        assertTrue(it.insert("Washington", 10, 20));
-        assertTrue(it.insert("Washington", 15, 25));
-        assertTrue(it.insert("Washington", 5, 30));
-
-        // Delete all cities with name "Washington"
-        String deleted = it.delete("Washington");
-
-        // Build expected string in preorder (depends on BST insertion logic)
-        String expected = "Washington (10, 20)\n" + "Washington (15, 25)\n"
-            + "Washington (5, 30)";
-
-        // Check that returned string matches expected
-        assertEquals(expected, deleted);
+        assertTrue(it.insert("Los Angeles", 11, 12));
+        assertTrue(it.insert("Baton Rouge", 20, 30));
+        assertTrue(it.insert("Denver", 34, 45));
+        assertTrue(it.insert("New York", 24, 35));
+        assertTrue(it.insert("Summerville", 54, 63));
+        assertFuzzyEquals(it.print(), "1  Baton Rouge (20, 30)\n"
+            + "2    Denver (34, 45)\n" + "0Los Angeles (11, 12)\n"
+            + "1  New York (24, 35)\n" + "2    Summerville (54, 63)\n");
+    }
+    
+    /**
+     * Tests the case where you are deleting duplicates
+     */
+    public void testDeleteDups2() {
+        it.insert("LA", 20, 30);
+        it.insert("Boston", 56, 14);
+        it.insert("Charlston", 395, 23);
+        it.insert("Seattle", 36, 89);
+        it.insert("Vegas", 27, 46);
+        
+        it.insert("A", 23, 57);
+        it.insert("A", 94, 40);
+        it.insert("BB", 24, 56);
+        it.insert("A", 75, 70);
+        it.insert("BB", 16, 77);
+        it.insert("A", 60, 95);
+        it.insert("BB", 45, 86);
+        
+        assertFuzzyEquals(it.print(), 
+            "5          a (60, 95)\n" +
+            "4        a (75, 70)\n" +
+            "3      a (94, 40)\n" + 
+            "2    a (23, 57)\n"  +
+            "5          bb (45, 86)\n" +
+            "4        bb (16, 77)\n" +
+            "3      bb (24, 56)\n" +
+            "1  boston (56, 14)\n" +
+            "2    charlston (395, 23)\n" +
+            "0la (20, 30)\n" +
+            "1  seattle (36, 89)\n" +
+            "2    vegas (27, 46)\n");
+        
+        it.delete("BB");
+        
+        assertFuzzyEquals(it.print(), 
+            "5          a (60, 95)\n" +
+            "4        a (75, 70)\n" +
+            "3      a (94, 40)\n" + 
+            "2    a (23, 57)\n"  +
+            "1  boston (56, 14)\n" +
+            "2    charlston (395, 23)\n" +
+            "0la (20, 30)\n" +
+            "1  seattle (36, 89)\n" +
+            "2    vegas (27, 46)\n");
     }
 
 
@@ -202,7 +243,7 @@ public class GISTest extends TestCase {
         assertFuzzyEquals("L (101, 150)\n" + "Atlanta (10, 500)\n"
             + "Baltimore (0, 300)\n" + "Washington (5, 350)\n"
             + "L (11, 500)\n5", it.search(0, 0, 2000));
-         assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
+        assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
     }
 
 
@@ -342,7 +383,7 @@ public class GISTest extends TestCase {
             "city6 (20, 20)\n city7 (20, 25)\n 5");
         assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n4");
         assertFuzzyEquals(db.search(15, 15, 0), "4");
-        
+
         GISDB db2 = new GISDB();
 
         assertFuzzyEquals(db2.search(0, 0, 0), "0");
