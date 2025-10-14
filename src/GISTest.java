@@ -143,18 +143,22 @@ public class GISTest extends TestCase {
         assertTrue(it.insert("New York", 24, 35));
         assertTrue(it.insert("Summerville", 54, 63));
         assertFuzzyEquals(it.delete("Summerville"), "summerville (54, 63)");
-//        assertFuzzyEquals(it.delete("Denver"), "denver (34, 45)");
-//        assertFuzzyEquals(it.delete("Los Angeles"), "los angeles (11, 12)");
-//        assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge (20, 30)");
-//        assertFuzzyEquals(it.delete("New York"), "new york (24, 35)");
+        assertFuzzyEquals(it.debug(), "0Los Angeles (11, 12)\n"
+            + "1  Baton Rouge (20, 30)\n" + "3      New York (24, 35)\n"
+            + "2    Denver (34, 45)\n");
+        assertFuzzyEquals(it.delete("Denver"), "denver (34, 45)");
+        assertFuzzyEquals(it.delete("Los Angeles"), "los angeles (11, 12)");
+        assertFuzzyEquals(it.delete("Baton Rouge"), "baton rouge (20, 30)");
+        assertFuzzyEquals(it.delete("New York"), "new york (24, 35)");
     }
+
+
     /**
      * Insert some records and check output requirements for various commands
+     * 
      * @throws IOException
      */
-    public void testRefOutput()
-        throws IOException
-    {
+    public void testRefOutput() throws IOException {
         assertTrue(it.insert("Chicago", 100, 150));
         assertTrue(it.insert("Atlanta", 10, 500));
         assertTrue(it.insert("Tacoma", 1000, 100));
@@ -163,20 +167,14 @@ public class GISTest extends TestCase {
         assertFalse(it.insert("X", 100, 150));
         assertTrue(it.insert("L", 101, 150));
         assertTrue(it.insert("L", 11, 500));
-        assertFuzzyEquals("1  Atlanta (10, 500)\n"
-            + "2    Baltimore (0, 300)\n"
-            + "0Chicago (100, 150)\n"
-            + "3      L (11, 500)\n"
-            + "2    L (101, 150)\n"
-            + "1  Tacoma (1000, 100)\n"
+        assertFuzzyEquals("1  Atlanta (10, 500)\n" + "2    Baltimore (0, 300)\n"
+            + "0Chicago (100, 150)\n" + "3      L (11, 500)\n"
+            + "2    L (101, 150)\n" + "1  Tacoma (1000, 100)\n"
             + "2    Washington (5, 350)\n", it.print());
         assertFuzzyEquals("2    Baltimore (0, 300)\n"
-            + "3      Washington (5, 350)\n"
-            + "1  Atlanta (10, 500)\n"
-            + "2    L (11, 500)\n"
-            + "0Chicago (100, 150)\n"
-            + "1  Tacoma (1000, 100)\n"
-            + "2    L (101, 150)\n", it.debug());
+            + "3      Washington (5, 350)\n" + "1  Atlanta (10, 500)\n"
+            + "2    L (11, 500)\n" + "0Chicago (100, 150)\n"
+            + "1  Tacoma (1000, 100)\n" + "2    L (101, 150)\n", it.debug());
         assertFuzzyEquals("L (101, 150)\nL (11, 500)", it.info("L"));
         assertFuzzyEquals("L", it.info(101, 150));
         assertFuzzyEquals("Tacoma (1000, 100)", it.delete("Tacoma"));
@@ -184,11 +182,11 @@ public class GISTest extends TestCase {
         assertFuzzyEquals("L (101, 150)\n" + "Atlanta (10, 500)\n"
             + "Baltimore (0, 300)\n" + "Washington (5, 350)\n"
             + "L (11, 500)\n5", it.search(0, 0, 2000));
-        //assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
+        // assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
     }
-    
-    
- // ----------------------------------------------------------
+
+
+    // ----------------------------------------------------------
     /**
      * Tests inserting nodes (Cities) to the KDTree.
      */
@@ -234,9 +232,10 @@ public class GISTest extends TestCase {
         assertFuzzyEquals(db.delete(20, 25), "3 \n city7");
         assertFuzzyEquals(db.delete(-10, 10), "");
         assertFuzzyEquals(db.delete(27, 6), "");
-        assertFuzzyEquals(db.delete(10,16), "3, \n city4");
+        assertFuzzyEquals(db.delete(10, 16), "3, \n city4");
     }
-    
+
+
     public void testDeletePositionKD2() {
         db.insert("Memphis", 35, 35);
         db.insert("Jacksonville", 20, 20);
@@ -248,11 +247,12 @@ public class GISTest extends TestCase {
         db.insert("Chicago", 40, 20);
         db.insert("Portland", 60, 55);
         db.insert("Houston", 30, 35);
-        
+
         assertFuzzyEquals(db.delete(50, 35), "7 \n Los Angeles");
     }
 
- // ----------------------------------------------------------
+
+    // ----------------------------------------------------------
     /**
      * Deletes a city based on an input x and y position
      */
@@ -269,6 +269,7 @@ public class GISTest extends TestCase {
         assertFuzzyEquals(db.delete(12, 16), "8 \n city1");
         assertFuzzyEquals(db.delete(20, 25), "7 \n city7");
     }
+
 
     // ----------------------------------------------------------
     /**

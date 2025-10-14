@@ -163,60 +163,71 @@ public class BST<T extends Comparable<? super T>> {
     /**
      * Deletes the node of a tree given a name, will delete cities with the same
      * name.
-     * 
-     * @param city
-     *            is the dumby city used to find the given name of the other
-     *            city in the BST
-     * @return string of the name plus the coordinates of those cities
+     *
+     * @param city dummy city used to find the given name
+     * @return the City object that was deleted
      */
     public City deleteName(City city) {
-        // First find the node (optional if you want to return coordinates)
-        T temp = findHelp(root, city);
-        if (temp != null) {
-            return (City)(deleteNameHelper(root, city)).getElement();
-        }
-        return null;
+        DeleteResult result = deleteNameHelper(root, city);
+        root = result.node; // update root
+        return result.deletedCity;
     }
 
+    /**
+     * Helper class to return both updated root and deleted city
+     */
+    private class DeleteResult {
+        BSTNode<T> node;
+        City deletedCity;
+
+        DeleteResult(BSTNode<T> node, City deletedCity) {
+            this.node = node;
+            this.deletedCity = deletedCity;
+        }
+    }
 
     /**
-     * Deletes all city nodes that a specific name
-     * 
-     * @param node
-     *            is the given node being checked
-     * @param name
-     *            is the name of the city
-     * @return A string of the coordinates deleted by the delete method.
+     * Deletes all city nodes that a specific name and returns the deleted city.
+     *
+     * @param node current BST node
+     * @param key City key to delete
+     * @return DeleteResult containing updated subtree root and deleted city
      */
-    private BSTNode<T> deleteNameHelper(BSTNode<T> node, City key) {
+    @SuppressWarnings("unchecked")
+    private DeleteResult deleteNameHelper(BSTNode<T> node, City key) {
         if (node == null)
-            return null;
+            return new DeleteResult(null, null);
 
-        @SuppressWarnings("unchecked")
-        City nodeCity = (City)node.getElement();
-
+        City nodeCity = (City) node.getElement();
         int cmp = nodeCity.getName().compareTo(key.getName());
 
         if (cmp > 0) {
-            node.setLeft(deleteNameHelper(node.getLeft(), key));
-        }
-        else if (cmp < 0) {
-            node.setRight(deleteNameHelper(node.getRight(), key));
-        }
-        else {
-            // Node found → BST deletion logic
-            if (node.getLeft() == null)
-                return node.getRight();
-            if (node.getRight() == null)
-                return node.getLeft();
+            DeleteResult leftResult = deleteNameHelper(node.getLeft(), key);
+            node.setLeft(leftResult.node);
+            return new DeleteResult(node, leftResult.deletedCity);
+        } else if (cmp < 0) {
+            DeleteResult rightResult = deleteNameHelper(node.getRight(), key);
+            node.setRight(rightResult.node);
+            return new DeleteResult(node, rightResult.deletedCity);
+        } else {
+            // Node matches → save deleted city
+            City deletedCity = nodeCity;
 
+            if (node.getLeft() == null)
+                return new DeleteResult(node.getRight(), deletedCity);
+            if (node.getRight() == null)
+                return new DeleteResult(node.getLeft(), deletedCity);
+
+            // Two children: replace with max of left
             BSTNode<T> maxNode = getMax(node.getLeft());
             node.setElement(maxNode.getElement());
-            node.setLeft(deleteMax(node.getLeft()));
-        }
+            DeleteResult leftResult = deleteNameHelper(node.getLeft(), (City) maxNode.getElement());
+            node.setLeft(leftResult.node);
 
-        return node;
+            return new DeleteResult(node, deletedCity); // return original deleted city
+        }
     }
+
 
 
     /**
