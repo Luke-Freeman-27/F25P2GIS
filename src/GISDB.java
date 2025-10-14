@@ -60,7 +60,7 @@ public class GISDB implements GIS {
      * @return True iff the city is successfully entered into the database
      */
     public boolean insert(String name, int x, int y) {
-        if (x > MAXCOORD || y > MAXCOORD || x < 0 || y < 0 || name == null) {
+        if (x > MAXCOORD || y > MAXCOORD || x < 0 || y < 0) {
             return false;
         }
 

@@ -220,7 +220,6 @@ public class BST<T extends Comparable<? super T>> {
                 return new DeleteResult(node.getRight(), deletedCity);
             if (node.getRight() == null)
                 return new DeleteResult(node.getLeft(), deletedCity);
-
             // Two children: replace with max of left
             BSTNode<T> maxNode = getMax(node.getLeft());
             node.setElement(maxNode.getElement());
@@ -232,23 +231,6 @@ public class BST<T extends Comparable<? super T>> {
                                                         // deleted city
         }
     }
-
-
-    /**
-     * Delete the maximum value of an element in a subtree
-     *
-     * @param node
-     *            is the node that is being checked
-     * @return The node that is deleted
-     */
-    private BSTNode<T> deleteMax(BSTNode<T> node) {
-        if (node.getRight() == null) {
-            return node.getLeft();
-        }
-        node.setRight(deleteMax(node.getRight()));
-        return node;
-    }
-
 
     /**
      * Get the maximum value element in a subtree
@@ -263,6 +245,7 @@ public class BST<T extends Comparable<? super T>> {
         }
         return getMax(node.getRight());
     }
+
 
     /**
      * Clear method, restarts the tree
