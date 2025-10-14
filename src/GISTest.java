@@ -317,7 +317,7 @@ public class GISTest extends TestCase {
 
         GISDB db2 = new GISDB();
 
-        assertFuzzyEquals(db2.search(0, 0, 0), "");
+        assertFuzzyEquals(db2.search(0, 0, 0), "0");
     }
 
 

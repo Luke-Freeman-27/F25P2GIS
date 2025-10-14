@@ -11,6 +11,10 @@ public class KDTree<T> {
 
     private Node root;
 
+    /**
+     * Global Variable allowed by TA's to keep count of traversed nodes for
+     * functions for which this is required.
+     */
     public static int traversedNodes = 0;
 
     private static class Node {
@@ -75,18 +79,13 @@ public class KDTree<T> {
      * 
      * Display the name of the city at coordinate (x, y) if it exists.
      * 
-     * 
-     * 
      * @param x
-     * 
      *            X coordinate.
      * 
      * @param y
-     * 
      *            Y coordinate.
      * 
      * @return The city name if there is such a city, empty otherwise
-     * 
      */
 
     public String infoXY(int x, int y) {
@@ -113,9 +112,7 @@ public class KDTree<T> {
             .getY())) {
             return infoXY(node.left, x, y, depth + 1);
         }
-        else {
-            return infoXY(node.right, x, y, depth + 1);
-        }
+        return infoXY(node.right, x, y, depth + 1);
     }
 
 
@@ -168,6 +165,15 @@ public class KDTree<T> {
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Finds a node based on an entered x and y value and deletes it.
+     * 
+     * @param x
+     * @param y
+     * @return a string with information on how many nodes the delete function
+     *         had to traverse and the node deleted's name.s
+     */
     public String delete(int x, int y) {
         // Reset the global counter
         KDTree.traversedNodes = 0;
@@ -318,7 +324,7 @@ public class KDTree<T> {
         }
 
         if (root == null) {
-            return ""; // no cities found
+            return "0"; // no cities found
         }
 
         StringBuilder foundCities = new StringBuilder();
