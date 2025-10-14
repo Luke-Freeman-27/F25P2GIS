@@ -1,11 +1,10 @@
 // -------------------------------------------------------------------------import
-// sun.tools.tree.ThisExpression;
 
 /**
  * This class is a basic implementation of a binary search tree. The end purpose
  * of this class is to be used in conjunction with a k-d tree.
  * 
- * @author walkerberndt, lukefreeman
+ * @author walkerberndt, Luke-Freeman-27
  * @version Oct 1, 2025
  */
 public class BST<T extends Comparable<? super T>> {
@@ -164,7 +163,8 @@ public class BST<T extends Comparable<? super T>> {
      * Deletes the node of a tree given a name, will delete cities with the same
      * name.
      *
-     * @param city dummy city used to find the given name
+     * @param city
+     *            dummy city used to find the given name
      * @return the City object that was deleted
      */
     public City deleteName(City city) {
@@ -189,8 +189,10 @@ public class BST<T extends Comparable<? super T>> {
     /**
      * Deletes all city nodes that a specific name and returns the deleted city.
      *
-     * @param node current BST node
-     * @param key City key to delete
+     * @param node
+     *            current BST node
+     * @param key
+     *            City key to delete
      * @return DeleteResult containing updated subtree root and deleted city
      */
     @SuppressWarnings("unchecked")
@@ -198,18 +200,20 @@ public class BST<T extends Comparable<? super T>> {
         if (node == null)
             return new DeleteResult(null, null);
 
-        City nodeCity = (City) node.getElement();
+        City nodeCity = (City)node.getElement();
         int cmp = nodeCity.getName().compareTo(key.getName());
 
         if (cmp > 0) {
             DeleteResult leftResult = deleteNameHelper(node.getLeft(), key);
             node.setLeft(leftResult.node);
             return new DeleteResult(node, leftResult.deletedCity);
-        } else if (cmp < 0) {
+        }
+        else if (cmp < 0) {
             DeleteResult rightResult = deleteNameHelper(node.getRight(), key);
             node.setRight(rightResult.node);
             return new DeleteResult(node, rightResult.deletedCity);
-        } else {
+        }
+        else {
             // Node matches → save deleted city
             City deletedCity = nodeCity;
 
@@ -221,13 +225,14 @@ public class BST<T extends Comparable<? super T>> {
             // Two children: replace with max of left
             BSTNode<T> maxNode = getMax(node.getLeft());
             node.setElement(maxNode.getElement());
-            DeleteResult leftResult = deleteNameHelper(node.getLeft(), (City) maxNode.getElement());
+            DeleteResult leftResult = deleteNameHelper(node.getLeft(),
+                (City)maxNode.getElement());
             node.setLeft(leftResult.node);
 
-            return new DeleteResult(node, deletedCity); // return original deleted city
+            return new DeleteResult(node, deletedCity); // return original
+                                                        // deleted city
         }
     }
-
 
 
     /**

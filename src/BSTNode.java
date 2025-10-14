@@ -4,6 +4,7 @@
  * 
  * @author walkerberndt, Luke-Freeman-27
  * @version Oct 1, 2025
+ * @param <T>
  */
 public class BSTNode<T> {
     // ~ Fields ................................................................

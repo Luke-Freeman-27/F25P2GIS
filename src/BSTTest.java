@@ -50,6 +50,46 @@ public class BSTTest extends TestCase {
 
 
     /**
+     * Test the setter methods in the City node.
+     */
+    public void testCity() {
+        // Test basic get and setter methods
+        assertEquals(city1.getName(), "Atlanta");
+        city1.setName("Charleston");
+        assertEquals(city1.getX(), 10);
+        city1.setX(20);
+        assertEquals(city1.getY(), 10);
+        city1.setY(20);
+
+        // Test equals method
+        assertFalse(city1.equals(null)); // Null
+        assertFalse(city1.equals(1)); // Not instanceof
+        assertFalse(city1.equals(city2)); // Different city
+        assertTrue(city1.equals(city1)); // Same city
+
+        // Comparing the same city
+        City repeatCity = new City("Charleston", 20, 20);
+        assertTrue(city1.equals(repeatCity));
+
+        // Changing each value of city to ensure not equal
+        repeatCity.setName("Not Charleston");
+        assertFalse(city1.equals(repeatCity));
+        repeatCity.setName("Charleston");
+        repeatCity.setX(30);
+        assertFalse(city1.equals(repeatCity));
+        repeatCity.setX(20);
+        repeatCity.setY(30);
+        assertFalse(city1.equals(repeatCity));
+        
+        //compareTo methods
+        assertEquals(city1.compareTo(city2), 1);
+        assertEquals(city2.compareTo(city1), -1);
+        assertEquals(city1.compareToCoordinates(city3), -10);
+        assertEquals(city1.compareToCoordinates(city2), 5);
+    }
+
+
+    /**
      * Test the insert method
      */
     public void testInsert() {
@@ -178,17 +218,17 @@ public class BSTTest extends TestCase {
             + "3      Miami (90, 55)\n" + "2    New York (100, 60)\n"
             + "3      Philadelphia (110, 65)\n" + "1  Phoenix (120, 70)\n"
             + "3      San Francisco (130, 75)\n" + "2    Seattle (140, 80)\n");
-        
+
         // Delete root
         it.deleteName(city8);
-        
+
         assertFuzzyEquals(it.printBST(), "2    Boston (20, 15)\n"
             + "3      Chicago (30, 25)\n" + "1  Dallas (40, 30)\n"
             + "3      Denver (50, 35)\n" + "2    Houston (60, 40)\n"
-            + "0Las Vegas (70, 45)\n"
-            + "3      Miami (90, 55)\n" + "2    New York (100, 60)\n"
-            + "3      Philadelphia (110, 65)\n" + "1  Phoenix (120, 70)\n"
-            + "3      San Francisco (130, 75)\n" + "2    Seattle (140, 80)\n");
+            + "0Las Vegas (70, 45)\n" + "3      Miami (90, 55)\n"
+            + "2    New York (100, 60)\n" + "3      Philadelphia (110, 65)\n"
+            + "1  Phoenix (120, 70)\n" + "3      San Francisco (130, 75)\n"
+            + "2    Seattle (140, 80)\n");
     }
 
 

@@ -3,7 +3,7 @@
  * This class is a basic implementation of a k-d tree. The end purpose
  * of this class is to be used in conjunction with a BST.
  * 
- * @author walkerberndt, lukefreeman
+ * @author walkerberndt, Luke-Freeman-27
  * @version Oct 1, 2025
  * @param <T>
  */

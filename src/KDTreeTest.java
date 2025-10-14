@@ -1,8 +1,7 @@
-import java.io.IOException;
 import student.TestCase;
 
 /**
- * @author walkerberndt, lukefreeman
+ * @author walkerberndt, Luke-Freeman-27
  * @version Oct 2, 2025
  */
 public class KDTreeTest extends TestCase {

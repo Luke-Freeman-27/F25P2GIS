@@ -2,7 +2,7 @@ import java.io.IOException;
 import student.TestCase;
 
 /**
- * @author walkerberndt, lukefreeman
+ * @author walkerberndt, Luke-Freeman-27
  * @version Oct 1, 2025
  */
 public class GISTest extends TestCase {
