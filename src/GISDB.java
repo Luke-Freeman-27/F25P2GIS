@@ -123,7 +123,10 @@ public class GISDB implements GIS {
         for (int i = 0; i < totalCitites; i++) {
             City cityReturn = bst.deleteName(city);
             db.delete(cityReturn.getX(), cityReturn.getY());
-            returnString.append(cityReturn.getName());
+            if (i == 0)
+            {
+                returnString.append(cityReturn.getName());
+            }
             returnString.append(" (").append(cityReturn.getX()).append(", ")
                 .append(cityReturn.getY()).append(")");
         }
