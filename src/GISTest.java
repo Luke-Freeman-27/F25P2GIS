@@ -154,6 +154,25 @@ public class GISTest extends TestCase {
 
 
     /**
+     * Test the delete method with duplicates
+     */
+    public void testDeleteDups() {
+        assertTrue(it.insert("Washington", 10, 20));
+        assertTrue(it.insert("Washington", 15, 25));
+        assertTrue(it.insert("Washington", 5, 30));
+
+        // Delete all cities with name "Washington"
+        String deleted = it.delete("Washington");
+
+        // Build expected string in preorder (depends on BST insertion logic)
+        String expected = "Washington (10, 20) (5, 30) (15, 25)";
+
+        // Check that returned string matches expected
+        assertEquals(expected, deleted);
+    }
+
+
+    /**
      * Insert some records and check output requirements for various commands
      * 
      * @throws IOException
