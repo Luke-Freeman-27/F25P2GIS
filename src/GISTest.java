@@ -202,7 +202,7 @@ public class GISTest extends TestCase {
         assertFuzzyEquals("L (101, 150)\n" + "Atlanta (10, 500)\n"
             + "Baltimore (0, 300)\n" + "Washington (5, 350)\n"
             + "L (11, 500)\n5", it.search(0, 0, 2000));
-        // assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
+         assertFuzzyEquals("Baltimore (0, 300)\n4", it.search(0, 300, 0));
     }
 
 
@@ -342,7 +342,7 @@ public class GISTest extends TestCase {
             "city6 (20, 20)\n city7 (20, 25)\n 5");
         assertFuzzyEquals(db.search(20, 20, 0), "city6 (20, 20)\n4");
         assertFuzzyEquals(db.search(15, 15, 0), "4");
-
+        
         GISDB db2 = new GISDB();
 
         assertFuzzyEquals(db2.search(0, 0, 0), "0");

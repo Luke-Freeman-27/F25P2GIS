@@ -47,14 +47,14 @@ public class KDTree<T> {
      *            added.
      */
     public void insert(City city) {
-        if (city == null) {
-            return;
-        }
         root = insert(root, city, 0);
     }
 
 
     private Node insert(Node node, City city, int depth) {
+        if (city == null) {
+            return null;
+        }
         if (node == null) {
             return new Node(city, depth);
         }
@@ -215,12 +215,18 @@ public class KDTree<T> {
                 return node;
             }
             else if (node.left != null) {
-                Node maxNode = findMax(node.left, cd, depth + 1);
-                node.city = maxNode.city;
-                node.left = deleteAndCount(node.left, maxNode.city.getX(),
-                    maxNode.city.getY(), depth + 1);
-                return node; // Keep structure, but with replaced data
+                // Promote left subtree to right
+                node.right = node.left;
+                node.left = null;
+
+                // Now same logic as right-child case
+                Node minNode = findMin(node.right, cd, depth + 1);
+                node.city = minNode.city;
+                node.right = deleteAndCount(node.right, minNode.city.getX(),
+                    minNode.city.getY(), depth + 1);
+                return node;
             }
+
             else {
                 return null;
             }
@@ -270,34 +276,8 @@ public class KDTree<T> {
     }
 
 
-    // Add findMax (similar to findMin, but maximize coord):
-    private Node findMax(Node node, int d, int depth) {
-        if (node == null)
-            return null;
-        KDTree.traversedNodes++;
-        int cd = depth % 2;
-        if (cd == d) {
-            if (node.right == null)
-
-                return findMax(node.right, d, depth + 1); // Go right for max
-        }
-        Node leftMax = findMax(node.left, d, depth + 1);
-        Node rightMax = findMax(node.right, d, depth + 1);
-        Node maxNode = node;
-        if (leftMax != null && getCoord(leftMax.city, d) > getCoord(
-            maxNode.city, d)) {
-            maxNode = leftMax;
-        }
-        if (rightMax != null && getCoord(rightMax.city, d) > getCoord(
-            maxNode.city, d)) {
-            maxNode = rightMax;
-        }
-        return maxNode;
-    }
-
-
     private int getCoord(City city, int d) {
-        return (d == 0) ? city.getX() : city.getY();
+        return d == 0 ? city.getX() : city.getY();
     }
 
 
@@ -352,7 +332,7 @@ public class KDTree<T> {
             return;
         }
 
-        // Increment count since this node is being searched (visited)
+        // Count this node as visited
         count[0]++;
 
         int dx = node.city.getX() - x;
@@ -367,14 +347,16 @@ public class KDTree<T> {
         }
 
         int cd = node.depth % 2;
-
         int coord = (cd == 0) ? node.city.getX() : node.city.getY();
         int queryCoord = (cd == 0) ? x : y;
 
-        if (queryCoord - radius <= coord) {
+        // Only go left if queryCoord - radius < coord (NOT <=)
+        if (queryCoord - radius < coord) {
             search(node.left, x, y, radius, foundCities, count);
         }
 
+        // Always go right if queryCoord + radius >= coord
+        // (including when they are equal)
         if (queryCoord + radius >= coord) {
             search(node.right, x, y, radius, foundCities, count);
         }
@@ -387,5 +369,4 @@ public class KDTree<T> {
     public void clear() {
         root = null;
     }
-
 }

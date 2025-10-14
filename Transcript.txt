@@ -5611,3 +5611,93 @@ compareToCoordinates compares by spatial location, useful for BSTs keyed on (x, 
 Works naturally with int coordinates — negative means "comes before", positive "comes after".
 
 If you want, I can also show a version that first compares x, then y, and finally name for a fully unique ordering suitable for a BST keyed by both coordinates and name. Do you want me to do that?
+You're on the right track with your `search` method for the k-d tree, but your current implementation **doesn't fully enforce the pruning rule for equal values on the border**. This can lead to unnecessary node visits, particularly when a node lies **exactly on the boundary** of the search circle. You already understand that if the current node’s coordinate equals the boundary, **only the right subtree should be searched**.
+
+### Problem:
+
+In a k-d tree, when `queryCoord == coord`, if you check both left and right subtrees, you're violating the property that **equal values are stored only on the right subtree**. This is key to **minimizing node visits** and **preserving the correct structure**.
+
+---
+
+### Fix:
+
+Modify your two conditions:
+
+```java
+if (queryCoord - radius <= coord) {
+    search(node.left, x, y, radius, foundCities, count);
+}
+
+if (queryCoord + radius >= coord) {
+    search(node.right, x, y, radius, foundCities, count);
+}
+```
+
+To **handle the equality case carefully**, you need to update the logic like this:
+
+---
+
+### ✅ **Corrected Version**:
+
+```java
+private void search(
+    Node node,
+    int x,
+    int y,
+    int radius,
+    StringBuilder foundCities,
+    int[] count) {
+
+    if (node == null) {
+        return;
+    }
+
+    // Count this node as visited
+    count[0]++;
+
+    int dx = node.city.getX() - x;
+    int dy = node.city.getY() - y;
+    int distSquared = dx * dx + dy * dy;
+    int radiusSquared = radius * radius;
+
+    if (distSquared <= radiusSquared) {
+        foundCities.append(node.city.getName())
+            .append(" (").append(node.city.getX())
+            .append(", ").append(node.city.getY())
+            .append(")\n");
+    }
+
+    int cd = node.depth % 2;
+    int coord = (cd == 0) ? node.city.getX() : node.city.getY();
+    int queryCoord = (cd == 0) ? x : y;
+
+    // Only go left if queryCoord - radius < coord (NOT <=)
+    if (queryCoord - radius < coord) {
+        search(node.left, x, y, radius, foundCities, count);
+    }
+
+    // Always go right if queryCoord + radius >= coord
+    // (including when they are equal)
+    if (queryCoord + radius >= coord) {
+        search(node.right, x, y, radius, foundCities, count);
+    }
+}
+```
+
+---
+
+### 📌 Why This Works:
+
+* When `queryCoord - radius == coord`, we **do not** go left — because by your tree-building rules, nodes equal to the splitting coordinate only appear in the **right subtree**.
+* When `queryCoord + radius == coord`, we **do go right**, as any node matching the boundary (or beyond) could be in the right subtree.
+
+---
+
+### Optional:
+
+If you want to **enforce ordering** of results (like lexicographically or by coordinates), that would require sorting the results before returning. But as it stands, this fix ensures **minimal node visits** and correct pruning based on your k-d tree's structure.
+
+---
+
+Would you like help adding sorting to the results too?
+
