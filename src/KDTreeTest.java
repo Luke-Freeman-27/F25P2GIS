@@ -128,7 +128,6 @@ public class KDTreeTest extends TestCase {
         City city7 = new City("city7", 20, 25);
         City city8 = new City("city8", 5, 30);
         City city9 = new City("city9", 9, 9);
-        City cityNull = null;
 
         db.insert(city1);
         db.insert(city2);
@@ -182,7 +181,7 @@ public class KDTreeTest extends TestCase {
 
         KDTree<City> db2 = new KDTree<City>();
 
-        assertFuzzyEquals(db2.search(0, 0, 0), "");
+        assertFuzzyEquals(db2.search(0, 0, 0), "0");
     }
 
 

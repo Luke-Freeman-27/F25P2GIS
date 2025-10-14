@@ -92,7 +92,12 @@ public class GISDB implements GIS {
      */
     public String delete(int x, int y) {
         String returnString = db.delete(x, y);
-
+        if (returnString != "") {
+            String[] name = returnString.split("\n");
+            String nameInput = name[1].trim();
+            City city = new City(nameInput, 0, 0);
+            bst.deleteName(city);
+        }
         return returnString;
     }
 
@@ -114,19 +119,15 @@ public class GISDB implements GIS {
         City city = new City(name, 0, 0);
         int totalCitites = bst.findName(name);
         StringBuilder returnString = new StringBuilder();
-        
-        
+
         for (int i = 0; i < totalCitites; i++) {
-            City cityReturn =  bst.deleteName(city);
+            City cityReturn = bst.deleteName(city);
             db.delete(cityReturn.getX(), cityReturn.getY());
             returnString.append(cityReturn.getName());
-            returnString.append(" (")
-            .append(cityReturn.getX())
-            .append(", ")
-            .append(cityReturn.getY())
-            .append(")");
+            returnString.append(" (").append(cityReturn.getX()).append(", ")
+                .append(cityReturn.getY()).append(")");
         }
-        
+
         return returnString.toString();
     }
 
