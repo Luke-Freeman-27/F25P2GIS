@@ -165,7 +165,7 @@ public class GISTest extends TestCase {
         String deleted = it.delete("Washington");
 
         // Build expected string in preorder (depends on BST insertion logic)
-        String expected = "Washington (10, 20) (5, 30) (15, 25)";
+        String expected = "Washington (10, 20)\nWashington (15, 25)\nWashington (5, 30)";
 
         // Check that returned string matches expected
         assertEquals(expected, deleted);
