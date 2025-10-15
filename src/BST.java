@@ -9,10 +9,6 @@
 public class BST<T extends Comparable<? super T>> {
 
     // ~ Fields ................................................................
-    /**
-     * @param root
-     *            is the root of the BST
-     */
     private BSTNode<T> root;
 
     // ~ Constructors ..........................................................
@@ -196,9 +192,9 @@ public class BST<T extends Comparable<? super T>> {
      */
     @SuppressWarnings("unchecked")
     private DeleteResult deleteNameHelper(BSTNode<T> node, City key) {
-        if (node == null)
+        if (node == null) {
             return new DeleteResult(null, null);
-
+        }
         City nodeCity = (City)node.getElement();
         int cmp = nodeCity.getName().compareTo(key.getName());
 
@@ -224,14 +220,17 @@ public class BST<T extends Comparable<? super T>> {
             else {
                 BSTNode<T> maxNode = getMax(node.getLeft());
                 City maxCity = (City)maxNode.getElement();
-                node.setElement((T)new City(maxCity.getName(), maxCity.getX(),
-                    maxCity.getY()));
+                // Create a new City object to avoid sharing mutable references
+                City newCityCopy = new City(maxCity.getName(), maxCity.getX(),
+                    maxCity.getY());
+                node.setElement((T)newCityCopy);
+
                 DeleteResult leftResult = deleteNameHelper(node.getLeft(),
                     (City)maxNode.getElement());
                 node.setLeft(leftResult.node);
             }
 
-            return new DeleteResult(node, deletedCity); // return original
+            return new DeleteResult(node, deletedCity); // return original //
                                                         // deleted city
         }
     }

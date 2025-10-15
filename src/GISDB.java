@@ -117,17 +117,19 @@ public class GISDB implements GIS {
      */
     public String delete(String name) {
         City city = new City(name, 0, 0);
-        int totalCitites = bst.findName(name);
+        int totalCities = bst.findName(name);
         StringBuilder returnString = new StringBuilder();
 
-        for (int i = 0; i < totalCitites; i++) {
+        for (int i = 0; i < totalCities; i++) {
             City cityReturn = bst.deleteName(city);
-            db.delete(cityReturn.getX(), cityReturn.getY());
-            returnString.append(cityReturn.getName());
-            returnString.append(" (").append(cityReturn.getX()).append(", ")
-                .append(cityReturn.getY()).append(")");
-            if (i < (totalCitites - 1)) {
-                returnString.append("\n");
+            if (cityReturn != null) {
+                db.delete(cityReturn.getX(), cityReturn.getY());
+                returnString.append(cityReturn.getName());
+                returnString.append(" (").append(cityReturn.getX()).append(", ")
+                    .append(cityReturn.getY()).append(")");
+                if (i < (totalCities - 1)) {
+                    returnString.append("\n");
+                }
             }
         }
 

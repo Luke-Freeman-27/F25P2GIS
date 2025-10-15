@@ -307,4 +307,38 @@ public class BSTTest extends TestCase {
             + "Repeat City (100, 200)\n" + "Repeat City (200, 100)\n");
     }
 
+    /**
+     * Mutation Testing
+     */
+    public void testDeleteNodeWithOnlyLeftChild() {
+        BST<City> bst = new BST<>();
+        bst.insert(new City("B", 1, 1));
+        bst.insert(new City("A", 0, 0)); // Left child only
+
+        City cityToDelete = new City("B", 1, 1);
+        bst.deleteName(cityToDelete);
+
+        // Check that only "A" remains
+        String output = bst.printBST();
+        assertTrue(output.contains("A (0, 0)"));
+        assertFalse(output.contains("B"));
+    }
+
+    /**
+     * Mutation Testing
+     */
+    public void testDeleteNodeWithOnlyRightChild() {
+        BST<City> bst = new BST<>();
+        bst.insert(new City("A", 0, 0));
+        bst.insert(new City("B", 1, 1)); // Right child only
+
+        City cityToDelete = new City("A", 0, 0);
+        bst.deleteName(cityToDelete);
+
+        // Check that only "B" remains
+        String output = bst.printBST();
+        assertTrue(output.contains("B (1, 1)"));
+        assertFalse(output.contains("A"));
+    }
+
 }
