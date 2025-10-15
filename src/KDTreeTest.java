@@ -118,7 +118,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Deletes a leaf node from the tree.
      */
-    public void testDelete_LeafNode() {
+    public void testDeleteLeafNode() {
         City c1 = new City("A", 10, 10);
         City c2 = new City("B", 20, 20);
         City c3 = new City("C", 5, 5);
@@ -137,7 +137,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Deletes a node with only right child.
      */
-    public void testDelete_OnlyRightChild() {
+    public void testDeleteOnlyRightChild() {
         City c1 = new City("A", 10, 10);
         City c2 = new City("B", 20, 20);
         db.insert(c1);
@@ -154,7 +154,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Deletes a node with only left child.
      */
-    public void testDelete_OnlyLeftChild() {
+    public void testDeleteOnlyLeftChild() {
         City c1 = new City("A", 20, 20);
         City c2 = new City("B", 10, 10);
         db.insert(c1);
@@ -171,7 +171,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Deletes a node with two children.
      */
-    public void testDelete_TwoChildren() {
+    public void testDeleteTwoChildren() {
         City c1 = new City("A", 30, 40);
         City c2 = new City("B", 20, 30);
         City c3 = new City("C", 40, 50);
@@ -192,7 +192,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Deletes the root node repeatedly until tree is empty.
      */
-    public void testDelete_RootUntilEmpty() {
+    public void testDeleteRootUntilEmpty() {
         City c1 = new City("Root", 50, 50);
         City c2 = new City("L", 25, 25);
         City c3 = new City("R", 75, 75);
@@ -212,7 +212,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Attempt to delete a city not in the tree.
      */
-    public void testDelete_NonExistentCity() {
+    public void testDeleteNonExistentCity() {
         City c1 = new City("A", 10, 10);
         City c2 = new City("B", 20, 20);
         db.insert(c1);
@@ -226,7 +226,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Deletes node requiring minimum search in different dimension.
      */
-    public void testDelete_MinSearchDifferentDimension() {
+    public void testDeleteMinSearchDifferentDimension() {
         db.insert(new City("A", 30, 40)); // root
         db.insert(new City("B", 20, 10)); // left
         db.insert(new City("C", 40, 60)); // right
@@ -247,7 +247,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Test findMin on an empty tree (should return null).
      */
-    public void testFindMin_EmptyTree() {
+    public void testFindMinEmptyTree() {
         City minCity = tree.findMinPublic(0);
         assertNull(minCity);
 
@@ -259,7 +259,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Test findMin on a tree with one node.
      */
-    public void testFindMin_SingleNode() {
+    public void testFindMinSingleNode() {
         City c = new City("A", 10, 20);
         tree.insert(c);
 
@@ -274,7 +274,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Test findMin on a tree with multiple nodes for dimension 0 (X).
      */
-    public void testFindMin_MultipleNodes_Dim0() {
+    public void testFindMinMultipleNodes_Dim0() {
         City c1 = new City("A", 30, 40);
         City c2 = new City("B", 20, 50);
         City c3 = new City("C", 40, 30);
@@ -292,7 +292,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Test findMin on a tree with multiple nodes for dimension 1 (Y).
      */
-    public void testFindMin_MultipleNodes_Dim1() {
+    public void testFindMinMultipleNodes_Dim1() {
         City c1 = new City("A", 30, 40);
         City c2 = new City("B", 20, 50);
         City c3 = new City("C", 40, 30);
@@ -310,7 +310,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Test findMin when multiple nodes have the same coordinate in dimension.
      */
-    public void testFindMin_MultipleSameCoord() {
+    public void testFindMinMultipleSameCoord() {
         City c1 = new City("A", 20, 40);
         City c2 = new City("B", 20, 30);
         City c3 = new City("C", 20, 50);
@@ -331,7 +331,7 @@ public class KDTreeTest extends TestCase {
      * check findMin on dimension 0 (X).
      * Mutation removing depth increment would fail here.
      */
-    public void testFindMin_Dim0_DeepTree() {
+    public void testFindMinDim0DeepTree() {
         // Insert cities forming at least 3 levels
         // Root (depth=0) splits by x, children alternate dimension
         City c1 = new City("A", 30, 40); // depth 0
@@ -358,7 +358,7 @@ public class KDTreeTest extends TestCase {
      * check findMin on dimension 1 (Y).
      * Mutation removing depth increment would fail here.
      */
-    public void testFindMin_Dim1_DeepTree() {
+    public void testFindMinDim1DeepTree() {
         // Same tree as above
         City c1 = new City("A", 30, 40);
         City c2 = new City("B", 20, 35);
@@ -384,7 +384,7 @@ public class KDTreeTest extends TestCase {
      * the node with minimum x (which would happen if depth
      * was never incremented).
      */
-    public void testFindMin_Dim1_CorrectDimension() {
+    public void testFindMinDim1CorrectDimension() {
         // Insert nodes with same x but different y
         City c1 = new City("A", 20, 50); // depth 0
         City c2 = new City("B", 25, 30); // depth 1
@@ -476,19 +476,24 @@ public class KDTreeTest extends TestCase {
         assertEquals("E", minY.getName());
     }
 
+
     public void testFindMinKillsMutationOnBothSides() {
         // Construct the KDTree:
         // Depth 0 (cd=0): root (x dim)
         // Depth 1 (cd=1): children (y dim)
         // Depth 2 (cd=0): grandchildren (x dim)
 
-        tree.insert(new City("Root", 50, 50));    // depth 0
-        tree.insert(new City("Left", 30, 70));    // depth 1 (left child)
-        tree.insert(new City("Right", 70, 20));   // depth 1 (right child)
-        tree.insert(new City("LeftLeft", 20, 80)); // depth 2 (left-left grandchild)
-        tree.insert(new City("LeftRight", 40, 75)); // depth 2 (left-right grandchild)
-        tree.insert(new City("RightLeft", 60, 10)); // depth 2 (right-left grandchild)
-        tree.insert(new City("RightRight", 80, 15)); // depth 2 (right-right grandchild)
+        tree.insert(new City("Root", 50, 50)); // depth 0
+        tree.insert(new City("Left", 30, 70)); // depth 1 (left child)
+        tree.insert(new City("Right", 70, 20)); // depth 1 (right child)
+        tree.insert(new City("LeftLeft", 20, 80)); // depth 2 (left-left
+                                                   // grandchild)
+        tree.insert(new City("LeftRight", 40, 75)); // depth 2 (left-right
+                                                    // grandchild)
+        tree.insert(new City("RightLeft", 60, 10)); // depth 2 (right-left
+                                                    // grandchild)
+        tree.insert(new City("RightRight", 80, 15)); // depth 2 (right-right
+                                                     // grandchild)
 
         // For dimension 0 (x), the minimum x should be "LeftLeft" (x=20)
         City minX = tree.findMinPublic(0);
@@ -498,6 +503,7 @@ public class KDTreeTest extends TestCase {
         City minY = tree.findMinPublic(1);
         assertEquals("RightLeft", minY.getName());
     }
+
 
     /**
      * Tests the info function for a x and y input.
@@ -534,7 +540,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Tests the info function with coordinates not in the tree.
      */
-    public void testInfoXY_NotInTree() {
+    public void testInfoXYNotInTree() {
         City city1 = new City("A", 10, 10);
         City city2 = new City("B", 20, 20);
         db.insert(city1);
@@ -549,7 +555,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Tests the info function with multiple cities having same x or y values.
      */
-    public void testInfoXY_SameXorY() {
+    public void testInfoXYSameXorY() {
         City city1 = new City("A", 10, 10);
         City city2 = new City("B", 10, 20);
         City city3 = new City("C", 20, 10);
@@ -567,7 +573,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Tests infoXY with only one city inserted.
      */
-    public void testInfoXY_OneCity() {
+    public void testInfoXYOneCity() {
         City city1 = new City("SoloCity", 7, 7);
         db.insert(city1);
 
@@ -580,7 +586,7 @@ public class KDTreeTest extends TestCase {
      * Tests infoXY with duplicate coordinates (should return the first inserted
      * one).
      */
-    public void testInfoXY_DuplicateCoordinates() {
+    public void testInfoXYDuplicateCoordinates() {
         City city1 = new City("CityOne", 5, 5);
         City city2 = new City("CityTwo", 5, 5);
         db.insert(city1);
@@ -594,7 +600,7 @@ public class KDTreeTest extends TestCase {
     /**
      * Tests infoXY with an empty database.
      */
-    public void testInfoXY_EmptyDB() {
+    public void testInfoXYEmptyDB() {
         assertFuzzyEquals(db.infoXY(0, 0), "");
         assertFuzzyEquals(db.infoXY(100, 100), "");
     }
@@ -604,7 +610,7 @@ public class KDTreeTest extends TestCase {
      * Tests infoXY with cities inserted in a pattern to force deeper tree
      * levels.
      */
-    public void testInfoXY_DeepTree() {
+    public void testInfoXYDeepTree() {
         db.insert(new City("A", 30, 40));
         db.insert(new City("B", 5, 25));
         db.insert(new City("C", 70, 70));

@@ -275,10 +275,12 @@ public class KDTree<T> {
         return minNode;
     }
 
+
     /**
      * Allows findMin to be called directly for use in testing.
      * 
      * @param d
+     *            dimension
      * @return the City that is the minimum for a dimension.
      */
     public City findMinPublic(int d) {
